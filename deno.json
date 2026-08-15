@@ -1,0 +1,37 @@
+{
+	"name": "import-inspector",
+	"version": "1.0.0",
+	"fmt": {
+		"indentWidth": 4,
+		"lineWidth": 120,
+		"useTabs": true
+	},
+	"tasks": {
+		"test": "deno test -P --coverage",
+		"dev": "deno task test && deno check && deno lint && deno fmt --check",
+		"dev:watch": "deno check & deno lint --watch & deno fmt --watch --check",
+		"compile-cli": "deno compile -P --output ./bin/import-inspector-cli ./src/cli/index.ts",
+		"run-cli": "deno task compile-cli && ./bin/import-inspector-cli"
+	},
+	"imports": {
+		"@std/cli": "jsr:@std/cli@^1.0.32",
+		"@std/expect": "jsr:@std/expect@^1.0.20",
+		"@std/fmt": "jsr:@std/fmt@^1.0.10",
+		"@std/fs": "jsr:@std/fs@^1.0.24",
+		"@std/path": "jsr:@std/path@^1.1.6",
+		"@std/testing": "jsr:@std/testing@^1.0.19",
+		"@std/yaml": "jsr:@std/yaml@^1.1.2",
+		"oxc-parser": "npm:oxc-parser@^0.139.0",
+		"~/": "./src/"
+	},
+	"exports": "./src/cli/index.ts",
+	"permissions": {
+		"default": {
+			"read": true,
+			"write": true,
+			"env": true,
+			"ffi": true,
+			"sys": true
+		}
+	}
+}
