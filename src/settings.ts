@@ -2,10 +2,7 @@ import { Err } from "~/lib/err.ts";
 import { unify } from "~/lib/upath.ts";
 import type { SettingsModule } from "~/api.ts";
 
-const homeDir = Deno.env.get(Deno.build.os === "windows" ? "USERPROFILE" : "HOME");
-const legacyConfigPath = `${homeDir}/.config/import-inspector/config.ts`;
-
-export class Config {
+export class Settings {
 	frames;
 	logsDir?;
 	preInspect;
@@ -15,15 +12,15 @@ export class Config {
 	customLoggers;
 	correctUnresolvedDynamicImports;
 
-	static async create() {
-		const configModule = await import(legacyConfigPath).catch((e) => {
-			throw new Err(`Can't dynamically import config file from '${legacyConfigPath}'.`, { cause: e });
+	static async create({ path }: { path: string }) {
+		const settingsModule = await import(path).catch((e) => {
+			throw new Err(`Can't dynamically import settings file '${path}'.`, { cause: e });
 		});
 
-		return new this(configModule as SettingsModule);
+		return new this(settingsModule as SettingsModule);
 	}
 
-	private constructor(configModule: SettingsModule) {
+	private constructor(settingsModule: SettingsModule) {
 		const {
 			rootEntries,
 			logsDir,
@@ -33,7 +30,7 @@ export class Config {
 			preInspect = () => {},
 			postInspect = () => {},
 			correctUnresolvedDynamicImports = () => Promise.resolve([]),
-		} = configModule.default;
+		} = settingsModule.default;
 
 		this.rootEntries = rootEntries.map(({ path, ...rest }) => ({ path: unify(path), ...rest }));
 

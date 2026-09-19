@@ -2,20 +2,20 @@ import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 
 import { PathRecProvider } from "../path-rec-provider/index.ts";
-import { createConfig } from "../testing/config-maker.ts";
+import { createSettings } from "../testing/settings-maker.ts";
 import { createImportRec } from "../testing/import-rec-maker.ts";
 
 import { ImportResolver } from "./import-resolver.ts";
 
 describe("import-resolver", () => {
-	const config = createConfig({
+	const settings = createSettings({
 		rootEntries: [{ path: "C:/foo", alias: "@foo/" }],
 		importRemaps: { "f": "C:/f" },
 	});
 
 	it("dynamic import without locator", () => {
 		const pathRecProvider = new PathRecProvider({ filePaths: ["C:/foo/bar/index.ts", "C:/foo/bar/foo.js"] });
-		const resolver = new ImportResolver({ config, pathRecProvider });
+		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			isDynamic: true,
 			locator: null,
@@ -30,7 +30,7 @@ describe("import-resolver", () => {
 			filePaths: ["C:/foo/index.ts", "C:/foo/bar/baz.ts", "C:/foo/bar.ts"],
 		});
 
-		const resolver = new ImportResolver({ config, pathRecProvider });
+		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "../bar",
 			filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar/baz.ts"),
@@ -48,7 +48,7 @@ describe("import-resolver", () => {
 			filePaths: ["C:/foo/index.ts", "C:/foo/bar.ts"],
 		});
 
-		const resolver = new ImportResolver({ config, pathRecProvider });
+		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "@foo/bar",
 			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
@@ -66,7 +66,7 @@ describe("import-resolver", () => {
 			filePaths: ["C:/foo/index.ts", "C:/foo/bar.ts", "C:/f/index.ts"],
 		});
 
-		const resolver = new ImportResolver({ config, pathRecProvider });
+		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "f",
 			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
@@ -84,7 +84,7 @@ describe("import-resolver", () => {
 			filePaths: ["C:/foo/index.ts", "C:/foo/bar.ts"],
 		});
 
-		const resolver = new ImportResolver({ config, pathRecProvider });
+		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "@foo/baz",
 			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
@@ -99,7 +99,7 @@ describe("import-resolver", () => {
 
 	it("external import", () => {
 		const pathRecProvider = new PathRecProvider({ filePaths: ["C:/foo/index.ts", "C:/foo/bar.tsx"] });
-		const resolver = new ImportResolver({ config, pathRecProvider });
+		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "react",
 			filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar.tsx"),
@@ -118,7 +118,7 @@ describe("import-resolver", () => {
 				filePaths: ["C:/foo/bar.tsx", "C:/foo/index.ts"],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 			const rec = createImportRec({
 				locator: ".",
 				filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar.tsx"),
@@ -136,7 +136,7 @@ describe("import-resolver", () => {
 				filePaths: ["C:/foo/bar/baz.js", "C:/foo/index.ts"],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 			const rec = createImportRec({
 				locator: "..",
 				filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar/baz.js"),
@@ -166,7 +166,7 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
 			const rec = createImportRec({
 				locator: "../bar",
@@ -194,7 +194,7 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
 			const rec = createImportRec({
 				locator: "../bar",
@@ -221,7 +221,7 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
 			const rec = createImportRec({
 				locator: "../bar",
@@ -247,7 +247,7 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
 			const rec = createImportRec({
 				locator: "../bar",
@@ -272,7 +272,7 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
 			const rec = createImportRec({
 				locator: "../bar",
@@ -296,7 +296,7 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
 			const rec = createImportRec({
 				locator: "../bar",
@@ -319,7 +319,7 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
 			const rec = createImportRec({
 				locator: "../bar",
@@ -341,7 +341,7 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
 			const rec = createImportRec({
 				locator: "../bar",

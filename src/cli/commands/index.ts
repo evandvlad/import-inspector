@@ -7,6 +7,8 @@ import { runVersionCommand } from "./version.ts";
 import { runWriteApiFileCommand } from "./write-api-file.ts";
 import { runUnknownCommand } from "./unknown.ts";
 import { runInspectCommand } from "./inspect/index.ts";
+import { runDisplayConfigCommand } from "./display-config.ts";
+import { runSetSettingsPathCommand } from "./set-settings-path.ts";
 
 export async function execCommand(command: Command) {
 	const { name } = command;
@@ -25,7 +27,15 @@ export async function execCommand(command: Command) {
 			return;
 
 		case "inspect":
-			await runInspectCommand();
+			await runInspectCommand(command);
+			return;
+
+		case "display-config":
+			await runDisplayConfigCommand();
+			return;
+
+		case "set-settings-path":
+			await runSetSettingsPathCommand(command);
 			return;
 
 		case "unknown":

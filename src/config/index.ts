@@ -2,8 +2,6 @@ import type { ConfigData } from "~/api.ts";
 
 import { ConfigService } from "./config-service.ts";
 
-const defaultPreset = "default";
-
 const nullConfigData: ConfigData = {
 	presets: {},
 };
@@ -21,24 +19,25 @@ export class Config {
 		return new this({ data: config, service });
 	}
 
-	#data;
+	data;
+
 	#service;
 
 	private constructor({ data, service }: { data: ConfigData; service: ConfigService }) {
-		this.#data = data;
+		this.data = data;
 		this.#service = service;
 	}
 
-	getSettingsPath(preset = defaultPreset) {
-		if (!Object.hasOwn(this.#data.presets, preset)) {
+	getSettingsPath({ preset }: { preset: string }) {
+		if (!Object.hasOwn(this.data.presets, preset)) {
 			return null;
 		}
 
-		return this.#data.presets[preset];
+		return this.data.presets[preset];
 	}
 
-	async setSettingsPath(path: string, preset = defaultPreset) {
-		this.#data.presets[preset] = path;
-		await this.#service.save(this.#data);
+	async setSettingsPath({ path, preset }: { path: string; preset: string }) {
+		this.data.presets[preset] = path;
+		await this.#service.save(this.data);
 	}
 }

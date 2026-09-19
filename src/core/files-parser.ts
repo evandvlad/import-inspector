@@ -1,17 +1,17 @@
 import { Err } from "~/lib/err.ts";
+import type { Settings } from "~/settings.ts";
 
-import type { Config } from "./config.ts";
 import type { Pub } from "./pub-sub/index.ts";
 import type { FileParsingResult } from "./values.ts";
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import { FileParser } from "./file-parser/index.ts";
 
-export async function parseFiles({ config, pathRecProvider, pub }: {
+export async function parseFiles({ settings, pathRecProvider, pub }: {
 	pub: Pub;
-	config: Config;
+	settings: Settings;
 	pathRecProvider: PathRecProvider;
 }) {
-	const fileParser = new FileParser({ config });
+	const fileParser = new FileParser({ settings });
 	const result: FileParsingResult[] = [];
 
 	for await (const path of pathRecProvider.filePaths) {

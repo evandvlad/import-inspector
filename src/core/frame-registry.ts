@@ -1,4 +1,5 @@
-import type { Config } from "./config.ts";
+import type { Settings } from "~/settings.ts";
+
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 
 export class FrameRegistry {
@@ -6,8 +7,8 @@ export class FrameRegistry {
 
 	#frameMap;
 
-	constructor({ config, pathRecProvider }: { config: Config; pathRecProvider: PathRecProvider }) {
-		this.#frameMap = this.#createFrameMap({ config, pathRecProvider });
+	constructor({ settings, pathRecProvider }: { settings: Settings; pathRecProvider: PathRecProvider }) {
+		this.#frameMap = this.#createFrameMap({ settings, pathRecProvider });
 		this.names = Array.from(this.#frameMap.keys());
 	}
 
@@ -26,8 +27,8 @@ export class FrameRegistry {
 			.toArray();
 	}
 
-	#createFrameMap({ config, pathRecProvider }: { config: Config; pathRecProvider: PathRecProvider }) {
-		const frameList = Object.entries(config.frames)
+	#createFrameMap({ settings, pathRecProvider }: { settings: Settings; pathRecProvider: PathRecProvider }) {
+		const frameList = Object.entries(settings.frames)
 			.map(([name, rootPathPrefixes]) => ({ name, rootPathPrefixes }));
 
 		const map = new Map<string, string[]>();

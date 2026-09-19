@@ -1,7 +1,7 @@
 import { bold } from "@std/fmt/colors";
 import { format } from "@std/fmt/duration";
 
-import type { Config } from "~/core/index.ts";
+import type { Settings } from "~/settings.ts";
 
 import { dedent, link } from "../../format.ts";
 
@@ -35,10 +35,10 @@ function createLink(path: string) {
 }
 
 export function createSummaryRepresentation(
-	{ config, result, timestamp }: { config: Config; result: Result; timestamp: number },
+	{ settings, result, timestamp }: { settings: Settings; result: Result; timestamp: number },
 ) {
 	const duration = format(Date.now() - timestamp, { ignoreZero: true });
-	const logsDir = config.logsDir ?? null;
+	const logsDir = settings.logsDir ?? null;
 
 	const content = dedent(`
 		${"=".repeat(20)}

@@ -1,8 +1,8 @@
 import { dirname, join } from "~/lib/upath.ts";
+import type { Settings } from "~/settings.ts";
 
 import type { ImportRec, ImportResolution } from "../values.ts";
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
-import type { Config } from "../config.ts";
 import { getImportPathSuffixCandidates } from "../project-specifics.ts";
 
 type Alias = {
@@ -16,18 +16,18 @@ export class ImportResolver {
 	#pathRecProvider;
 	#pathSuffixCandidates;
 
-	constructor({ config, pathRecProvider }: { config: Config; pathRecProvider: PathRecProvider }) {
+	constructor({ settings, pathRecProvider }: { settings: Settings; pathRecProvider: PathRecProvider }) {
 		this.#pathRecProvider = pathRecProvider;
 		this.#pathSuffixCandidates = getImportPathSuffixCandidates();
 
-		this.#aliases = this.#createAliases(config);
+		this.#aliases = this.#createAliases(settings);
 	}
 
 	resolve(importRec: ImportRec): ImportResolution | null {
 		return importRec.locator ? this.#resolve(importRec) : null;
 	}
 
-	#createAliases({ rootEntries, importRemaps }: Config) {
+	#createAliases({ rootEntries, importRemaps }: Settings) {
 		const aliases: Alias[] = [];
 
 		Object.entries(importRemaps).forEach(([value, path]) => {

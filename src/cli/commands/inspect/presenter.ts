@@ -1,6 +1,7 @@
 import { Spinner } from "@std/cli/unstable-spinner";
 
-import type { Config, Context } from "~/core/index.ts";
+import type { Context } from "~/core/index.ts";
+import type { Settings } from "~/settings.ts";
 
 import { Result } from "./result.ts";
 import { createDefectsRepresentation } from "./defects-representation.ts";
@@ -17,7 +18,7 @@ export class Presenter {
 		this.#spinner.start();
 	}
 
-	summarize({ context, config }: { context: Context; config: Config }) {
+	summarize({ context, settings }: { context: Context; settings: Settings }) {
 		const result = new Result({ context });
 
 		this.#spinner.stop();
@@ -26,7 +27,7 @@ export class Presenter {
 			console.error(createDefectsRepresentation({ result }));
 		}
 
-		console.log(createSummaryRepresentation({ result, config, timestamp: this.#timestamp }));
+		console.log(createSummaryRepresentation({ result, settings, timestamp: this.#timestamp }));
 
 		Deno.exit(result.hasDefects ? 1 : 0);
 	}

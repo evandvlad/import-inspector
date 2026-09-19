@@ -1,14 +1,15 @@
-import type { Config } from "../config.ts";
+import type { Settings } from "~/settings.ts";
+
 import type { FilePathRec } from "../path-rec-provider/index.ts";
 import type { ImportRec } from "../values.ts";
 
 import { parseFile } from "./file-parser.ts";
 
 export class FileParser {
-	#config;
+	#settings;
 
-	constructor({ config }: { config: Config }) {
-		this.#config = config;
+	constructor({ settings }: { settings: Settings }) {
+		this.#settings = settings;
 	}
 
 	async parse({ filePathRec, content }: { filePathRec: FilePathRec; content: string }) {
@@ -32,7 +33,7 @@ export class FileParser {
 
 	async #processImportRec(importRec: ImportRec) {
 		if (importRec.isDynamic && !importRec.locator) {
-			const corrections = await this.#config.correctUnresolvedDynamicImports({
+			const corrections = await this.#settings.correctUnresolvedDynamicImports({
 				line: importRec.line,
 				code: importRec.code,
 				sourcePath: importRec.filePathRec.path,

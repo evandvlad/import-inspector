@@ -1,6 +1,7 @@
+import type { Settings } from "~/settings.ts";
+
 import { AsyncTaskTube } from "../lib/async-task-tube.ts";
 import type { Sub } from "../pub-sub/index.ts";
-import type { Config } from "../config.ts";
 
 import { MainLogWriter } from "./main-log-writer.ts";
 import { writeFilePaths } from "./file-paths-writer.ts";
@@ -13,14 +14,14 @@ import { CustomLogWriter } from "./custom-log-writer.ts";
 export class Logger {
 	#asyncTaskTube;
 
-	constructor({ sub, config }: { sub: Sub; config: Config }) {
+	constructor({ sub, settings }: { sub: Sub; settings: Settings }) {
 		this.#asyncTaskTube = new AsyncTaskTube();
 
-		const logsDir = config.logsDir!;
+		const logsDir = settings.logsDir!;
 
 		const customLogWriter = new CustomLogWriter({
 			logsDir,
-			customLoggers: config.customLoggers,
+			customLoggers: settings.customLoggers,
 		});
 
 		const mainLogWriter = new MainLogWriter({ logsDir });

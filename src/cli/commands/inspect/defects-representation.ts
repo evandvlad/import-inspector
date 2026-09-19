@@ -3,7 +3,7 @@ import { bold, dim, gray, yellow } from "@std/fmt/colors";
 import { assertNever } from "~/lib/ts.ts";
 
 import { link } from "../../format.ts";
-import type { ImportDefectDetails, ModuleDefectDetails } from "../../values.ts";
+import type { ImportDefectDetails, ModuleDefectDetails } from "./values.ts";
 
 import type { Result } from "./result.ts";
 

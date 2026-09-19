@@ -1,7 +1,7 @@
 import { type ImportDefect, type Lang, langs, type ModuleDefect } from "~/api.ts";
 import type { Context } from "~/core/index.ts";
 
-import type { DefectDetails } from "../../values.ts";
+import type { DefectDetails } from "./values.ts";
 
 export class Result {
 	hasDefects;

@@ -9,3 +9,4 @@ export const version = denoJson.version;
 export const configDir = `${homeDir}/.config/import-inspector`;
 export const configFilePath = `${configDir}/config.json`;
 export const typesFile = join(dirname, "./api.ts");
+export const defaultConfigPresetName = "default";

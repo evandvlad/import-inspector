@@ -1,6 +1,6 @@
-import type { Config } from "../config.ts";
+import type { Settings } from "~/settings.ts";
 
-export const minConfig: Config = {
+export const minSettings: Settings = {
 	rootEntries: [{ path: "C:/foo" }],
 	correctUnresolvedDynamicImports: () => Promise.resolve([]),
 	customLoggers: [],
@@ -10,9 +10,9 @@ export const minConfig: Config = {
 	postInspect() {},
 };
 
-export function createConfig(parts: Partial<Config> = {}): Config {
+export function createSettings(parts: Partial<Settings> = {}): Settings {
 	return {
-		...minConfig,
+		...minSettings,
 		...parts,
 	};
 }

@@ -1,6 +1,6 @@
 import { joinGlobs } from "~/lib/upath.ts";
 
-import type { Config } from "../config.ts";
+import type { Settings } from "~/settings.ts";
 import { fileExtNames } from "../project-specifics.ts";
 
 const extNamesGlob = fileExtNames.map((extName) => extName.slice(1)).join(",");
@@ -9,10 +9,10 @@ type Externals = {
 	expandGlob: (glob: string) => AsyncIterableIterator<{ path: string }>;
 };
 
-export async function collectFilePaths({ config, externals }: { config: Config; externals: Externals }) {
+export async function collectFilePaths({ settings, externals }: { settings: Settings; externals: Externals }) {
 	const pathsSet = new Set<string>();
 
-	const globs = config.rootEntries
+	const globs = settings.rootEntries
 		.map(({ path }) => joinGlobs([path, "**", `*.{${extNamesGlob}}`], { globstar: true }));
 
 	for (const glob of globs) {

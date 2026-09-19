@@ -1,4 +1,5 @@
-import { Config } from "./config.ts";
+import type { Settings } from "~/settings.ts";
+
 import { PubSub } from "./pub-sub/index.ts";
 import { createLogger } from "./logger/index.ts";
 import { collectFilePaths } from "./file-path-collector/index.ts";
@@ -14,33 +15,32 @@ import { setTags } from "./tagger/index.ts";
 import { inspectionHandlers } from "./inspection-handlers/index.ts";
 import { inspect } from "./inspector.ts";
 
-export type { Config, Context };
+export type { Context };
 
-export async function run() {
+export async function run({ settings }: { settings: Settings }) {
 	const { pub, sub } = new PubSub();
-	const config = await Config.create();
 
-	const logger = await createLogger({ sub, config });
+	const logger = await createLogger({ sub, settings });
 
 	pub.send("main:config-created");
 
 	pub.send("main:file-path-collecting-started");
-	const filePaths = await collectFilePaths({ config });
+	const filePaths = await collectFilePaths({ settings });
 	pub.send("main:file-path-collecting-finished", filePaths);
 
 	const pathRecProvider = new PathRecProvider({ filePaths });
 
 	pub.send("main:files-parsing-started");
-	const parsingResult = await parseFiles({ config, pub, pathRecProvider });
+	const parsingResult = await parseFiles({ settings, pub, pathRecProvider });
 	pub.send("main:files-parsing-finished");
 
 	pub.send("main:modules-building-started");
 	const packageEntryPointDetector = new PackageEntryPointDetector({ pathRecProvider });
 	const packageFinder = new PackageFinder({ pathRecProvider, packageEntryPointDetector });
-	const frameRegistry = new FrameRegistry({ config, pathRecProvider });
+	const frameRegistry = new FrameRegistry({ settings, pathRecProvider });
 
 	const modules = buildModules({
-		config,
+		settings,
 		parsingResult,
 		packageFinder,
 		packageEntryPointDetector,
@@ -61,12 +61,12 @@ export async function run() {
 	pub.send("main:tagging-finished");
 
 	pub.send("main:inspection-started");
-	await inspect({ context, config, inspectionHandlers });
+	await inspect({ context, settings, inspectionHandlers });
 	pub.send("main:inspection-finished", context);
 
 	pub.send("main:finished");
 
 	await logger.uponDone();
 
-	return { context, config };
+	return context;
 }

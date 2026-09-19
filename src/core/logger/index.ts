@@ -1,14 +1,14 @@
 import { emptyDir } from "@std/fs";
 
 import { Err } from "~/lib/err.ts";
+import type { Settings } from "~/settings.ts";
 
 import type { Sub } from "../pub-sub/index.ts";
-import type { Config } from "../config.ts";
 
 import { Logger } from "./logger.ts";
 
-export async function createLogger({ sub, config }: { sub: Sub; config: Config }) {
-	const { logsDir } = config;
+export async function createLogger({ sub, settings }: { sub: Sub; settings: Settings }) {
+	const { logsDir } = settings;
 
 	if (!logsDir) {
 		return {
@@ -22,5 +22,5 @@ export async function createLogger({ sub, config }: { sub: Sub; config: Config }
 		});
 	});
 
-	return new Logger({ sub, config });
+	return new Logger({ sub, settings });
 }
