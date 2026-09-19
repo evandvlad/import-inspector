@@ -1,6 +1,6 @@
 import { parse, type ParserOptions } from "oxc-parser";
 
-import { Err } from "~/lib/err.ts";
+import { Err, rethrowErr } from "~/lib/err.ts";
 
 import type { FilePathRec } from "../path-rec-provider/index.ts";
 
@@ -20,9 +20,9 @@ export async function parseFile({ filePathRec, content }: { filePathRec: FilePat
 	const { name, path } = filePathRec;
 	const options = getParserOptions(filePathRec);
 
-	const { program, errors } = await parse(name, content, options).catch((e) => {
-		throw new Err(`An error occurred while parsing the file '${path}'.`, { cause: e });
-	});
+	const { program, errors } = await parse(name, content, options).catch(
+		rethrowErr(`An error occurred while parsing the file '${path}'.`),
+	);
 
 	if (errors.length > 0) {
 		const error = errors.find((item) => item.severity === "Error");

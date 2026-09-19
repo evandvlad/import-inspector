@@ -1,6 +1,6 @@
 import { ensureDir } from "@std/fs";
 
-import { Err, isErr } from "~/lib/err.ts";
+import { isErr, remapErr, rethrowErr } from "~/lib/err.ts";
 import { join } from "~/lib/upath.ts";
 import { assertNever } from "~/lib/ts.ts";
 import type { CustomLogger } from "~/api.ts";
@@ -21,12 +21,11 @@ export class CustomLogWriter {
 	}
 
 	async write(context: Context) {
-		await ensureDir(this.#logsDir).catch((e) => {
-			throw new Err(
+		await ensureDir(this.#logsDir).catch(
+			rethrowErr(
 				`There was something wrong with preparing the custom logs directory for the path '${this.#logsDir}'.`,
-				{ cause: e },
-			);
-		});
+			),
+		);
 
 		await Promise.all(
 			this.#customLoggers.map((customLogger) => this.#writeLog({ context, customLogger })),
@@ -45,7 +44,7 @@ export class CustomLogWriter {
 				throw e;
 			}
 
-			throw new Err(`An error occurred while writing into the custom log '${path}'.`, { cause: e });
+			throw remapErr(e, `An error occurred while writing into the custom log '${path}'.`);
 		}
 	}
 
@@ -71,7 +70,7 @@ export class CustomLogWriter {
 					assertNever(format);
 			}
 		} catch (e) {
-			throw new Err("An error occurred while preparing data for the custom logger.", { cause: e });
+			throw remapErr(e, "An error occurred while preparing data for the custom logger.");
 		}
 	}
 }

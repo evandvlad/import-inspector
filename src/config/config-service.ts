@@ -1,7 +1,7 @@
 import { exists } from "@std/fs";
 import { isAbsolute } from "@std/path";
 
-import { assert, Err, isErr } from "~/lib/err.ts";
+import { assert, isErr, remapErr } from "~/lib/err.ts";
 import { readJson, writeJson } from "~/lib/rw-json.ts";
 import type { ConfigData } from "~/api.ts";
 import { configFilePath } from "~/env.ts";
@@ -39,7 +39,7 @@ export class ConfigService {
 				messages.push(e.message);
 			}
 
-			throw new Err(messages.join(" "), { cause: e });
+			throw remapErr(e, messages.join(" "));
 		}
 	}
 

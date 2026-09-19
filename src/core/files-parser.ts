@@ -1,4 +1,4 @@
-import { Err } from "~/lib/err.ts";
+import { rethrowErr } from "~/lib/err.ts";
 import type { Settings } from "~/settings.ts";
 
 import type { Pub } from "./pub-sub/index.ts";
@@ -15,9 +15,7 @@ export async function parseFiles({ settings, pathRecProvider, pub }: {
 	const result: FileParsingResult[] = [];
 
 	for await (const path of pathRecProvider.filePaths) {
-		const content = await Deno.readTextFile(path).catch((e) => {
-			throw new Err(`Can't read file at path '${path}'.`, { cause: e });
-		});
+		const content = await Deno.readTextFile(path).catch(rethrowErr(`Can't read file at path '${path}'.`));
 
 		result.push(await fileParser.parse({ filePathRec: pathRecProvider.getFilePathRec(path), content }));
 		pub.send("files-parser:file-parsed", path);

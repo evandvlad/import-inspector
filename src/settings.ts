@@ -1,4 +1,4 @@
-import { Err } from "~/lib/err.ts";
+import { rethrowErr } from "~/lib/err.ts";
 import { unify } from "~/lib/upath.ts";
 import type { SettingsModule } from "~/api.ts";
 
@@ -13,9 +13,9 @@ export class Settings {
 	correctUnresolvedDynamicImports;
 
 	static async create({ path }: { path: string }) {
-		const settingsModule = await import(path).catch((e) => {
-			throw new Err(`Can't dynamically import settings file '${path}'.`, { cause: e });
-		});
+		const settingsModule = await import(path).catch(
+			rethrowErr(`Can't dynamically import settings file '${path}'.`),
+		);
 
 		return new this(settingsModule as SettingsModule);
 	}

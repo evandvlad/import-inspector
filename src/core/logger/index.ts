@@ -1,6 +1,6 @@
 import { emptyDir } from "@std/fs";
 
-import { Err } from "~/lib/err.ts";
+import { rethrowErr } from "~/lib/err.ts";
 import type { Settings } from "~/settings.ts";
 
 import type { Sub } from "../pub-sub/index.ts";
@@ -16,11 +16,9 @@ export async function createLogger({ sub, settings }: { sub: Sub; settings: Sett
 		} as Logger;
 	}
 
-	await emptyDir(logsDir).catch((e) => {
-		throw new Err(`There was something wrong with preparing the logs directory for the path '${logsDir}'.`, {
-			cause: e,
-		});
-	});
+	await emptyDir(logsDir).catch(
+		rethrowErr(`There was something wrong with preparing the logs directory for the path '${logsDir}'.`),
+	);
 
 	return new Logger({ sub, settings });
 }
