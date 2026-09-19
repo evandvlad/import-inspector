@@ -10,8 +10,8 @@
 		"test": "deno test -P --coverage",
 		"dev": "deno task test && deno check && deno lint && deno fmt --check",
 		"dev:watch": "deno check & deno lint --watch & deno fmt --watch --check",
-		"compile-cli": "deno compile -P --output ./bin/import-inspector ./src/cli/index.ts",
-		"run-cli": "deno task compile-cli && ./bin/import-inspector"
+		"compile": "deno compile -P --output ./bin/import-inspector ./src/index.ts",
+		"run": "deno task compile && ./bin/import-inspector"
 	},
 	"imports": {
 		"@std/cli": "jsr:@std/cli@^1.0.32",
@@ -24,7 +24,7 @@
 		"oxc-parser": "npm:oxc-parser@^0.139.0",
 		"~/": "./src/"
 	},
-	"exports": "./src/cli/index.ts",
+	"exports": "./src/index.ts",
 	"permissions": {
 		"default": {
 			"read": true,
