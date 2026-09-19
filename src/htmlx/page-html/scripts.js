@@ -1,0 +1,61 @@
+Array.from(document.querySelectorAll("[data-js-flist]")).forEach((container) => {
+	const id = container.getAttribute("data-js-flist");
+	const inputElement = container.querySelector(`[data-js-flist-input="${id}"]`);
+	const counterElement = container.querySelector(`[data-js-flist-counter="${id}"]`);
+	const itemElements = Array.from(container.querySelectorAll(`[data-js-flist-item="${id}"]`));
+
+	inputElement.addEventListener("input", (e) => {
+		const filterValue = e.target.value.trim();
+
+		let visibleElements = 0;
+
+		itemElements.forEach((itemElement) => {
+			const itemValue = itemElement.getAttribute(`data-js-flist-value`);
+			const isVisible = itemValue.includes(filterValue);
+
+			if (isVisible) {
+				itemElement.removeAttribute("hidden");
+				visibleElements += 1;
+				return;
+			}
+
+			itemElement.setAttribute("hidden", "");
+		});
+
+		counterElement.innerHTML = visibleElements;
+	});
+});
+
+Array.from(document.querySelectorAll("[data-js-tabs]")).forEach((container) => {
+	const id = container.getAttribute("data-js-tabs");
+	const linkElements = Array.from(container.querySelectorAll(`[data-js-tabs-link="${id}"`));
+	const contentElements = Array.from(container.querySelectorAll(`[data-js-tabs-content="${id}"]`));
+	const len = linkElements.length;
+	const activeAttrName = "data-state-active";
+
+	function changeActiveStateByIndex(index) {
+		for (let i = 0; i < len; i += 1) {
+			const linkElement = linkElements[i];
+			const contentElement = contentElements[i];
+			const isVisible = index === i;
+
+			if (isVisible) {
+				linkElement.setAttribute(activeAttrName, "");
+				contentElement.removeAttribute("hidden");
+			} else {
+				linkElement.removeAttribute(activeAttrName);
+				contentElement.setAttribute("hidden", "");
+			}
+		}
+	}
+
+	linkElements[0].parentNode.addEventListener("click", ({ target }) => {
+		const activeLinkIndex = linkElements.findIndex((elem) => elem === target || elem.contains(target));
+
+		if (activeLinkIndex !== -1) {
+			changeActiveStateByIndex(activeLinkIndex);
+		}
+	}, false);
+
+	changeActiveStateByIndex(0);
+});

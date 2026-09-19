@@ -1,4 +1,4 @@
-import { basename, concat, split } from "../lib/path.ts";
+import { basename, concat, split } from "~/lib/upath.ts";
 
 import { DirPathRec } from "./dir-path-rec.ts";
 import { FilePathRec } from "./file-path-rec.ts";
@@ -63,8 +63,10 @@ function updateNodeValue({ node, basePath }: { node: Node; basePath: string }) {
 		return;
 	}
 
-	const childPaths = Array.from(node.children.values())
-		.map(({ path }) => path);
+	const childPaths = node.children
+		.values()
+		.map(({ path }) => path)
+		.toArray();
 
 	node.value = new DirPathRec({ basePath, path, childPaths });
 }

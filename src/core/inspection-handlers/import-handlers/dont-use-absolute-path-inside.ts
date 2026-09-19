@@ -10,7 +10,9 @@ export const dontUseAbsolutePathInside: InspectionHandler = ({ imports, modules,
 			const importedModule = modules.get(imp.resolution!.path!);
 
 			if (sourceModule.packagePath && importedModule.packagePath) {
-				const isImportedFromSameOrAncestorPackage = packages.isInSameOrAncestryBranch({
+				const isSamePackage = sourceModule.packagePath === importedModule.packagePath;
+
+				const isImportedFromSameOrAncestorPackage = isSamePackage || packages.isInAncestryBranch({
 					sourcePath: sourceModule.packagePath,
 					testablePath: importedModule.packagePath,
 				});

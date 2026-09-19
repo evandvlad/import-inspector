@@ -1,4 +1,4 @@
-import { parse } from "../lib/path.ts";
+import { parse } from "~/lib/upath.ts";
 
 export abstract class PathRec {
 	abstract kind: "file" | "dir";

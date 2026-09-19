@@ -1,27 +1,38 @@
-import { Err } from "~/lib/err.ts";
+import { rethrowErr } from "~/lib/err.ts";
+import { PubSub } from "~/lib/pub-sub.ts";
+import type { Settings } from "~/settings.ts";
 
-import type { Config } from "./config.ts";
-import type { Pub } from "./pub-sub/index.ts";
 import type { FileParsingResult } from "./values.ts";
-import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import { FileParser } from "./file-parser/index.ts";
 
-export async function parseFiles({ config, pathRecProvider, pub }: {
-	pub: Pub;
-	config: Config;
-	pathRecProvider: PathRecProvider;
-}) {
-	const fileParser = new FileParser({ config });
-	const result: FileParsingResult[] = [];
+type LocalEventMap = {
+	"file-parsed": [path: string];
+};
 
-	for await (const path of pathRecProvider.filePaths) {
-		const content = await Deno.readTextFile(path).catch((e) => {
-			throw new Err(`Can't read file at path '${path}'.`, { cause: e });
-		});
+export class FilesParser {
+	sub;
 
-		result.push(await fileParser.parse({ filePathRec: pathRecProvider.getFilePathRec(path), content }));
-		pub.send("files-parser:file-parsed", path);
+	#fileParser;
+	#pub;
+
+	constructor({ settings }: { settings: Settings }) {
+		const { pub, sub } = new PubSub<LocalEventMap>();
+
+		this.sub = sub;
+		this.#pub = pub;
+
+		this.#fileParser = new FileParser({ settings });
 	}
 
-	return result;
+	async parse(filePaths: string[]) {
+		const result: FileParsingResult[] = [];
+
+		for await (const path of filePaths) {
+			const content = await Deno.readTextFile(path).catch(rethrowErr(`Can't read file at path '${path}'.`));
+			result.push(await this.#fileParser.parse({ path, content }));
+			this.#pub.send("file-parsed", path);
+		}
+
+		return result;
+	}
 }

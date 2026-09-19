@@ -1,12 +1,12 @@
 import { expandGlob } from "@std/fs";
 
-import type { Config } from "../config.ts";
+import type { Settings } from "~/settings.ts";
 
 import { collectFilePaths as _collectFilePaths } from "./file-path-collector.ts";
 
-export function collectFilePaths({ config }: { config: Config }) {
+export function collectFilePaths({ settings }: { settings: Settings }) {
 	return _collectFilePaths({
-		config,
+		settings,
 		externals: {
 			expandGlob,
 		},

@@ -4,22 +4,23 @@ import type { ImportRec, ImportResolution } from "./values.ts";
 
 export class Import implements IImport {
 	id;
-	line;
-	sourcePath;
 	locator;
-	code;
+	posSpan;
 	isDynamic;
+	defectMap;
+	sourcePath;
 	resolution;
-	defectMap = new Map<string, ImportDefect>();
 
-	constructor({ importRec, resolution }: { importRec: ImportRec; resolution: ImportResolution | null }) {
+	constructor(
+		{ path, importRec, resolution }: { path: string; importRec: ImportRec; resolution: ImportResolution | null },
+	) {
 		this.id = crypto.randomUUID() as string;
-		this.line = importRec.line;
-		this.sourcePath = importRec.filePathRec.path;
-		this.locator = importRec.locator;
-		this.code = importRec.code;
-		this.isDynamic = importRec.isDynamic;
+		this.sourcePath = path;
 		this.resolution = resolution;
+		this.locator = importRec.locator;
+		this.posSpan = importRec.posSpan;
+		this.isDynamic = importRec.isDynamic;
+		this.defectMap = new Map<string, ImportDefect>();
 	}
 
 	addDefect({ rule, description = "" }: { rule: string; description?: string }) {
@@ -27,8 +28,7 @@ export class Import implements IImport {
 			rule,
 			description,
 			importId: this.id,
-			line: this.line,
-			code: this.code,
+			posSpan: this.posSpan,
 			locator: this.locator,
 			sourcePath: this.sourcePath,
 			importedPath: this.resolution?.path ?? null,

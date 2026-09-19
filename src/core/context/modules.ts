@@ -4,13 +4,16 @@ import type { ContextModules } from "~/api.ts";
 import type { Module } from "../module.ts";
 
 export class Modules implements ContextModules {
-	all;
-
+	#all;
 	#moduleMap;
 
 	constructor({ modules }: { modules: Module[] }) {
-		this.all = modules;
+		this.#all = modules;
 		this.#moduleMap = new Map(modules.map((module) => [module.path, module]));
+	}
+
+	getAll() {
+		return this.#all;
 	}
 
 	find(path: string) {

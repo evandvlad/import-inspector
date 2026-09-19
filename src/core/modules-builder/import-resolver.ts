@@ -1,7 +1,8 @@
-import { dirname, join } from "../lib/path.ts";
+import { dirname, join } from "~/lib/upath.ts";
+import type { Settings } from "~/settings.ts";
+
 import type { ImportRec, ImportResolution } from "../values.ts";
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
-import type { Config } from "../config.ts";
 import { getImportPathSuffixCandidates } from "../project-specifics.ts";
 
 type Alias = {
@@ -15,18 +16,18 @@ export class ImportResolver {
 	#pathRecProvider;
 	#pathSuffixCandidates;
 
-	constructor({ config, pathRecProvider }: { config: Config; pathRecProvider: PathRecProvider }) {
+	constructor({ settings, pathRecProvider }: { settings: Settings; pathRecProvider: PathRecProvider }) {
 		this.#pathRecProvider = pathRecProvider;
 		this.#pathSuffixCandidates = getImportPathSuffixCandidates();
 
-		this.#aliases = this.#createAliases(config);
+		this.#aliases = this.#createAliases(settings);
 	}
 
-	resolve(importRec: ImportRec): ImportResolution | null {
-		return importRec.locator ? this.#resolve(importRec) : null;
+	resolve({ path, importRec }: { path: string; importRec: ImportRec }): ImportResolution | null {
+		return importRec.locator ? this.#resolve({ path, importRec }) : null;
 	}
 
-	#createAliases({ rootEntries, importRemaps }: Config) {
+	#createAliases({ rootEntries, importRemaps }: Settings) {
 		const aliases: Alias[] = [];
 
 		Object.entries(importRemaps).forEach(([value, path]) => {
@@ -42,8 +43,8 @@ export class ImportResolver {
 		return aliases;
 	}
 
-	#resolve(rec: ImportRec) {
-		const locator = rec.locator!;
+	#resolve({ path, importRec }: { path: string; importRec: ImportRec }) {
+		const locator = importRec.locator!;
 		const isRelative = locator.startsWith(".");
 
 		if (!isRelative) {
@@ -59,7 +60,7 @@ export class ImportResolver {
 		return {
 			isRelative,
 			isExternal: false,
-			path: this.#findPath(join(dirname(rec.filePathRec.path), locator)),
+			path: this.#findPath(join(dirname(path), locator)),
 		};
 	}
 

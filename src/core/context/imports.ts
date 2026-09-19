@@ -1,11 +1,10 @@
 import { assert } from "~/lib/err.ts";
-import type { ContextImports } from "~/api.ts";
+import type { ContextImports, Import } from "~/api.ts";
 
 import type { Modules } from "./modules.ts";
 
 export class Imports implements ContextImports {
-	all;
-
+	#all;
 	#modules;
 	#importMap;
 
@@ -13,18 +12,45 @@ export class Imports implements ContextImports {
 		this.#modules = modules;
 
 		this.#importMap = new Map(
-			modules.all.flatMap(({ importMap }) => Array.from(importMap.entries())),
+			modules.getAll().flatMap(({ importMap }) => Array.from(importMap.entries())),
 		);
 
-		this.all = Array.from(this.#importMap.values());
+		this.#all = Array.from(this.#importMap.values());
+	}
+
+	getAll() {
+		return this.#all;
 	}
 
 	getFullResolved() {
-		return this.all.filter(({ resolution }) => Boolean(resolution?.path));
+		return this.#all.filter(({ resolution }) => Boolean(resolution?.path));
+	}
+
+	getFullUnresolved() {
+		return this.#all.filter(({ locator, isDynamic, resolution }) => {
+			if (!locator) {
+				return true;
+			}
+
+			return isDynamic && resolution && !resolution.isExternal && !resolution.path;
+		});
 	}
 
 	getDynamic() {
-		return this.all.filter(({ isDynamic }) => isDynamic);
+		return this.#all.filter(({ isDynamic }) => isDynamic);
+	}
+
+	getStatic() {
+		return this.#all.filter(({ isDynamic }) => !isDynamic);
+	}
+
+	getExternalMap() {
+		return Iterator.from(this.#all)
+			.filter(({ locator, resolution }) => Boolean(locator && resolution?.isExternal))
+			.reduce((acc, imp) => {
+				acc.getOrInsert(imp.locator!, []).push(imp);
+				return acc;
+			}, new Map<string, Import[]>());
 	}
 
 	find(id: string) {

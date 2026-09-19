@@ -11,14 +11,14 @@ import { Tags } from "./tags.ts";
 import { Frames } from "./frames.ts";
 import { ImportDefects } from "./import-defects.ts";
 import { ModuleDefects } from "./module-defects.ts";
-import { PathUtil } from "./path-util.ts";
+import { Env } from "./env.ts";
 
 export class Context implements IContext {
 	tags;
 	frames;
 	modules;
 	imports;
-	pathUtil;
+	env;
 	packages;
 	importDefects;
 	moduleDefects;
@@ -33,7 +33,7 @@ export class Context implements IContext {
 	) {
 		this.modules = new Modules({ modules });
 		this.packages = new Packages({ packages });
-		this.pathUtil = new PathUtil({ pathRecProvider });
+		this.env = new Env({ pathRecProvider });
 		this.imports = new Imports({ modules: this.modules });
 		this.tags = new Tags({ modules: this.modules });
 		this.frames = new Frames({ frameRegistry, modules: this.modules });

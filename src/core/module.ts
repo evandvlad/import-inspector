@@ -1,39 +1,45 @@
-import type { Module as IModule, ModuleDefect } from "~/api.ts";
+import type { FileContent, Module as IModule, ModuleDefect } from "~/api.ts";
 
 import type { FilePathRec } from "./path-rec-provider/index.ts";
 import type { Import } from "./import.ts";
+import { getFileLang } from "./project-specifics.ts";
 
 export class Module implements IModule {
 	name;
 	path;
 	lang;
 	links;
+	tagSet;
 	frameSet;
-	parentDirPath;
-	packagePath;
 	importMap;
+	defectMap;
+	fileContent;
+	packagePath;
+	parentDirPath;
 	isPackageEntryPoint;
-	tagSet = new Set<string>();
-	defectMap = new Map<string, ModuleDefect>();
 
 	constructor(
-		{ filePathRec, packagePath, frames, imports, links, isPackageEntryPoint }: {
+		{ filePathRec, packagePath, frames, imports, links, fileContent, isPackageEntryPoint }: {
 			filePathRec: FilePathRec;
 			frames: string[];
 			imports: Import[];
 			links: string[];
+			fileContent: FileContent;
 			packagePath: string | null;
 			isPackageEntryPoint: boolean;
 		},
 	) {
 		this.links = links;
 		this.path = filePathRec.path;
-		this.name = filePathRec.baseName;
-		this.lang = filePathRec.extInfo.lang;
+		this.fileContent = fileContent;
 		this.packagePath = packagePath;
+		this.name = filePathRec.baseName;
+		this.lang = getFileLang(filePathRec.path);
 		this.parentDirPath = filePathRec.parentPath;
 		this.isPackageEntryPoint = isPackageEntryPoint;
 		this.frameSet = new Set(frames);
+		this.tagSet = new Set<string>();
+		this.defectMap = new Map<string, ModuleDefect>();
 		this.importMap = new Map(imports.map((imp) => [imp.id, imp]));
 	}
 

@@ -2,27 +2,26 @@ import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 
 import { PathRecProvider } from "../path-rec-provider/index.ts";
-import { createConfig } from "../testing/config-maker.ts";
+import { createSettings } from "../testing/settings-maker.ts";
 import { createImportRec } from "../testing/import-rec-maker.ts";
 
 import { ImportResolver } from "./import-resolver.ts";
 
 describe("import-resolver", () => {
-	const config = createConfig({
+	const settings = createSettings({
 		rootEntries: [{ path: "C:/foo", alias: "@foo/" }],
 		importRemaps: { "f": "C:/f" },
 	});
 
 	it("dynamic import without locator", () => {
 		const pathRecProvider = new PathRecProvider({ filePaths: ["C:/foo/bar/index.ts", "C:/foo/bar/foo.js"] });
-		const resolver = new ImportResolver({ config, pathRecProvider });
-		const rec = createImportRec({
+		const resolver = new ImportResolver({ settings, pathRecProvider });
+		const importRec = createImportRec({
 			isDynamic: true,
 			locator: null,
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar/foo.js"),
 		});
 
-		expect(resolver.resolve(rec)).toEqual(null);
+		expect(resolver.resolve({ path: "C:/foo/bar/foo.js", importRec })).toEqual(null);
 	});
 
 	it("relative local path", () => {
@@ -30,13 +29,12 @@ describe("import-resolver", () => {
 			filePaths: ["C:/foo/index.ts", "C:/foo/bar/baz.ts", "C:/foo/bar.ts"],
 		});
 
-		const resolver = new ImportResolver({ config, pathRecProvider });
-		const rec = createImportRec({
+		const resolver = new ImportResolver({ settings, pathRecProvider });
+		const importRec = createImportRec({
 			locator: "../bar",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar/baz.ts"),
 		});
 
-		expect(resolver.resolve(rec)).toEqual({
+		expect(resolver.resolve({ path: "C:/foo/bar/baz.ts", importRec })).toEqual({
 			isExternal: false,
 			isRelative: true,
 			path: "C:/foo/bar.ts",
@@ -48,13 +46,12 @@ describe("import-resolver", () => {
 			filePaths: ["C:/foo/index.ts", "C:/foo/bar.ts"],
 		});
 
-		const resolver = new ImportResolver({ config, pathRecProvider });
-		const rec = createImportRec({
+		const resolver = new ImportResolver({ settings, pathRecProvider });
+		const importRec = createImportRec({
 			locator: "@foo/bar",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
 		});
 
-		expect(resolver.resolve(rec)).toEqual({
+		expect(resolver.resolve({ path: "C:/foo/index.ts", importRec })).toEqual({
 			isExternal: false,
 			isRelative: false,
 			path: "C:/foo/bar.ts",
@@ -66,13 +63,12 @@ describe("import-resolver", () => {
 			filePaths: ["C:/foo/index.ts", "C:/foo/bar.ts", "C:/f/index.ts"],
 		});
 
-		const resolver = new ImportResolver({ config, pathRecProvider });
-		const rec = createImportRec({
+		const resolver = new ImportResolver({ settings, pathRecProvider });
+		const importRec = createImportRec({
 			locator: "f",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
 		});
 
-		expect(resolver.resolve(rec)).toEqual({
+		expect(resolver.resolve({ path: "C:/foo/index.ts", importRec })).toEqual({
 			isExternal: false,
 			isRelative: false,
 			path: "C:/f/index.ts",
@@ -84,13 +80,12 @@ describe("import-resolver", () => {
 			filePaths: ["C:/foo/index.ts", "C:/foo/bar.ts"],
 		});
 
-		const resolver = new ImportResolver({ config, pathRecProvider });
-		const rec = createImportRec({
+		const resolver = new ImportResolver({ settings, pathRecProvider });
+		const importRec = createImportRec({
 			locator: "@foo/baz",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
 		});
 
-		expect(resolver.resolve(rec)).toEqual({
+		expect(resolver.resolve({ path: "C:/foo/index.ts", importRec })).toEqual({
 			isExternal: false,
 			isRelative: false,
 			path: null,
@@ -99,13 +94,12 @@ describe("import-resolver", () => {
 
 	it("external import", () => {
 		const pathRecProvider = new PathRecProvider({ filePaths: ["C:/foo/index.ts", "C:/foo/bar.tsx"] });
-		const resolver = new ImportResolver({ config, pathRecProvider });
-		const rec = createImportRec({
+		const resolver = new ImportResolver({ settings, pathRecProvider });
+		const importRec = createImportRec({
 			locator: "react",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar.tsx"),
 		});
 
-		expect(resolver.resolve(rec)).toEqual({
+		expect(resolver.resolve({ path: "C:/foo/bar.tsx", importRec })).toEqual({
 			isExternal: true,
 			isRelative: false,
 			path: null,
@@ -118,13 +112,12 @@ describe("import-resolver", () => {
 				filePaths: ["C:/foo/bar.tsx", "C:/foo/index.ts"],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
-			const rec = createImportRec({
+			const resolver = new ImportResolver({ settings, pathRecProvider });
+			const importRec = createImportRec({
 				locator: ".",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar.tsx"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/bar.tsx", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/index.ts",
@@ -136,13 +129,12 @@ describe("import-resolver", () => {
 				filePaths: ["C:/foo/bar/baz.js", "C:/foo/index.ts"],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
-			const rec = createImportRec({
+			const resolver = new ImportResolver({ settings, pathRecProvider });
+			const importRec = createImportRec({
 				locator: "..",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar/baz.js"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/bar/baz.js", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/index.ts",
@@ -166,14 +158,13 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
-			const rec = createImportRec({
+			const importRec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/qux/quux.ts", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/bar.ts",
@@ -194,14 +185,13 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
-			const rec = createImportRec({
+			const importRec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/qux/quux.ts", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/bar.tsx",
@@ -221,14 +211,13 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
-			const rec = createImportRec({
+			const importRec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/qux/quux.ts", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/bar.js",
@@ -247,14 +236,13 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
-			const rec = createImportRec({
+			const importRec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/qux/quux.ts", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/bar.d.ts",
@@ -272,14 +260,13 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
-			const rec = createImportRec({
+			const importRec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/qux/quux.ts", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/bar/index.ts",
@@ -296,14 +283,13 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
-			const rec = createImportRec({
+			const importRec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/qux/quux.ts", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/bar/index.tsx",
@@ -319,14 +305,13 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
-			const rec = createImportRec({
+			const importRec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/qux/quux.ts", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/bar/index.js",
@@ -341,14 +326,13 @@ describe("import-resolver", () => {
 				],
 			});
 
-			const resolver = new ImportResolver({ config, pathRecProvider });
+			const resolver = new ImportResolver({ settings, pathRecProvider });
 
-			const rec = createImportRec({
+			const importRec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
 			});
 
-			expect(resolver.resolve(rec)).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/qux/quux.ts", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
 				path: "C:/foo/bar/index.d.ts",

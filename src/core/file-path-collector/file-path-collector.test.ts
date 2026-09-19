@@ -1,18 +1,18 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 
-import { createConfig } from "../testing/config-maker.ts";
+import { createSettings } from "../testing/settings-maker.ts";
 
 import { collectFilePaths } from "./file-path-collector.ts";
 
 describe("file-path-collector", () => {
 	it("globs are correct and file duplicates are excluded", async () => {
-		const config = createConfig({ rootEntries: [{ path: "C:/foo/bar" }, { path: "C:/foo/baz" }] });
+		const settings = createSettings({ rootEntries: [{ path: "C:/foo/bar" }, { path: "C:/foo/baz" }] });
 
 		const globs: string[] = [];
 
 		const filePaths = await collectFilePaths({
-			config,
+			settings,
 			externals: {
 				async *expandGlob(glob) {
 					globs.push(glob);

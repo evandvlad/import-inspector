@@ -1,19 +1,11 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 
-import { PathRecProvider } from "../path-rec-provider/index.ts";
-
 import { parseFile } from "./file-parser.ts";
 
-function createParams(
-	{ content, path = "C:/foo/bar.ts" }: {
-		content: string;
-		path?: string;
-		readingFileRejection?: Error;
-	},
-) {
+function createParams({ content, path = "C:/foo/bar.ts" }: { content: string; path?: string }) {
 	return {
-		filePathRec: new PathRecProvider({ filePaths: [path, "C:/foo/baz.tsx"] }).getFilePathRec(path),
+		path,
 		content,
 	};
 }
@@ -30,7 +22,7 @@ describe("file-parser", () => {
 		const params = createParams({ content: "parse error" });
 
 		await expect(parseFile(params)).rejects.toThrow(
-			"An error occurred while parsing the file 'C:/foo/bar.ts'. Expected a semicolon or an implicit semicolon after a statement, but found none\n  x Expected a semicolon or an implicit semicolon after a statement, but found\n  | none\n   ,-[bar.ts:1:6]\n 1 | parse error\n   :      ^\n   `----\n  help: Try inserting a semicolon here\n",
+			"An error occurred while parsing the file 'C:/foo/bar.ts'. Expected a semicolon or an implicit semicolon after a statement, but found none\n  x Expected a semicolon or an implicit semicolon after a statement, but found\n  | none\n   ,-[C:/foo/bar.ts:1:6]\n 1 | parse error\n   :      ^\n   `----\n  help: Try inserting a semicolon here\n",
 		);
 	});
 
@@ -94,33 +86,21 @@ describe("file-parser", () => {
 		const importRecs = await parseFile(params);
 
 		expect(importRecs).toEqual([{
-			line: 1,
-			filePathRec: params.filePathRec,
 			isDynamic: false,
 			locator: "foo",
-			code: 'import foo from "foo";',
+			posSpan: { start: 0, end: 22 },
 		}, {
-			line: 2,
-			filePathRec: params.filePathRec,
 			isDynamic: false,
 			locator: "../../bar",
-			code: `import { 
-					type Foo,
-					Bar,
-					qux as quux
-				} from "../../bar";`,
+			posSpan: { start: 27, end: 102 },
 		}, {
-			line: 7,
-			filePathRec: params.filePathRec,
 			isDynamic: false,
 			locator: "@baz",
-			code: 'import * as baz from "@baz";',
+			posSpan: { start: 107, end: 135 },
 		}, {
-			line: 8,
-			filePathRec: params.filePathRec,
 			isDynamic: false,
 			locator: "qux",
-			code: 'import "qux";',
+			posSpan: { start: 140, end: 153 },
 		}]);
 	});
 
@@ -132,23 +112,17 @@ describe("file-parser", () => {
 		const importRecs = await parseFile(params);
 
 		expect(importRecs).toEqual([{
-			line: 1,
-			filePathRec: params.filePathRec,
 			isDynamic: true,
 			locator: "./foo",
-			code: 'import("./foo")',
+			posSpan: { start: 34, end: 49 },
 		}, {
-			line: 1,
-			filePathRec: params.filePathRec,
 			isDynamic: true,
 			locator: "foo",
-			code: "import(`foo`)",
+			posSpan: { start: 68, end: 81 },
 		}, {
-			line: 1,
-			filePathRec: params.filePathRec,
 			isDynamic: true,
 			locator: null,
-			code: "import(t)",
+			posSpan: { start: 89, end: 98 },
 		}]);
 	});
 
@@ -165,25 +139,19 @@ describe("file-parser", () => {
 
 		expect(importRecs).toEqual([
 			{
-				line: 2,
-				filePathRec: params.filePathRec,
 				isDynamic: false,
 				locator: "./foo",
-				code: 'export { default } from "./foo";',
+				posSpan: { start: 5, end: 37 },
 			},
 			{
-				line: 3,
-				filePathRec: params.filePathRec,
 				isDynamic: false,
 				locator: "../../../bar",
-				code: 'export * from "../../../bar";',
+				posSpan: { start: 42, end: 71 },
 			},
 			{
-				line: 4,
-				filePathRec: params.filePathRec,
 				isDynamic: false,
 				locator: "baz",
-				code: 'export { A as foo, B as bar } from "baz";',
+				posSpan: { start: 76, end: 117 },
 			},
 		]);
 	});

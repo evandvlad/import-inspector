@@ -1,11 +1,9 @@
 import type { ImportRec } from "../values.ts";
-import type { FilePathRec } from "../path-rec-provider/index.ts";
 
-export function createImportRec(part: Partial<ImportRec> & { filePathRec: FilePathRec }): ImportRec {
+export function createImportRec(part: Partial<ImportRec>): ImportRec {
 	return {
-		line: 0,
 		isDynamic: false,
-		code: "",
+		posSpan: { start: 0, end: 0 },
 		locator: null,
 		...part,
 	} as ImportRec;

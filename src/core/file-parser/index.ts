@@ -1,44 +1,51 @@
-import type { Config } from "../config.ts";
-import type { FilePathRec } from "../path-rec-provider/index.ts";
+import type { Settings } from "~/settings.ts";
+
 import type { ImportRec } from "../values.ts";
+import { FileContent } from "../file-content/index.ts";
 
 import { parseFile } from "./file-parser.ts";
 
 export class FileParser {
-	#config;
+	#settings;
 
-	constructor({ config }: { config: Config }) {
-		this.#config = config;
+	constructor({ settings }: { settings: Settings }) {
+		this.#settings = settings;
 	}
 
-	async parse({ filePathRec, content }: { filePathRec: FilePathRec; content: string }) {
-		const importRecs = await parseFile({ filePathRec, content });
+	async parse({ path, content }: { path: string; content: string }) {
+		const fileContent = new FileContent({ value: content });
+		const importRecs = await parseFile({ path, content: fileContent.value });
 
 		return {
-			filePathRec,
-			importRecs: await this.#processImportRecs(importRecs),
+			path,
+			fileContent,
+			importRecs: await this.#processImportRecs({ path, fileContent, importRecs }),
 		};
 	}
 
-	async #processImportRecs(importRecs: ImportRec[]) {
+	async #processImportRecs(
+		{ path, fileContent, importRecs }: { path: string; fileContent: FileContent; importRecs: ImportRec[] },
+	) {
 		const result: ImportRec[] = [];
 
 		for await (const importRec of importRecs) {
-			result.push(...await this.#processImportRec(importRec));
+			result.push(...await this.#processImportRec({ path, fileContent, importRec }));
 		}
 
 		return result;
 	}
 
-	async #processImportRec(importRec: ImportRec) {
+	async #processImportRec(
+		{ path, fileContent, importRec }: { path: string; fileContent: FileContent; importRec: ImportRec },
+	) {
 		if (importRec.isDynamic && !importRec.locator) {
-			const corrections = await this.#config.correctUnresolvedDynamicImports({
-				line: importRec.line,
-				code: importRec.code,
-				sourcePath: importRec.filePathRec.path,
+			const corrections = await this.#settings.correctUnresolvedDynamicImports({
+				sourcePath: path,
+				posSpan: importRec.posSpan,
+				fileContent,
 			});
 
-			if (corrections.length) {
+			if (corrections.length > 0) {
 				return corrections.map((locator) => ({ ...importRec, locator }));
 			}
 		}

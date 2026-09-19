@@ -3,41 +3,47 @@ import { ImportInspectionRule } from "~/api.ts";
 import type { InspectionHandler } from "../../values.ts";
 
 export const dontJumpThroughPackageEntry: InspectionHandler = ({ imports, modules, packages }) => {
-	Iterator.from(imports.getFullResolved()).filter((imp) => {
-		const sourceModule = modules.get(imp.sourcePath);
-		const importedModule = modules.get(imp.resolution!.path!);
+	const roots = packages.getRoots();
 
-		if (!importedModule.packagePath) {
-			return false;
-		}
+	Iterator.from(imports.getFullResolved())
+		.filter((imp) => {
+			const sourceModule = modules.get(imp.sourcePath);
+			const importedModule = modules.get(imp.resolution!.path!);
 
-		const importedPackage = packages.get(importedModule.packagePath!);
+			if (!importedModule.packagePath) {
+				return false;
+			}
 
-		const isImportedFromSameOrAncestorPackage = sourceModule.packagePath !== null &&
-			packages.isInSameOrAncestryBranch({
-				sourcePath: sourceModule.packagePath,
-				testablePath: importedPackage.path,
-			});
+			const importedPackage = packages.get(importedModule.packagePath!);
+			const isSourceModulePackaged = sourceModule.packagePath !== null;
 
-		if (isImportedFromSameOrAncestorPackage) {
-			return false;
-		}
+			const isImportedFromSameOrAncestorPackage = isSourceModulePackaged &&
+				(sourceModule.packagePath === importedPackage.path ||
+					packages.isInAncestryBranch({
+						sourcePath: sourceModule.packagePath!,
+						testablePath: importedPackage.path,
+					}));
 
-		if (!sourceModule.packagePath) {
-			return !(packages.roots.includes(importedPackage) && importedModule.isPackageEntryPoint);
-		}
+			if (isImportedFromSameOrAncestorPackage) {
+				return false;
+			}
 
-		const sourcePackage = packages.get(sourceModule.packagePath);
-		const ancestryBranchWithSelf = packages.getWithAncestryBranch(sourcePackage.path);
+			if (!isSourceModulePackaged) {
+				return !(roots.includes(importedPackage) && importedModule.isPackageEntryPoint);
+			}
 
-		const surroundingPackageSet = new Set(
-			ancestryBranchWithSelf.flatMap(({ path }) => packages.getSubs(path)).concat(packages.roots),
-		);
+			const sourcePackage = packages.get(sourceModule.packagePath!);
+			const ancestryBranchWithSelf = [sourcePackage].concat(packages.getAncestryBranch(sourcePackage.path));
 
-		const allowedPackageSet = surroundingPackageSet.difference(new Set(ancestryBranchWithSelf));
+			const surroundingPackageSet = new Set(
+				ancestryBranchWithSelf.flatMap(({ path }) => packages.getSubs(path)).concat(roots),
+			);
 
-		return !(allowedPackageSet.has(importedPackage) && importedModule.isPackageEntryPoint);
-	}).forEach((imp) => {
-		imp.addDefect({ rule: ImportInspectionRule.DontJumpThroughPackageEntry });
-	});
+			const allowedPackageSet = surroundingPackageSet.difference(new Set(ancestryBranchWithSelf));
+
+			return !(allowedPackageSet.has(importedPackage) && importedModule.isPackageEntryPoint);
+		})
+		.forEach((imp) => {
+			imp.addDefect({ rule: ImportInspectionRule.DontJumpThroughPackageEntry });
+		});
 };

@@ -8,7 +8,7 @@ import { buildPackages } from "../packages-builder.ts";
 import { setTags } from "../tagger/index.ts";
 import { Context } from "../context/index.ts";
 
-import { createConfig } from "./config-maker.ts";
+import { createSettings } from "./settings-maker.ts";
 
 function createRootEntries(aliases?: Record<string, string>) {
 	if (!aliases) {
@@ -22,23 +22,21 @@ export async function createContext({ localFs, aliases }: {
 	localFs: Record<string, string>;
 	aliases?: Record<string, string>;
 }) {
-	const config = createConfig({ rootEntries: createRootEntries(aliases) });
+	const settings = createSettings({ rootEntries: createRootEntries(aliases) });
 
 	const pathRecProvider = new PathRecProvider({ filePaths: Object.keys(localFs) });
-	const fileParser = new FileParser({ config });
+	const fileParser = new FileParser({ settings });
 
 	const parsingResult = await Array.fromAsync(
-		pathRecProvider.filePaths.map((path) =>
-			fileParser.parse({ filePathRec: pathRecProvider.getFilePathRec(path), content: localFs[path] })
-		),
+		pathRecProvider.filePaths.map((path) => fileParser.parse({ path, content: localFs[path] })),
 	);
 
 	const packageEntryPointDetector = new PackageEntryPointDetector({ pathRecProvider });
 	const packageFinder = new PackageFinder({ pathRecProvider, packageEntryPointDetector });
-	const frameRegistry = new FrameRegistry({ config, pathRecProvider });
+	const frameRegistry = new FrameRegistry({ settings, pathRecProvider });
 
 	const modules = buildModules({
-		config,
+		settings,
 		parsingResult,
 		packageFinder,
 		packageEntryPointDetector,

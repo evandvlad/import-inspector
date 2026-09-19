@@ -1,12 +1,11 @@
-import { Tag } from "~/api.ts";
+import { type Context, Tag } from "~/api.ts";
 
-import type { Context } from "../context/index.ts";
 import { isDeclarationFile, isEntryPointFile, isIndependentFile, isTestFile } from "../project-specifics.ts";
 
 export function setTags({ context }: { context: Context }) {
 	const { modules } = context;
 
-	modules.all.forEach((module) => {
+	modules.getAll().forEach((module) => {
 		const { path } = module;
 
 		if (isEntryPointFile(path)) {
