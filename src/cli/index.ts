@@ -1,7 +1,7 @@
 import { parseArgs } from "./args-parser.ts";
-import { runCommand } from "./commands/index.ts";
+import { execCommand } from "./commands/index.ts";
 
 export async function run(args: string[]) {
-	const commandName = parseArgs(args);
-	await runCommand(commandName);
+	const command = parseArgs(args);
+	await execCommand(command);
 }

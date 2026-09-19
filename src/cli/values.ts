@@ -1,4 +1,9 @@
-export type CommandName = "help" | "version" | "inspect" | "types" | "unknown";
+export type Command =
+	| { name: "help" }
+	| { name: "version" }
+	| { name: "inspect" }
+	| { name: "write-api-file" }
+	| { name: "unknown" };
 
 export type DefectDetails = ImportDefectDetails | ModuleDefectDetails;
 

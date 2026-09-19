@@ -1,7 +1,9 @@
 import { Err } from "~/lib/err.ts";
 import { unify } from "~/lib/upath.ts";
 import type { SettingsModule } from "~/api.ts";
-import { legacyConfigPath } from "~/env.ts";
+
+const homeDir = Deno.env.get(Deno.build.os === "windows" ? "USERPROFILE" : "HOME");
+const legacyConfigPath = `${homeDir}/.config/import-inspector/config.ts`;
 
 export class Config {
 	frames;

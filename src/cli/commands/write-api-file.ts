@@ -8,7 +8,7 @@ import { dedent } from "../format.ts";
 
 const fileName = "api.ts";
 
-export async function runTypesCommand() {
+export async function runWriteApiFileCommand() {
 	const doesSourceFileExist = await exists(typesFile, { isFile: true });
 
 	if (!doesSourceFileExist) {
@@ -20,7 +20,7 @@ export async function runTypesCommand() {
 	const doesTargetFileExist = await exists(targetFilePath, { isFile: true });
 
 	const confirmationMessage = dedent(`
-		The types file '${fileName}' will be created in the '${cwd}' directory.
+		The file '${fileName}' will be written into the '${cwd}' directory.
 		${doesTargetFileExist ? "This file already exists and will be overridden." : ""} Do you want to continue?
 	`);
 

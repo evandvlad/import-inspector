@@ -1,19 +1,16 @@
-import type { CommandName } from "./values.ts";
+import type { Command } from "./values.ts";
 
-export function parseArgs(args: string[]): CommandName {
-	if (!args.length) {
-		return "inspect";
-	}
-
+export function parseArgs(args: string[]): Command {
 	const [command] = args;
 
 	switch (command) {
 		case "help":
 		case "version":
-		case "types":
-			return command;
+		case "write-api-file":
+		case "inspect":
+			return { name: command };
 
 		default:
-			return "unknown";
+			return { name: "unknown" };
 	}
 }
