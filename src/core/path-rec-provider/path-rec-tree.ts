@@ -1,4 +1,4 @@
-import { basename, concat, split } from "../lib/path.ts";
+import { basename, concat, split } from "~/lib/upath.ts";
 
 import { DirPathRec } from "./dir-path-rec.ts";
 import { FilePathRec } from "./file-path-rec.ts";

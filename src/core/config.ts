@@ -1,8 +1,7 @@
 import { Err } from "~/lib/err.ts";
+import { unify } from "~/lib/upath.ts";
 import type { ConfigModule } from "~/api.ts";
 import { configPath } from "~/env.ts";
-
-import { posixify } from "./lib/path.ts";
 
 export class Config {
 	frames;
@@ -34,18 +33,18 @@ export class Config {
 			correctUnresolvedDynamicImports = () => Promise.resolve([]),
 		} = configModule.default;
 
-		this.rootEntries = rootEntries.map(({ path, ...rest }) => ({ path: posixify(path), ...rest }));
+		this.rootEntries = rootEntries.map(({ path, ...rest }) => ({ path: unify(path), ...rest }));
 
 		this.importRemaps = Object.fromEntries(
-			Object.entries(importRemaps).map(([name, path]) => [name, posixify(path)]),
+			Object.entries(importRemaps).map(([name, path]) => [name, unify(path)]),
 		);
 
 		this.frames = Object.fromEntries(
 			Object.entries(frames)
-				.map(([name, paths]) => [name, paths.map((path) => posixify(path))]),
+				.map(([name, paths]) => [name, paths.map((path) => unify(path))]),
 		);
 
-		this.logsDir = logsDir && posixify(logsDir);
+		this.logsDir = logsDir && unify(logsDir);
 
 		this.customLoggers = customLoggers;
 		this.preInspect = preInspect;

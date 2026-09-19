@@ -1,4 +1,5 @@
-import { dirname, join } from "../lib/path.ts";
+import { dirname, join } from "~/lib/upath.ts";
+
 import type { ImportRec, ImportResolution } from "../values.ts";
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
 import type { Config } from "../config.ts";

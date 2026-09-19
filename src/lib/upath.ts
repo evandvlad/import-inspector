@@ -2,7 +2,7 @@ import { assert } from "~/lib/err.ts";
 
 export { basename, common, dirname, extname, join, joinGlobs, parse, toFileUrl } from "@std/path/posix";
 
-export function posixify(path: string) {
+export function unify(path: string) {
 	return path.replaceAll("\\", "/").replaceAll("//", "/");
 }
 

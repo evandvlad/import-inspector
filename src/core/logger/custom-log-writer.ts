@@ -1,10 +1,10 @@
 import { ensureDir } from "@std/fs";
 
 import { Err, isErr } from "~/lib/err.ts";
+import { join } from "~/lib/upath.ts";
 import { assertNever } from "~/lib/ts.ts";
 import type { CustomLogger } from "~/api.ts";
 
-import { join } from "../lib/path.ts";
 import { formatJson, formatYaml } from "../lib/format.ts";
 import type { Context } from "../context/index.ts";
 

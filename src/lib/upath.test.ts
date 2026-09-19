@@ -1,16 +1,16 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 
-import { concat, isAbsolute, posixify, shorten, split, stripEnd, stripStart } from "./path.ts";
+import { concat, isAbsolute, shorten, split, stripEnd, stripStart, unify } from "./upath.ts";
 
-describe("lib/path", () => {
-	it("posixify", () => {
-		expect(posixify("C:\\foo\\bar")).toBe("C:/foo/bar");
-		expect(posixify("C:\\foo\\bar\\")).toBe("C:/foo/bar/");
-		expect(posixify("C://foo/bar/baz")).toBe("C:/foo/bar/baz");
-		expect(posixify("C:\\foo\\bar/baz/")).toBe("C:/foo/bar/baz/");
-		expect(posixify("C:/foo/bar")).toBe("C:/foo/bar");
-		expect(posixify("/foo/bar\\baz/")).toBe("/foo/bar/baz/");
+describe("lib/upath", () => {
+	it("unify", () => {
+		expect(unify("C:\\foo\\bar")).toBe("C:/foo/bar");
+		expect(unify("C:\\foo\\bar\\")).toBe("C:/foo/bar/");
+		expect(unify("C://foo/bar/baz")).toBe("C:/foo/bar/baz");
+		expect(unify("C:\\foo\\bar/baz/")).toBe("C:/foo/bar/baz/");
+		expect(unify("C:/foo/bar")).toBe("C:/foo/bar");
+		expect(unify("/foo/bar\\baz/")).toBe("/foo/bar/baz/");
 	});
 
 	it("isAbsolute", () => {

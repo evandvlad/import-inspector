@@ -1,5 +1,6 @@
+import { join } from "~/lib/upath.ts";
+
 import { formatYaml } from "../lib/format.ts";
-import { join } from "../lib/path.ts";
 import type { Context } from "../context/index.ts";
 
 import { writeToFile } from "./helpers.ts";

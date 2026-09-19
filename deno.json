@@ -1,6 +1,6 @@
 {
 	"name": "import-inspector",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"fmt": {
 		"indentWidth": 4,
 		"lineWidth": 120,
@@ -10,8 +10,8 @@
 		"test": "deno test -P --coverage",
 		"dev": "deno task test && deno check && deno lint && deno fmt --check",
 		"dev:watch": "deno check & deno lint --watch & deno fmt --watch --check",
-		"compile-cli": "deno compile -P --output ./bin/import-inspector-cli ./src/cli/index.ts",
-		"run-cli": "deno task compile-cli && ./bin/import-inspector-cli"
+		"compile-cli": "deno compile -P --output ./bin/import-inspector ./src/cli/index.ts",
+		"run-cli": "deno task compile-cli && ./bin/import-inspector"
 	},
 	"imports": {
 		"@std/cli": "jsr:@std/cli@^1.0.32",

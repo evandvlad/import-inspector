@@ -1,4 +1,4 @@
-import { dirname } from "../lib/path.ts";
+import { dirname } from "~/lib/upath.ts";
 
 import { PathRec } from "./path-rec.ts";
 

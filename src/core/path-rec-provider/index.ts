@@ -1,6 +1,5 @@
 import { assert } from "~/lib/err.ts";
-
-import { common, shorten, split, stripEnd } from "../lib/path.ts";
+import { common, shorten, split, stripEnd } from "~/lib/upath.ts";
 
 import type { DirPathRec } from "./dir-path-rec.ts";
 import type { FilePathRec } from "./file-path-rec.ts";

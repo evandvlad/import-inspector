@@ -1,4 +1,5 @@
-import { joinGlobs } from "../lib/path.ts";
+import { joinGlobs } from "~/lib/upath.ts";
+
 import type { Config } from "../config.ts";
 import { fileExtNames } from "../project-specifics.ts";
 

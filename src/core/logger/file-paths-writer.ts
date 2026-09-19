@@ -1,4 +1,4 @@
-import { join } from "../lib/path.ts";
+import { join } from "~/lib/upath.ts";
 
 import { writeToFile } from "./helpers.ts";
 import { LogFileName } from "./values.ts";

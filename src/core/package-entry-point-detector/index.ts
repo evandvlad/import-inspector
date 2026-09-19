@@ -1,4 +1,5 @@
-import { parse } from "../lib/path.ts";
+import { parse } from "~/lib/upath.ts";
+
 import type { FilePathRec, PathRecProvider } from "../path-rec-provider/index.ts";
 import { orderedPackageEntryPointNames } from "../project-specifics.ts";
 

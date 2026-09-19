@@ -1,7 +1,7 @@
 import { assert } from "~/lib/err.ts";
+import { shorten, stripEnd } from "~/lib/upath.ts";
 import type { ContextPathUtil } from "~/api.ts";
 
-import { shorten, stripEnd } from "../lib/path.ts";
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
 
 export class PathUtil implements ContextPathUtil {

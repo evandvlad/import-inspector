@@ -1,6 +1,6 @@
 import { assert } from "~/lib/err.ts";
+import { dirname, extname } from "~/lib/upath.ts";
 
-import { dirname, extname } from "../lib/path.ts";
 import { type FileExtName, fileExtNames, getFileExtInfo } from "../project-specifics.ts";
 
 import { PathRec } from "./path-rec.ts";

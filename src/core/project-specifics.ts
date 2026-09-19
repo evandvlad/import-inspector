@@ -1,4 +1,5 @@
-import { parse } from "./lib/path.ts";
+import { parse } from "~/lib/upath.ts";
+
 import type { FileExtInfo } from "./values.ts";
 
 export const fileExtNames = [".js", ".ts", ".tsx"] as const;
