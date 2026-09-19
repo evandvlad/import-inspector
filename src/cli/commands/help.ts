@@ -1,6 +1,6 @@
 import { bold, green } from "@std/fmt/colors";
 
-import { configPath } from "~/env.ts";
+import { legacyConfigPath as configPath } from "~/env.ts";
 
 import { dedent, link } from "../format.ts";
 

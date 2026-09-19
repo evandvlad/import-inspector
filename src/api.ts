@@ -32,8 +32,12 @@ export type CustomLogger = {
 	provide: (context: Context) => unknown | Promise<unknown>;
 };
 
-export type ConfigModule = {
-	default: Config;
+export type ConfigData = {
+	presets: Record<string, /* absolute path */ string>;
+};
+
+export type SettingsModule = {
+	default: Settings;
 };
 
 export type CorrectUnresolvedDynamicImports = (
@@ -44,7 +48,7 @@ export type CorrectUnresolvedDynamicImports = (
 export type PreInspect = (context: Context) => void | Promise<void>;
 export type PostInspect = (context: Context) => void | Promise<void>;
 
-export type Config = {
+export type Settings = {
 	rootEntries: RootEntry[];
 	importRemaps?: Record<string, string>;
 	frames?: Record<

@@ -1,7 +1,7 @@
 import { Err } from "~/lib/err.ts";
 import { unify } from "~/lib/upath.ts";
-import type { ConfigModule } from "~/api.ts";
-import { configPath } from "~/env.ts";
+import type { SettingsModule } from "~/api.ts";
+import { legacyConfigPath } from "~/env.ts";
 
 export class Config {
 	frames;
@@ -14,14 +14,14 @@ export class Config {
 	correctUnresolvedDynamicImports;
 
 	static async create() {
-		const configModule = await import(configPath).catch((e) => {
-			throw new Err(`Can't dynamically import config file from '${configPath}'.`, { cause: e });
+		const configModule = await import(legacyConfigPath).catch((e) => {
+			throw new Err(`Can't dynamically import config file from '${legacyConfigPath}'.`, { cause: e });
 		});
 
-		return new this(configModule as ConfigModule);
+		return new this(configModule as SettingsModule);
 	}
 
-	private constructor(configModule: ConfigModule) {
+	private constructor(configModule: SettingsModule) {
 		const {
 			rootEntries,
 			logsDir,
