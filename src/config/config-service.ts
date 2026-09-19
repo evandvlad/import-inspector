@@ -2,7 +2,7 @@ import { exists } from "@std/fs";
 import { isAbsolute } from "@std/path";
 
 import { assert, Err, isErr } from "~/lib/err.ts";
-import { formatJson } from "~/lib/format.ts";
+import { readJson, writeJson } from "~/lib/rw-json.ts";
 import type { ConfigData } from "~/api.ts";
 import { configFilePath } from "~/env.ts";
 
@@ -27,17 +27,13 @@ export class ConfigService {
 			return null;
 		}
 
-		const content = await Deno.readTextFile(configFilePath).catch((e) => {
-			throw new Err(`Can't read the config file from '${configFilePath}'.`, { cause: e });
-		});
-
 		try {
-			const data = JSON.parse(content);
+			const data = await readJson({ path: configFilePath });
 			assertConfigData(data);
 
 			return data;
 		} catch (e) {
-			const messages = [`Can't parse the config file. Check the file: ${configFilePath}.`];
+			const messages = [`Can't process the config file. Check the file: ${configFilePath}.`];
 
 			if (isErr(e)) {
 				messages.push(e.message);
@@ -48,10 +44,6 @@ export class ConfigService {
 	}
 
 	async save(data: ConfigData) {
-		try {
-			await Deno.writeTextFile(configFilePath, formatJson(data), { create: true });
-		} catch (e) {
-			throw new Err(`Can't save the config file '${configFilePath}'.`, { cause: e });
-		}
+		await writeJson({ path: configFilePath, data });
 	}
 }
