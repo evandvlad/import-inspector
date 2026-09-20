@@ -1,4 +1,6 @@
-import { rethrowErr } from "~/lib/err.ts";
+import { ensureFile } from "@std/fs";
+
+import { remapErr, rethrowErr } from "~/lib/err.ts";
 import { mainLogFilePath } from "~/values.ts";
 
 class Lock {
@@ -22,9 +24,12 @@ export class LogWriter {
 	#lock: Lock | null = null;
 
 	static async create() {
-		await Deno.create(mainLogFilePath).catch(
-			rethrowErr(`Can't create the file '${mainLogFilePath}'.`),
-		);
+		try {
+			await ensureFile(mainLogFilePath);
+			await Deno.create(mainLogFilePath);
+		} catch (e) {
+			remapErr(e, `Can't create the file '${mainLogFilePath}'.`);
+		}
 
 		return new this();
 	}

@@ -1,4 +1,4 @@
-import { exists } from "@std/fs";
+import { ensureFile, exists } from "@std/fs";
 import { isAbsolute } from "@std/path";
 
 import { assert, isErr, remapErr, rethrowErr } from "~/lib/err.ts";
@@ -51,7 +51,8 @@ export class ConfigService {
 		const content = JSON.stringify(data, null, "\t");
 
 		try {
-			await Deno.writeTextFile(configFilePath, content, { create: true });
+			await ensureFile(configFilePath);
+			await Deno.writeTextFile(configFilePath, content);
 		} catch (e) {
 			throw remapErr(e, `Can't write the file '${configFilePath}'.`);
 		}
