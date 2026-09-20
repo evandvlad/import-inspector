@@ -13,8 +13,8 @@ export class FileParser {
 	}
 
 	async parse({ path, content }: { path: string; content: string }) {
-		const fileContent = new FileContent({ content });
-		const importRecs = await parseFile({ path, content: fileContent.getAsString() });
+		const fileContent = new FileContent({ value: content });
+		const importRecs = await parseFile({ path, content: fileContent.value });
 
 		return {
 			path,

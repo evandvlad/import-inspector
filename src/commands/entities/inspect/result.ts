@@ -128,8 +128,8 @@ export class Result {
 				description,
 				path: sourcePath,
 				shortPath: env.getShortPath(sourcePath),
-				code: fileContent.getContentByPosSpan(posSpan),
-				line: fileContent.getEntriesByPosSpan(posSpan)[0]?.line ?? 0,
+				code: fileContent.getContent(posSpan),
+				line: fileContent.getFirstLine(posSpan),
 			});
 		});
 

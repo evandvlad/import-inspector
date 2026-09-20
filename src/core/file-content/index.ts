@@ -3,30 +3,31 @@ import { CRLF, LF } from "@std/fs";
 import type { FileContent as IFileContent, FileContentEntry, Span } from "~/api.ts";
 
 export class FileContent implements IFileContent {
-	#content;
+	value;
+
 	#entries;
 
-	constructor({ content }: { content: string }) {
-		this.#content = content.replaceAll(CRLF, LF);
+	constructor({ value }: { value: string }) {
+		this.value = value.replaceAll(CRLF, LF);
 		this.#entries = this.#splitToEntries();
 	}
 
-	getAsString() {
-		return this.#content;
-	}
-
 	getAsEntries() {
-		return this.#entries.slice();
+		return this.#entries;
 	}
 
-	getContentByPosSpan({ start, end }: Span) {
-		return this.#content.slice(start, end);
+	getContent({ start, end }: Span) {
+		return this.value.slice(start, end);
 	}
 
-	getEntriesByPosSpan({ start, end }: Span) {
+	getEntries({ start, end }: Span) {
 		return this.#entries.filter(({ posSpan }) =>
 			(posSpan.start <= start && posSpan.end >= start) || (posSpan.start <= end && posSpan.end >= end)
 		);
+	}
+
+	getFirstLine(span: Span) {
+		return this.getEntries(span)[0]?.line ?? 0;
 	}
 
 	#splitToEntries() {
@@ -34,12 +35,12 @@ export class FileContent implements IFileContent {
 
 		let start = 0;
 
-		this.#content.split(LF).forEach((content, index) => {
-			const end = start + content.length;
+		this.value.split(LF).forEach((value, index) => {
+			const end = start + value.length;
 
 			entries.push({
+				value,
 				line: index + 1,
-				content,
 				posSpan: { start, end },
 			});
 

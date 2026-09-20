@@ -76,14 +76,15 @@ export type ImportResolution = {
 export type FileContentEntry = {
 	line: number;
 	posSpan: Span;
-	content: string;
+	value: string;
 };
 
 export type FileContent = {
-	getAsString: () => string;
+	value: string;
 	getAsEntries: () => FileContentEntry[];
-	getContentByPosSpan: (span: Span) => string;
-	getEntriesByPosSpan: (span: Span) => FileContentEntry[];
+	getContent: (span: Span) => string;
+	getEntries: (span: Span) => FileContentEntry[];
+	getFirstLine: (span: Span) => number;
 };
 
 export type Import = {
