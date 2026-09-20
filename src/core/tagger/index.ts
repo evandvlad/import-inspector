@@ -1,6 +1,5 @@
-import { Tag } from "~/api.ts";
+import { type Context, Tag } from "~/api.ts";
 
-import type { Context } from "../context/index.ts";
 import { isDeclarationFile, isEntryPointFile, isIndependentFile, isTestFile } from "../project-specifics.ts";
 
 export function setTags({ context }: { context: Context }) {

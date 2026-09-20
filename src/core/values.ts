@@ -1,7 +1,6 @@
-import type { Lang } from "~/api.ts";
+import type { Context, Lang } from "~/api.ts";
 
 import type { FilePathRec } from "./path-rec-provider/index.ts";
-import type { Context } from "./context/index.ts";
 
 export type FileExtInfo = {
 	lang: Lang;

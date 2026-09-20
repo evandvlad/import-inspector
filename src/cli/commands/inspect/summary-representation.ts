@@ -1,7 +1,7 @@
 import { bold } from "@std/fmt/colors";
 import { format } from "@std/fmt/duration";
 
-import type { Settings } from "~/settings.ts";
+import { mainLogFilePath } from "~/env.ts";
 
 import { dedent, link } from "../../format.ts";
 
@@ -35,10 +35,9 @@ function createLink(path: string) {
 }
 
 export function createSummaryRepresentation(
-	{ settings, result, timestamp }: { settings: Settings; result: Result; timestamp: number },
+	{ result, timestamp }: { result: Result; timestamp: number },
 ) {
 	const duration = format(Date.now() - timestamp, { ignoreZero: true });
-	const logsDir = settings.logsDir ?? null;
 
 	const content = dedent(`
 		${"=".repeat(20)}
@@ -50,7 +49,7 @@ export function createSummaryRepresentation(
 		${line("Modules", getModulesText(result))}
 		${line("Imports", getImportsText(result))}
 		${line("Defects", getDefectsText(result))}
-		${line("Logs", `${logsDir ? createLink(logsDir) : " - "}`)}
+		${line("Main log", `${createLink(mainLogFilePath)}`)}
 	`);
 
 	return `${content}\n`;

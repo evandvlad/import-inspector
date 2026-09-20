@@ -3,10 +3,9 @@ import { ensureDir } from "@std/fs";
 import { isErr, remapErr, rethrowErr } from "~/lib/err.ts";
 import { join } from "~/lib/upath.ts";
 import { assertNever } from "~/lib/ts.ts";
-import type { CustomLogger } from "~/api.ts";
+import type { Context, CustomLogger } from "~/api.ts";
 
 import { formatJson, formatYaml } from "../lib/format.ts";
-import type { Context } from "../context/index.ts";
 
 import { writeToFile } from "./helpers.ts";
 import { customLoggersDirName } from "./values.ts";

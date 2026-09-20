@@ -115,7 +115,7 @@ export type Module = {
 	readonly links: ReadonlyArray</* path */ string>;
 	readonly importMap: ReadonlyMap</* id */ string, Import>;
 	readonly defectMap: ReadonlyMap</* rule */ string, ModuleDefect>;
-	addDefect: (params: { rule: string; description: string }) => void;
+	addDefect: (params: { rule: string; description?: string }) => void;
 	removeDefect: (rule: string) => void;
 	setTag: (tag: string) => void;
 	removeTag: (tag: string) => void;
@@ -194,6 +194,7 @@ export type ContextModuleDefects = {
 };
 
 export type Context = {
+	readonly pathUtil: ContextPathUtil;
 	readonly modules: ContextModules;
 	readonly packages: ContextPackages;
 	readonly imports: ContextImports;

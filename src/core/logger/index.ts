@@ -1,13 +1,13 @@
 import { emptyDir } from "@std/fs";
 
 import { rethrowErr } from "~/lib/err.ts";
+import type { Sub } from "~/lib/pub-sub.ts";
 import type { Settings } from "~/settings.ts";
-
-import type { Sub } from "../pub-sub/index.ts";
+import type { CoreEventMap } from "~/values.ts";
 
 import { Logger } from "./logger.ts";
 
-export async function createLogger({ sub, settings }: { sub: Sub; settings: Settings }) {
+export async function createLogger({ sub, settings }: { sub: Sub<CoreEventMap>; settings: Settings }) {
 	const { logsDir } = settings;
 
 	if (!logsDir) {

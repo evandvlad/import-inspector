@@ -1,13 +1,14 @@
 import { rethrowErr } from "~/lib/err.ts";
+import type { Pub } from "~/lib/pub-sub.ts";
 import type { Settings } from "~/settings.ts";
+import type { CoreEventMap } from "~/values.ts";
 
-import type { Pub } from "./pub-sub/index.ts";
 import type { FileParsingResult } from "./values.ts";
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import { FileParser } from "./file-parser/index.ts";
 
 export async function parseFiles({ settings, pathRecProvider, pub }: {
-	pub: Pub;
+	pub: Pub<CoreEventMap>;
 	settings: Settings;
 	pathRecProvider: PathRecProvider;
 }) {
@@ -18,7 +19,7 @@ export async function parseFiles({ settings, pathRecProvider, pub }: {
 		const content = await Deno.readTextFile(path).catch(rethrowErr(`Can't read file at path '${path}'.`));
 
 		result.push(await fileParser.parse({ filePathRec: pathRecProvider.getFilePathRec(path), content }));
-		pub.send("files-parser:file-parsed", path);
+		pub.send("core:files-parser:file-parsed", path);
 	}
 
 	return result;

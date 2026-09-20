@@ -1,7 +1,7 @@
 import { join } from "~/lib/upath.ts";
+import type { Context } from "~/api.ts";
 
 import { formatYaml } from "../lib/format.ts";
-import type { Context } from "../context/index.ts";
 
 import { writeToFile } from "./helpers.ts";
 import { LogFileName } from "./values.ts";

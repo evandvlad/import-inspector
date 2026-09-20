@@ -1,5 +1,4 @@
-import { type ImportDefect, type Lang, langs, type ModuleDefect } from "~/api.ts";
-import type { Context } from "~/core/index.ts";
+import { type Context, type ImportDefect, type Lang, langs, type ModuleDefect } from "~/api.ts";
 
 import type { DefectDetails } from "./values.ts";
 
@@ -97,7 +96,10 @@ export class Result {
 	}
 
 	#getDefectDetailsMap(
-		{ importDefects, moduleDefects }: { importDefects: ImportDefect[]; moduleDefects: ModuleDefect[] },
+		{ importDefects, moduleDefects }: {
+			importDefects: readonly ImportDefect[];
+			moduleDefects: readonly ModuleDefect[];
+		},
 	) {
 		const { pathUtil } = this.#context;
 		const map: Map<string, DefectDetails[]> = new Map();

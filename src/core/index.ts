@@ -1,6 +1,7 @@
+import { PubSub } from "~/lib/pub-sub.ts";
 import type { Settings } from "~/settings.ts";
+import type { CoreEventMap } from "~/values.ts";
 
-import { PubSub } from "./pub-sub/index.ts";
 import { createLogger } from "./logger/index.ts";
 import { collectFilePaths } from "./file-path-collector/index.ts";
 import { PathRecProvider } from "./path-rec-provider/index.ts";
@@ -15,58 +16,68 @@ import { setTags } from "./tagger/index.ts";
 import { inspectionHandlers } from "./inspection-handlers/index.ts";
 import { inspect } from "./inspector.ts";
 
-export type { Context };
+export class CoreRunner {
+	sub;
 
-export async function run({ settings }: { settings: Settings }) {
-	const { pub, sub } = new PubSub();
+	#settings;
+	#pub;
 
-	const logger = await createLogger({ sub, settings });
+	constructor({ settings }: { settings: Settings }) {
+		this.#settings = settings;
 
-	pub.send("main:config-created");
+		const { pub, sub } = new PubSub<CoreEventMap>();
 
-	pub.send("main:file-path-collecting-started");
-	const filePaths = await collectFilePaths({ settings });
-	pub.send("main:file-path-collecting-finished", filePaths);
+		this.#pub = pub;
+		this.sub = sub;
+	}
 
-	const pathRecProvider = new PathRecProvider({ filePaths });
+	async run() {
+		const logger = await createLogger({ sub: this.sub, settings: this.#settings });
 
-	pub.send("main:files-parsing-started");
-	const parsingResult = await parseFiles({ settings, pub, pathRecProvider });
-	pub.send("main:files-parsing-finished");
+		this.#pub.send("core:file-path-collecting-started");
+		const filePaths = await collectFilePaths({ settings: this.#settings });
+		this.#pub.send("core:file-path-collecting-finished", filePaths);
 
-	pub.send("main:modules-building-started");
-	const packageEntryPointDetector = new PackageEntryPointDetector({ pathRecProvider });
-	const packageFinder = new PackageFinder({ pathRecProvider, packageEntryPointDetector });
-	const frameRegistry = new FrameRegistry({ settings, pathRecProvider });
+		const pathRecProvider = new PathRecProvider({ filePaths });
 
-	const modules = buildModules({
-		settings,
-		parsingResult,
-		packageFinder,
-		packageEntryPointDetector,
-		pathRecProvider,
-		frameRegistry,
-	});
+		this.#pub.send("core:files-parsing-started");
+		const parsingResult = await parseFiles({ pathRecProvider, settings: this.#settings, pub: this.#pub });
+		this.#pub.send("core:files-parsing-finished");
 
-	pub.send("main:modules-building-finished", modules);
+		this.#pub.send("core:modules-building-started");
+		const packageEntryPointDetector = new PackageEntryPointDetector({ pathRecProvider });
+		const packageFinder = new PackageFinder({ pathRecProvider, packageEntryPointDetector });
+		const frameRegistry = new FrameRegistry({ pathRecProvider, settings: this.#settings });
 
-	pub.send("main:packages-building-started");
-	const packages = buildPackages({ pathRecProvider, packageFinder, modules });
-	pub.send("main:packages-building-finished", packages);
+		const modules = buildModules({
+			parsingResult,
+			packageFinder,
+			packageEntryPointDetector,
+			pathRecProvider,
+			frameRegistry,
+			settings: this.#settings,
+		});
 
-	const context = new Context({ modules, packages, pathRecProvider, frameRegistry });
+		this.#pub.send("core:modules-building-finished", modules);
 
-	pub.send("main:tagging-started");
-	setTags({ context });
-	pub.send("main:tagging-finished");
+		this.#pub.send("core:packages-building-started");
+		const packages = buildPackages({ pathRecProvider, packageFinder, modules });
+		this.#pub.send("core:packages-building-finished", packages);
 
-	pub.send("main:inspection-started");
-	await inspect({ context, settings, inspectionHandlers });
-	pub.send("main:inspection-finished", context);
+		const context = new Context({ modules, packages, pathRecProvider, frameRegistry });
 
-	pub.send("main:finished");
+		this.#pub.send("core:tagging-started");
+		setTags({ context });
+		this.#pub.send("core:tagging-finished");
 
-	await logger.uponDone();
+		this.#pub.send("core:inspection-started");
+		await inspect({ context, inspectionHandlers, settings: this.#settings });
+		this.#pub.send("core:inspection-finished", context);
 
-	return context;
+		this.#pub.send("core:finished");
+
+		await logger.uponDone();
+
+		return context;
+	}
 }

@@ -1,6 +1,6 @@
+import type { Context } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
-import type { Context } from "./context/index.ts";
 import type { InspectionHandler } from "./values.ts";
 
 export async function inspect(
