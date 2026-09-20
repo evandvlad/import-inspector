@@ -1,5 +1,3 @@
-export const customLoggersDirName = "custom";
-
 export enum LogFileName {
 	FilePaths = "file-paths.txt",
 	DynamicImports = "dynamic-imports.yaml",

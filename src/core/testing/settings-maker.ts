@@ -3,7 +3,7 @@ import type { Settings } from "~/settings.ts";
 export const minSettings: Settings = {
 	rootEntries: [{ path: "C:/foo" }],
 	correctUnresolvedDynamicImports: () => Promise.resolve([]),
-	customLoggers: [],
+	reports: [],
 	frames: {},
 	importRemaps: {},
 	preInspect() {},

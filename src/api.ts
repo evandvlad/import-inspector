@@ -26,9 +26,10 @@ export type RootEntry = {
 	alias?: string;
 };
 
-export type CustomLogger = {
+export type Report = {
 	format: "log" | "json" | "yaml" | "md";
-	name: string;
+	// absolute path
+	path: string;
 	provide: (context: Context) => unknown | Promise<unknown>;
 };
 
@@ -58,9 +59,9 @@ export type Settings = {
 	correctUnresolvedDynamicImports?: CorrectUnresolvedDynamicImports;
 	preInspect?: PreInspect;
 	postInspect?: PostInspect;
-	customLoggers?: CustomLogger[];
 	// absolute path
 	logsDir?: string;
+	reports?: Report[];
 };
 
 export type ImportResolution = {

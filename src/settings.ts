@@ -9,7 +9,7 @@ export class Settings {
 	postInspect;
 	rootEntries;
 	importRemaps;
-	customLoggers;
+	reports;
 	correctUnresolvedDynamicImports;
 
 	static async create({ path }: { path: string }) {
@@ -24,7 +24,7 @@ export class Settings {
 		const {
 			rootEntries,
 			logsDir,
-			customLoggers = [],
+			reports = [],
 			frames = {},
 			importRemaps = {},
 			preInspect = () => {},
@@ -45,7 +45,7 @@ export class Settings {
 
 		this.logsDir = logsDir && unify(logsDir);
 
-		this.customLoggers = customLoggers;
+		this.reports = reports;
 		this.preInspect = preInspect;
 		this.postInspect = postInspect;
 		this.correctUnresolvedDynamicImports = correctUnresolvedDynamicImports;

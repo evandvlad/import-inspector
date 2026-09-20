@@ -9,7 +9,6 @@ import { writeDynamicImports } from "./dynamic-imports-writer.ts";
 import { writeTags } from "./tags-writer.ts";
 import { writeFrames } from "./frames-writer.ts";
 import { writeDefects } from "./defects-writer.ts";
-import { CustomLogWriter } from "./custom-log-writer.ts";
 
 export class Logger {
 	#asyncTaskTube;
@@ -18,11 +17,6 @@ export class Logger {
 		this.#asyncTaskTube = new AsyncTaskTube();
 
 		const logsDir = settings.logsDir!;
-
-		const customLogWriter = new CustomLogWriter({
-			logsDir,
-			customLoggers: settings.customLoggers,
-		});
 
 		sub.on("core:file-path-collecting-finished", (filePaths) => {
 			this.#asyncTaskTube.pass(
@@ -45,10 +39,6 @@ export class Logger {
 
 			this.#asyncTaskTube.pass(
 				writeDefects({ logsDir, context }),
-			);
-
-			this.#asyncTaskTube.pass(
-				customLogWriter.write(context),
 			);
 		});
 

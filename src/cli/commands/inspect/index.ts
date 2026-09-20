@@ -3,6 +3,7 @@ import { CoreRunner } from "~/core/index.ts";
 import { Config } from "~/config/index.ts";
 import { Settings } from "~/settings.ts";
 import { MainLogger } from "~/main-logger/index.ts";
+import { Reporter } from "~/reporter.ts";
 
 import { Presenter } from "./presenter.ts";
 
@@ -21,11 +22,15 @@ export async function runInspectCommand({ preset }: { preset: string }) {
 	mainLogger.log("settings-created", settingsPath);
 
 	const coreRunner = new CoreRunner({ settings });
+	const reporter = new Reporter({ reports: settings.reports });
 
 	mainLogger.attachCoreSub(coreRunner.sub);
 
 	const context = await coreRunner.run();
+
+	await reporter.write({ context });
 	const hasDefects = presenter.summarize({ context });
+
 	await mainLogger.log("finished");
 
 	Deno.exit(hasDefects ? 1 : 0);
