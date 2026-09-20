@@ -2,13 +2,13 @@ import { copy, exists } from "@std/fs";
 import { join } from "@std/path";
 
 import { Err } from "~/lib/err.ts";
-import { typesFile } from "~/env.ts";
+import { typesFile } from "~/values.ts";
 
 import { dedent } from "../format.ts";
 
 const fileName = "api.ts";
 
-export async function runWriteApiFileCommand() {
+export async function writeApiFileCommand() {
 	const doesSourceFileExist = await exists(typesFile, { isFile: true });
 
 	if (!doesSourceFileExist) {

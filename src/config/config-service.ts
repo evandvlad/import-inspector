@@ -3,7 +3,7 @@ import { isAbsolute } from "@std/path";
 
 import { assert, isErr, remapErr, rethrowErr } from "~/lib/err.ts";
 import type { ConfigData } from "~/api.ts";
-import { configFilePath } from "~/env.ts";
+import { configFilePath } from "~/values.ts";
 
 function assertConfigData(data: unknown): asserts data is ConfigData {
 	assert(

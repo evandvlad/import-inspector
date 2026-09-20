@@ -2,7 +2,7 @@ import { bold, green, red } from "@std/fmt/colors";
 
 import { dedent } from "../format.ts";
 
-export function runUnknownCommand() {
+export function unknownCommand() {
 	const message = dedent(`
 		${red(bold("Incorrect usage"))}
 

@@ -1,5 +1,5 @@
 import { rethrowErr } from "~/lib/err.ts";
-import { mainLogFilePath } from "~/env.ts";
+import { mainLogFilePath } from "~/values.ts";
 
 class Lock {
 	#resolvers: Array<() => void> = [];

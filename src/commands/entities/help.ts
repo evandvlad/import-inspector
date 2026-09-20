@@ -1,10 +1,10 @@
 import { bold, green } from "@std/fmt/colors";
 
-import { configDir, configFilePath } from "~/env.ts";
+import { configDir, configFilePath } from "~/values.ts";
 
 import { dedent, link } from "../format.ts";
 
-export function runHelpCommand() {
+export function helpCommand() {
 	const message = dedent(`
 		${green(bold("Help"))}
 

@@ -7,7 +7,7 @@ import { Reporter } from "~/reporter.ts";
 
 import { Presenter } from "./presenter.ts";
 
-export async function runInspectCommand({ preset }: { preset: string }) {
+export async function inspectCommand({ preset }: { preset: string }) {
 	const presenter = new Presenter();
 	const mainLogger = await MainLogger.create();
 

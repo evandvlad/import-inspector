@@ -1,7 +1,7 @@
 import { bold } from "@std/fmt/colors";
 import { format } from "@std/fmt/duration";
 
-import { mainLogFilePath } from "~/env.ts";
+import { mainLogFilePath } from "~/values.ts";
 
 import { dedent, link } from "../../format.ts";
 
