@@ -4,7 +4,7 @@ import type { CoreEventMap } from "~/values.ts";
 
 import { collectFilePaths } from "./file-path-collector/index.ts";
 import { PathRecProvider } from "./path-rec-provider/index.ts";
-import { parseFiles } from "./files-parser.ts";
+import { FilesParser } from "./files-parser.ts";
 import { FrameRegistry } from "./frame-registry.ts";
 import { buildModules } from "./modules-builder/index.ts";
 import { buildPackages } from "./packages-builder.ts";
@@ -36,9 +36,14 @@ export class CoreRunner {
 		this.#pub.send("core:file-path-collecting-finished", filePaths);
 
 		const pathRecProvider = new PathRecProvider({ filePaths });
+		const filesParser = new FilesParser({ settings: this.#settings });
+
+		filesParser.sub.on("file-parsed", (path) => {
+			this.#pub.send("core:file-parsed", path);
+		});
 
 		this.#pub.send("core:files-parsing-started");
-		const parsingResult = await parseFiles({ pathRecProvider, settings: this.#settings, pub: this.#pub });
+		const parsingResult = await filesParser.parse(pathRecProvider.filePaths);
 		this.#pub.send("core:files-parsing-finished");
 
 		this.#pub.send("core:modules-building-started");

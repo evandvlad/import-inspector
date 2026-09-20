@@ -18,7 +18,7 @@ export type CoreEventMap = {
 	"core:file-path-collecting-started": [];
 	"core:file-path-collecting-finished": [filePaths: string[]];
 	"core:files-parsing-started": [];
-	"core:files-parser:file-parsed": [filePath: string];
+	"core:file-parsed": [filePath: string];
 	"core:files-parsing-finished": [];
 	"core:modules-building-started": [];
 	"core:modules-building-finished": [modules: Module[]];

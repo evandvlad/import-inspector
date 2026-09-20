@@ -28,9 +28,7 @@ export async function createContext({ localFs, aliases }: {
 	const fileParser = new FileParser({ settings });
 
 	const parsingResult = await Array.fromAsync(
-		pathRecProvider.filePaths.map((path) =>
-			fileParser.parse({ filePathRec: pathRecProvider.getFilePathRec(path), content: localFs[path] })
-		),
+		pathRecProvider.filePaths.map((path) => fileParser.parse({ path, content: localFs[path] })),
 	);
 
 	const packageEntryPointDetector = new PackageEntryPointDetector({ pathRecProvider });

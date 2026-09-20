@@ -19,7 +19,7 @@ describe("import-resolver", () => {
 		const rec = createImportRec({
 			isDynamic: true,
 			locator: null,
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar/foo.js"),
+			sourcePath: "C:/foo/bar/foo.js",
 		});
 
 		expect(resolver.resolve(rec)).toEqual(null);
@@ -33,7 +33,7 @@ describe("import-resolver", () => {
 		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "../bar",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar/baz.ts"),
+			sourcePath: "C:/foo/bar/baz.ts",
 		});
 
 		expect(resolver.resolve(rec)).toEqual({
@@ -51,7 +51,7 @@ describe("import-resolver", () => {
 		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "@foo/bar",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
+			sourcePath: "C:/foo/index.ts",
 		});
 
 		expect(resolver.resolve(rec)).toEqual({
@@ -69,7 +69,7 @@ describe("import-resolver", () => {
 		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "f",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
+			sourcePath: "C:/foo/index.ts",
 		});
 
 		expect(resolver.resolve(rec)).toEqual({
@@ -87,7 +87,7 @@ describe("import-resolver", () => {
 		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "@foo/baz",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/index.ts"),
+			sourcePath: "C:/foo/index.ts",
 		});
 
 		expect(resolver.resolve(rec)).toEqual({
@@ -102,7 +102,7 @@ describe("import-resolver", () => {
 		const resolver = new ImportResolver({ settings, pathRecProvider });
 		const rec = createImportRec({
 			locator: "react",
-			filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar.tsx"),
+			sourcePath: "C:/foo/bar.tsx",
 		});
 
 		expect(resolver.resolve(rec)).toEqual({
@@ -121,7 +121,7 @@ describe("import-resolver", () => {
 			const resolver = new ImportResolver({ settings, pathRecProvider });
 			const rec = createImportRec({
 				locator: ".",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar.tsx"),
+				sourcePath: "C:/foo/bar.tsx",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -139,7 +139,7 @@ describe("import-resolver", () => {
 			const resolver = new ImportResolver({ settings, pathRecProvider });
 			const rec = createImportRec({
 				locator: "..",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/bar/baz.js"),
+				sourcePath: "C:/foo/bar/baz.js",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -170,7 +170,7 @@ describe("import-resolver", () => {
 
 			const rec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
+				sourcePath: "C:/foo/qux/quux.ts",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -198,7 +198,7 @@ describe("import-resolver", () => {
 
 			const rec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
+				sourcePath: "C:/foo/qux/quux.ts",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -225,7 +225,7 @@ describe("import-resolver", () => {
 
 			const rec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
+				sourcePath: "C:/foo/qux/quux.ts",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -251,7 +251,7 @@ describe("import-resolver", () => {
 
 			const rec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
+				sourcePath: "C:/foo/qux/quux.ts",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -276,7 +276,7 @@ describe("import-resolver", () => {
 
 			const rec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
+				sourcePath: "C:/foo/qux/quux.ts",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -300,7 +300,7 @@ describe("import-resolver", () => {
 
 			const rec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
+				sourcePath: "C:/foo/qux/quux.ts",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -323,7 +323,7 @@ describe("import-resolver", () => {
 
 			const rec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
+				sourcePath: "C:/foo/qux/quux.ts",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({
@@ -345,7 +345,7 @@ describe("import-resolver", () => {
 
 			const rec = createImportRec({
 				locator: "../bar",
-				filePathRec: pathRecProvider.getFilePathRec("C:/foo/qux/quux.ts"),
+				sourcePath: "C:/foo/qux/quux.ts",
 			});
 
 			expect(resolver.resolve(rec)).toEqual({

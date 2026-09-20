@@ -15,7 +15,7 @@ export class Import implements IImport {
 	constructor({ importRec, resolution }: { importRec: ImportRec; resolution: ImportResolution | null }) {
 		this.id = crypto.randomUUID() as string;
 		this.line = importRec.line;
-		this.sourcePath = importRec.filePathRec.path;
+		this.sourcePath = importRec.sourcePath;
 		this.locator = importRec.locator;
 		this.code = importRec.code;
 		this.isDynamic = importRec.isDynamic;

@@ -46,7 +46,7 @@ export class MainLogger {
 			});
 		});
 
-		sub.on("core:files-parser:file-parsed", (filePath) => {
+		sub.on("core:file-parsed", (filePath) => {
 			this.#writer.write({
 				name: "core:files-parser:file-parsed",
 				value: `File: ${filePath}`,

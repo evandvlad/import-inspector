@@ -1,6 +1,14 @@
+import type { ParserOptions } from "oxc-parser";
+
+import type { Lang } from "~/api.ts";
 import { parse } from "~/lib/upath.ts";
 
-import type { FileExtInfo } from "./values.ts";
+type FileExtInfo = {
+	lang: Lang;
+	canUseReactSyntax: boolean;
+	canBeDeclaration: boolean;
+	importResolutionOrder: number;
+};
 
 export const fileExtNames = [".js", ".ts", ".tsx"] as const;
 
@@ -29,6 +37,16 @@ const fileExtInfoMap: Record<FileExtName, FileExtInfo> = {
 
 export const orderedPackageEntryPointNames = ["index", "index.d", "index.entry"];
 
+function getFileExtInfo(fileExtName: FileExtName) {
+	return fileExtInfoMap[fileExtName];
+}
+
+export function getFileLang(path: string) {
+	const { ext } = parse(path);
+	const { lang } = getFileExtInfo(ext as FileExtName);
+	return lang;
+}
+
 export function getImportPathSuffixCandidates() {
 	const extNames = Object.entries(fileExtInfoMap)
 		.toSorted(([_1, info1], [_2, info2]) => info1.importResolutionOrder - info2.importResolutionOrder)
@@ -46,8 +64,15 @@ export function getImportPathSuffixCandidates() {
 	].flat();
 }
 
-export function getFileExtInfo(fileExtName: FileExtName) {
-	return fileExtInfoMap[fileExtName];
+export function getParserOptions(path: string): ParserOptions {
+	const { ext } = parse(path);
+	const { lang, canUseReactSyntax } = getFileExtInfo(ext as FileExtName);
+
+	if (lang === "js" && canUseReactSyntax) {
+		return { lang: "jsx" };
+	}
+
+	return {};
 }
 
 export function isEntryPointFile(path: string) {

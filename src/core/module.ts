@@ -2,6 +2,7 @@ import type { Module as IModule, ModuleDefect } from "~/api.ts";
 
 import type { FilePathRec } from "./path-rec-provider/index.ts";
 import type { Import } from "./import.ts";
+import { getFileLang } from "./project-specifics.ts";
 
 export class Module implements IModule {
 	name;
@@ -29,7 +30,7 @@ export class Module implements IModule {
 		this.links = links;
 		this.path = filePathRec.path;
 		this.name = filePathRec.baseName;
-		this.lang = filePathRec.extInfo.lang;
+		this.lang = getFileLang(filePathRec.path);
 		this.packagePath = packagePath;
 		this.parentDirPath = filePathRec.parentPath;
 		this.isPackageEntryPoint = isPackageEntryPoint;

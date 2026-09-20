@@ -60,7 +60,7 @@ export class ImportResolver {
 		return {
 			isRelative,
 			isExternal: false,
-			path: this.#findPath(join(dirname(rec.filePathRec.path), locator)),
+			path: this.#findPath(join(dirname(rec.sourcePath), locator)),
 		};
 	}
 

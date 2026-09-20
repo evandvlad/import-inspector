@@ -24,18 +24,17 @@ export function buildModules(
 	const interconnectionBuilder = new InterconnectionBuilder();
 	const importResolver = new ImportResolver({ settings, pathRecProvider });
 
-	parsingResult.forEach(({ filePathRec, importRecs }) => {
+	parsingResult.forEach(({ path, importRecs }) => {
 		const imports = importRecs.map((importRec) =>
 			new Import({ importRec, resolution: importResolver.resolve(importRec) })
 		);
 
-		interconnectionBuilder.connect({ path: filePathRec.path, imports });
+		interconnectionBuilder.connect({ path, imports });
 	});
 
 	const interconnectionReader = interconnectionBuilder.build();
 
-	return parsingResult.map(({ filePathRec }) => {
-		const { path } = filePathRec;
+	return parsingResult.map(({ path }) => {
 		const packagePath = packageFinder.findCurrent(path);
 
 		const isPackageEntryPoint = packagePath
@@ -43,9 +42,9 @@ export function buildModules(
 			: false;
 
 		return new Module({
-			filePathRec,
 			packagePath,
 			isPackageEntryPoint,
+			filePathRec: pathRecProvider.getFilePathRec(path),
 			imports: interconnectionReader.getImports(path),
 			links: interconnectionReader.getLinks(path),
 			frames: frameRegistry.getNamesByPath(path),
