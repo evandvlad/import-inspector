@@ -130,7 +130,8 @@ export type Package = {
 	readonly modulePaths: ReadonlyArray<string>;
 };
 
-export type ContextPathUtil = {
+export type ContextEnv = {
+	readonly basePath: string;
 	getShortPath: (path: string) => string;
 };
 
@@ -194,7 +195,7 @@ export type ContextModuleDefects = {
 };
 
 export type Context = {
-	readonly pathUtil: ContextPathUtil;
+	readonly env: ContextEnv;
 	readonly modules: ContextModules;
 	readonly packages: ContextPackages;
 	readonly imports: ContextImports;

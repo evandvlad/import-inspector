@@ -101,7 +101,7 @@ export class Result {
 			moduleDefects: readonly ModuleDefect[];
 		},
 	) {
-		const { pathUtil } = this.#context;
+		const { env } = this.#context;
 		const map: Map<string, DefectDetails[]> = new Map();
 
 		moduleDefects.forEach(({ sourcePath, rule, description }) => {
@@ -112,12 +112,12 @@ export class Result {
 				rule,
 				description,
 				path: sourcePath,
-				shortPath: pathUtil.getShortPath(sourcePath),
+				shortPath: env.getShortPath(sourcePath),
 			});
 		});
 
 		importDefects.forEach(({ sourcePath, importedPath, line, code, rule, description }) => {
-			const module = importedPath ? { path: importedPath, shortPath: pathUtil.getShortPath(importedPath) } : null;
+			const module = importedPath ? { path: importedPath, shortPath: env.getShortPath(importedPath) } : null;
 			const items = map.getOrInsert(sourcePath, []);
 
 			items.push({
@@ -128,7 +128,7 @@ export class Result {
 				module,
 				description,
 				path: sourcePath,
-				shortPath: pathUtil.getShortPath(sourcePath),
+				shortPath: env.getShortPath(sourcePath),
 			});
 		});
 

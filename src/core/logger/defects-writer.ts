@@ -19,12 +19,12 @@ type ModuleDefectItem = {
 	description?: string;
 };
 
-function getImportDefects({ importDefects, pathUtil }: Context) {
+function getImportDefects({ importDefects, env }: Context) {
 	const defects: Record<string, ImportDefectItem[]> = {};
 	let total = 0;
 
 	importDefects.getAll().forEach(({ sourcePath, importedPath, line, code, rule, description }) => {
-		const shortPath = pathUtil.getShortPath(sourcePath);
+		const shortPath = env.getShortPath(sourcePath);
 
 		if (!Object.hasOwn(defects, shortPath)) {
 			defects[shortPath] = [];
@@ -34,7 +34,7 @@ function getImportDefects({ importDefects, pathUtil }: Context) {
 			line,
 			code,
 			rule,
-			importedPath: importedPath ? pathUtil.getShortPath(importedPath) : null,
+			importedPath: importedPath ? env.getShortPath(importedPath) : null,
 		};
 
 		if (description) {
@@ -51,12 +51,12 @@ function getImportDefects({ importDefects, pathUtil }: Context) {
 	};
 }
 
-function getModuleDefects({ moduleDefects, pathUtil }: Context) {
+function getModuleDefects({ moduleDefects, env }: Context) {
 	const defects: Record<string, ModuleDefectItem[]> = {};
 	let total = 0;
 
 	moduleDefects.getAll().forEach(({ sourcePath, rule, description }) => {
-		const shortPath = pathUtil.getShortPath(sourcePath);
+		const shortPath = env.getShortPath(sourcePath);
 
 		if (!Object.hasOwn(defects, shortPath)) {
 			defects[shortPath] = [];
