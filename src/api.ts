@@ -27,7 +27,7 @@ export type RootEntry = {
 };
 
 export type Report = {
-	format: "log" | "json" | "yaml" | "md";
+	format: "text" | "json" | "yaml";
 	// absolute path
 	path: string;
 	provide: (context: Context) => unknown | Promise<unknown>;
@@ -59,8 +59,6 @@ export type Settings = {
 	correctUnresolvedDynamicImports?: CorrectUnresolvedDynamicImports;
 	preInspect?: PreInspect;
 	postInspect?: PostInspect;
-	// absolute path
-	logsDir?: string;
 	reports?: Report[];
 };
 

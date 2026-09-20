@@ -39,8 +39,7 @@ export class Reporter {
 				case "json":
 					return JSON.stringify(data, null, "\t");
 
-				case "log":
-				case "md":
+				case "text":
 					return data?.toString() ?? "";
 
 				default:

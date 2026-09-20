@@ -2,7 +2,6 @@ import { PubSub } from "~/lib/pub-sub.ts";
 import type { Settings } from "~/settings.ts";
 import type { CoreEventMap } from "~/values.ts";
 
-import { createLogger } from "./logger/index.ts";
 import { collectFilePaths } from "./file-path-collector/index.ts";
 import { PathRecProvider } from "./path-rec-provider/index.ts";
 import { parseFiles } from "./files-parser.ts";
@@ -32,8 +31,6 @@ export class CoreRunner {
 	}
 
 	async run() {
-		const logger = await createLogger({ sub: this.sub, settings: this.#settings });
-
 		this.#pub.send("core:file-path-collecting-started");
 		const filePaths = await collectFilePaths({ settings: this.#settings });
 		this.#pub.send("core:file-path-collecting-finished", filePaths);
@@ -75,8 +72,6 @@ export class CoreRunner {
 		this.#pub.send("core:inspection-finished", context);
 
 		this.#pub.send("core:finished");
-
-		await logger.uponDone();
 
 		return context;
 	}

@@ -4,7 +4,6 @@ import type { SettingsModule } from "~/api.ts";
 
 export class Settings {
 	frames;
-	logsDir?;
 	preInspect;
 	postInspect;
 	rootEntries;
@@ -23,7 +22,6 @@ export class Settings {
 	private constructor(settingsModule: SettingsModule) {
 		const {
 			rootEntries,
-			logsDir,
 			reports = [],
 			frames = {},
 			importRemaps = {},
@@ -42,8 +40,6 @@ export class Settings {
 			Object.entries(frames)
 				.map(([name, paths]) => [name, paths.map((path) => unify(path))]),
 		);
-
-		this.logsDir = logsDir && unify(logsDir);
 
 		this.reports = reports;
 		this.preInspect = preInspect;
