@@ -1,6 +1,7 @@
 import type { Settings } from "~/settings.ts";
 
 import type { ImportRec } from "../values.ts";
+import { FileContent } from "../file-content/index.ts";
 
 import { parseFile } from "./file-parser.ts";
 
@@ -12,30 +13,36 @@ export class FileParser {
 	}
 
 	async parse({ path, content }: { path: string; content: string }) {
-		const importRecs = await parseFile({ path, content });
+		const fileContent = new FileContent({ content });
+		const importRecs = await parseFile({ path, content: fileContent.getAsString() });
 
 		return {
 			path,
-			importRecs: await this.#processImportRecs(importRecs),
+			fileContent,
+			importRecs: await this.#processImportRecs({ path, fileContent, importRecs }),
 		};
 	}
 
-	async #processImportRecs(importRecs: ImportRec[]) {
+	async #processImportRecs(
+		{ path, fileContent, importRecs }: { path: string; fileContent: FileContent; importRecs: ImportRec[] },
+	) {
 		const result: ImportRec[] = [];
 
 		for await (const importRec of importRecs) {
-			result.push(...await this.#processImportRec(importRec));
+			result.push(...await this.#processImportRec({ path, fileContent, importRec }));
 		}
 
 		return result;
 	}
 
-	async #processImportRec(importRec: ImportRec) {
+	async #processImportRec(
+		{ path, fileContent, importRec }: { path: string; fileContent: FileContent; importRec: ImportRec },
+	) {
 		if (importRec.isDynamic && !importRec.locator) {
 			const corrections = await this.#settings.correctUnresolvedDynamicImports({
-				line: importRec.line,
-				code: importRec.code,
-				sourcePath: importRec.sourcePath,
+				sourcePath: path,
+				posSpan: importRec.posSpan,
+				fileContent,
 			});
 
 			if (corrections.length) {

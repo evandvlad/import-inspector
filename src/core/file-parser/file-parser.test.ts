@@ -86,33 +86,21 @@ describe("file-parser", () => {
 		const importRecs = await parseFile(params);
 
 		expect(importRecs).toEqual([{
-			line: 1,
-			sourcePath: params.path,
 			isDynamic: false,
 			locator: "foo",
-			code: 'import foo from "foo";',
+			posSpan: { start: 0, end: 22 },
 		}, {
-			line: 2,
-			sourcePath: params.path,
 			isDynamic: false,
 			locator: "../../bar",
-			code: `import { 
-					type Foo,
-					Bar,
-					qux as quux
-				} from "../../bar";`,
+			posSpan: { start: 27, end: 102 },
 		}, {
-			line: 7,
-			sourcePath: params.path,
 			isDynamic: false,
 			locator: "@baz",
-			code: 'import * as baz from "@baz";',
+			posSpan: { start: 107, end: 135 },
 		}, {
-			line: 8,
-			sourcePath: params.path,
 			isDynamic: false,
 			locator: "qux",
-			code: 'import "qux";',
+			posSpan: { start: 140, end: 153 },
 		}]);
 	});
 
@@ -124,23 +112,17 @@ describe("file-parser", () => {
 		const importRecs = await parseFile(params);
 
 		expect(importRecs).toEqual([{
-			line: 1,
-			sourcePath: params.path,
 			isDynamic: true,
 			locator: "./foo",
-			code: 'import("./foo")',
+			posSpan: { start: 34, end: 49 },
 		}, {
-			line: 1,
-			sourcePath: params.path,
 			isDynamic: true,
 			locator: "foo",
-			code: "import(`foo`)",
+			posSpan: { start: 68, end: 81 },
 		}, {
-			line: 1,
-			sourcePath: params.path,
 			isDynamic: true,
 			locator: null,
-			code: "import(t)",
+			posSpan: { start: 89, end: 98 },
 		}]);
 	});
 
@@ -157,25 +139,19 @@ describe("file-parser", () => {
 
 		expect(importRecs).toEqual([
 			{
-				line: 2,
-				sourcePath: params.path,
 				isDynamic: false,
 				locator: "./foo",
-				code: 'export { default } from "./foo";',
+				posSpan: { start: 5, end: 37 },
 			},
 			{
-				line: 3,
-				sourcePath: params.path,
 				isDynamic: false,
 				locator: "../../../bar",
-				code: 'export * from "../../../bar";',
+				posSpan: { start: 42, end: 71 },
 			},
 			{
-				line: 4,
-				sourcePath: params.path,
 				isDynamic: false,
 				locator: "baz",
-				code: 'export { A as foo, B as bar } from "baz";',
+				posSpan: { start: 76, end: 117 },
 			},
 		]);
 	});

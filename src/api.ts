@@ -2,6 +2,11 @@ export const langs = ["ts", "js"] as const;
 
 export type Lang = typeof langs[number];
 
+export type Span = {
+	start: number;
+	end: number;
+};
+
 export enum Tag {
 	Test = "test",
 	EntryPoint = "entry-point",
@@ -42,7 +47,7 @@ export type SettingsModule = {
 };
 
 export type CorrectUnresolvedDynamicImports = (
-	params: { line: number; sourcePath: string; code: string },
+	params: { sourcePath: string; posSpan: Span; fileContent: FileContent },
 	// result - array of import locators
 ) => Promise<string[]>;
 
@@ -63,20 +68,32 @@ export type Settings = {
 };
 
 export type ImportResolution = {
-	readonly path: string | null;
-	readonly isExternal: boolean;
-	readonly isRelative: boolean;
+	path: string | null;
+	isExternal: boolean;
+	isRelative: boolean;
+};
+
+export type FileContentEntry = {
+	line: number;
+	posSpan: Span;
+	content: string;
+};
+
+export type FileContent = {
+	getAsString: () => string;
+	getAsEntries: () => FileContentEntry[];
+	getContentByPosSpan: (span: Span) => string;
+	getEntriesByPosSpan: (span: Span) => FileContentEntry[];
 };
 
 export type Import = {
-	readonly id: string;
-	readonly line: number;
-	readonly sourcePath: string;
-	readonly locator: string | null;
-	readonly code: string;
-	readonly isDynamic: boolean;
-	readonly resolution: ImportResolution | null;
-	readonly defectMap: ReadonlyMap<
+	id: string;
+	sourcePath: string;
+	locator: string | null;
+	posSpan: Span;
+	isDynamic: boolean;
+	resolution: ImportResolution | null;
+	defectMap: Map<
 		/* rule */
 		string,
 		ImportDefect
@@ -86,34 +103,34 @@ export type Import = {
 };
 
 export type ImportDefect = {
-	readonly rule: string;
-	readonly line: number;
-	readonly code: string;
-	readonly importId: string;
-	readonly sourcePath: string;
-	readonly description: string;
-	readonly locator: string | null;
-	readonly importedPath: string | null;
+	rule: string;
+	posSpan: Span;
+	importId: string;
+	sourcePath: string;
+	description: string;
+	locator: string | null;
+	importedPath: string | null;
 };
 
 export type ModuleDefect = {
-	readonly rule: string;
-	readonly sourcePath: string;
-	readonly description: string;
+	rule: string;
+	sourcePath: string;
+	description: string;
 };
 
 export type Module = {
-	readonly name: string;
-	readonly lang: Lang;
-	readonly path: string;
-	readonly parentDirPath: string | null;
-	readonly packagePath: string | null;
-	readonly isPackageEntryPoint: boolean;
-	readonly tagSet: ReadonlySet<string>;
-	readonly frameSet: ReadonlySet<string>;
-	readonly links: ReadonlyArray</* path */ string>;
-	readonly importMap: ReadonlyMap</* id */ string, Import>;
-	readonly defectMap: ReadonlyMap</* rule */ string, ModuleDefect>;
+	name: string;
+	lang: Lang;
+	path: string;
+	fileContent: FileContent;
+	parentDirPath: string | null;
+	packagePath: string | null;
+	isPackageEntryPoint: boolean;
+	tagSet: Set<string>;
+	frameSet: Set<string>;
+	links: /* path */ string[];
+	importMap: Map</* id */ string, Import>;
+	defectMap: Map</* rule */ string, ModuleDefect>;
 	addDefect: (params: { rule: string; description?: string }) => void;
 	removeDefect: (rule: string) => void;
 	setTag: (tag: string) => void;
@@ -121,85 +138,85 @@ export type Module = {
 };
 
 export type Package = {
-	readonly name: string;
-	readonly path: string;
-	readonly parentDirPath: string | null;
-	readonly parentPackagePath: string | null;
-	readonly subPackagePaths: ReadonlyArray<string>;
-	readonly modulePaths: ReadonlyArray<string>;
+	name: string;
+	path: string;
+	parentDirPath: string | null;
+	parentPackagePath: string | null;
+	subPackagePaths: string[];
+	modulePaths: string[];
 };
 
 export type ContextEnv = {
-	readonly basePath: string;
+	basePath: string;
 	getShortPath: (path: string) => string;
 };
 
 export type ContextFrames = {
-	readonly names: ReadonlyArray<string>;
-	getModulesByFrame: (name: string) => ReadonlyArray<Module>;
+	names: string[];
+	getModulesByFrame: (name: string) => Module[];
 	isModuleInFrame: (params: { path: string; name: string }) => boolean;
 };
 
 export type ContextModules = {
-	readonly all: ReadonlyArray<Module>;
+	all: Module[];
 	find: (path: string) => Module | null;
 	get: (path: string) => Module;
 };
 
 export type ContextPackages = {
-	readonly all: ReadonlyArray<Package>;
-	readonly roots: ReadonlyArray<Package>;
+	all: Package[];
+	roots: Package[];
 	find: (path: string) => Package | null;
 	get: (path: string) => Package;
 	isInAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
 	isInSameOrAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
-	getSubs: (path: string) => ReadonlyArray<Package>;
-	getAncestryBranch: (path: string) => ReadonlyArray<Package>;
-	getWithAncestryBranch: (path: string) => ReadonlyArray<Package>;
+	getSubs: (path: string) => Package[];
+	getAncestryBranch: (path: string) => Package[];
+	getWithAncestryBranch: (path: string) => Package[];
 };
 
 export type ContextTags = {
-	getAll: () => ReadonlyArray<string>;
-	getModulesByTag: (tag: string) => ReadonlyArray<Module>;
+	getAll: () => string[];
+	getModulesByTag: (tag: string) => Module[];
 };
 
 export type ContextImports = {
-	readonly all: ReadonlyArray<Import>;
+	all: Import[];
 	find: (id: string) => Import | null;
 	get: (id: string) => Import;
-	getFullResolved: () => ReadonlyArray<Import>;
-	getDynamic: () => ReadonlyArray<Import>;
+	getFullResolved: () => Import[];
+	getDynamic: () => Import[];
 	findModule: (id: string) => Module | null;
 	getModule: (id: string) => Module;
 };
 
 export type ContextImportDefects = {
-	getAll: () => ReadonlyArray<ImportDefect>;
-	getAllRules: () => ReadonlyArray<string>;
-	getByImportId: (importId: string) => ReadonlyArray<ImportDefect>;
-	getByRule: (rule: string) => ReadonlyArray<ImportDefect>;
-	getModulesByRule: (rule: string) => ReadonlyArray<Module>;
+	getAll: () => ImportDefect[];
+	getAllRules: () => string[];
+	getByImportId: (importId: string) => ImportDefect[];
+	getByRule: (rule: string) => ImportDefect[];
+	getModulesByRule: (rule: string) => Module[];
 	remove: (params: { importId: string; rule: string }) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
 };
 
 export type ContextModuleDefects = {
-	getAll: () => ReadonlyArray<ModuleDefect>;
-	getAllRules: () => ReadonlyArray<string>;
-	getByRule: (rule: string) => ReadonlyArray<ModuleDefect>;
+	getAll: () => ModuleDefect[];
+	getAllRules: () => string[];
+	getByRule: (rule: string) => ModuleDefect[];
 	remove: (params: { path: string; rule: string }) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
 };
 
 export type Context = {
-	readonly env: ContextEnv;
-	readonly modules: ContextModules;
-	readonly packages: ContextPackages;
-	readonly imports: ContextImports;
-	readonly tags: ContextTags;
-	readonly frames: ContextFrames;
-	readonly importDefects: ContextImportDefects;
-	readonly moduleDefects: ContextModuleDefects;
+	env: ContextEnv;
+	modules: ContextModules;
+	packages: ContextPackages;
+	imports: ContextImports;
+	tags: ContextTags;
+	frames: ContextFrames;
+	importDefects: ContextImportDefects;
+	moduleDefects: ContextModuleDefects;
 };

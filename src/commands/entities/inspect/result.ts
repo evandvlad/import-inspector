@@ -97,11 +97,11 @@ export class Result {
 
 	#getDefectDetailsMap(
 		{ importDefects, moduleDefects }: {
-			importDefects: readonly ImportDefect[];
-			moduleDefects: readonly ModuleDefect[];
+			importDefects: ImportDefect[];
+			moduleDefects: ModuleDefect[];
 		},
 	) {
-		const { env } = this.#context;
+		const { env, modules } = this.#context;
 		const map: Map<string, DefectDetails[]> = new Map();
 
 		moduleDefects.forEach(({ sourcePath, rule, description }) => {
@@ -116,19 +116,20 @@ export class Result {
 			});
 		});
 
-		importDefects.forEach(({ sourcePath, importedPath, line, code, rule, description }) => {
+		importDefects.forEach(({ sourcePath, importedPath, posSpan, rule, description }) => {
+			const { fileContent } = modules.get(sourcePath);
 			const module = importedPath ? { path: importedPath, shortPath: env.getShortPath(importedPath) } : null;
 			const items = map.getOrInsert(sourcePath, []);
 
 			items.push({
 				kind: "import",
-				line,
-				code,
 				rule,
 				module,
 				description,
 				path: sourcePath,
 				shortPath: env.getShortPath(sourcePath),
+				code: fileContent.getContentByPosSpan(posSpan),
+				line: fileContent.getEntriesByPosSpan(posSpan)[0]?.line ?? 0,
 			});
 		});
 

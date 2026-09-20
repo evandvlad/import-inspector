@@ -1,4 +1,4 @@
-import type { Module as IModule, ModuleDefect } from "~/api.ts";
+import type { FileContent, Module as IModule, ModuleDefect } from "~/api.ts";
 
 import type { FilePathRec } from "./path-rec-provider/index.ts";
 import type { Import } from "./import.ts";
@@ -10,6 +10,7 @@ export class Module implements IModule {
 	lang;
 	links;
 	frameSet;
+	fileContent;
 	parentDirPath;
 	packagePath;
 	importMap;
@@ -18,11 +19,12 @@ export class Module implements IModule {
 	defectMap = new Map<string, ModuleDefect>();
 
 	constructor(
-		{ filePathRec, packagePath, frames, imports, links, isPackageEntryPoint }: {
+		{ filePathRec, packagePath, frames, imports, links, fileContent, isPackageEntryPoint }: {
 			filePathRec: FilePathRec;
 			frames: string[];
 			imports: Import[];
 			links: string[];
+			fileContent: FileContent;
 			packagePath: string | null;
 			isPackageEntryPoint: boolean;
 		},
@@ -31,6 +33,7 @@ export class Module implements IModule {
 		this.path = filePathRec.path;
 		this.name = filePathRec.baseName;
 		this.lang = getFileLang(filePathRec.path);
+		this.fileContent = fileContent;
 		this.packagePath = packagePath;
 		this.parentDirPath = filePathRec.parentPath;
 		this.isPackageEntryPoint = isPackageEntryPoint;

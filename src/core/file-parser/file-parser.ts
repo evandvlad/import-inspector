@@ -22,5 +22,5 @@ export async function parseFile({ path, content }: { path: string; content: stri
 		}
 	}
 
-	return extractImportRecs({ content, path, program });
+	return extractImportRecs({ program });
 }

@@ -2,8 +2,6 @@ import { type ImportExpression, type Program, type Span, Visitor } from "oxc-par
 
 import type { ImportRec } from "../values.ts";
 
-import { LineDeterminant } from "./line-determinant.ts";
-
 function extractLocatorFromDynamicImport({ source }: ImportExpression) {
 	/*
 	 * import("source")
@@ -25,10 +23,7 @@ function extractLocatorFromDynamicImport({ source }: ImportExpression) {
 	return null;
 }
 
-export function extractImportRecs(
-	{ content, path, program }: { content: string; path: string; program: Program },
-) {
-	const lineDeterminant = new LineDeterminant({ content });
+export function extractImportRecs({ program }: { program: Program }) {
 	const recs: ImportRec[] = [];
 
 	function createImportRec(
@@ -37,11 +32,9 @@ export function extractImportRecs(
 		const { start, end } = node;
 
 		return {
-			sourcePath: path,
-			line: lineDeterminant.determine({ start, end }),
-			code: content.slice(start, end),
 			isDynamic,
 			locator,
+			posSpan: { start, end },
 		};
 	}
 

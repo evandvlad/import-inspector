@@ -23,8 +23,8 @@ export class ImportResolver {
 		this.#aliases = this.#createAliases(settings);
 	}
 
-	resolve(importRec: ImportRec): ImportResolution | null {
-		return importRec.locator ? this.#resolve(importRec) : null;
+	resolve({ path, importRec }: { path: string; importRec: ImportRec }): ImportResolution | null {
+		return importRec.locator ? this.#resolve({ path, importRec }) : null;
 	}
 
 	#createAliases({ rootEntries, importRemaps }: Settings) {
@@ -43,8 +43,8 @@ export class ImportResolver {
 		return aliases;
 	}
 
-	#resolve(rec: ImportRec) {
-		const locator = rec.locator!;
+	#resolve({ path, importRec }: { path: string; importRec: ImportRec }) {
+		const locator = importRec.locator!;
 		const isRelative = locator.startsWith(".");
 
 		if (!isRelative) {
@@ -60,7 +60,7 @@ export class ImportResolver {
 		return {
 			isRelative,
 			isExternal: false,
-			path: this.#findPath(join(dirname(rec.sourcePath), locator)),
+			path: this.#findPath(join(dirname(path), locator)),
 		};
 	}
 

@@ -7,10 +7,11 @@ import type { ImportDefectDetails, ModuleDefectDetails } from "./values.ts";
 
 import type { Result } from "./result.ts";
 
-function createItemPathLink({ line, shortPath, path }: { shortPath: string; path: string; line?: number }) {
+function createItemPathLink({ shortPath, path, line }: { shortPath: string; path: string; line?: number }) {
 	const pathLink = link({
+		path,
+		line,
 		text: line ? [shortPath, line].join(":") : shortPath,
-		path: line ? [path, line].join(":") : path,
 	});
 
 	return bold(yellow(pathLink));
@@ -21,7 +22,7 @@ function getDescriptionContent(description: string) {
 }
 
 function createImportDefectContent(
-	{ shortPath, path, line, rule, description, code, module }: ImportDefectDetails,
+	{ shortPath, path, rule, description, code, line, module }: ImportDefectDetails,
 ) {
 	const title = createItemPathLink({ shortPath, path, line });
 	const moduleLink = module ? link({ text: module.shortPath, path: module.path }) : " ? ";

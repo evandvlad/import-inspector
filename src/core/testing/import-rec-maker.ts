@@ -1,10 +1,9 @@
 import type { ImportRec } from "../values.ts";
 
-export function createImportRec(part: Partial<ImportRec> & { sourcePath: string }): ImportRec {
+export function createImportRec(part: Partial<ImportRec>): ImportRec {
 	return {
-		line: 0,
 		isDynamic: false,
-		code: "",
+		posSpan: { start: 0, end: 0 },
 		locator: null,
 		...part,
 	} as ImportRec;

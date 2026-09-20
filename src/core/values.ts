@@ -1,16 +1,15 @@
-import type { Context } from "~/api.ts";
+import type { Context, FileContent, Span } from "~/api.ts";
 
 export type ImportRec = {
-	sourcePath: string;
-	line: number;
 	// Can be null for dynamic imports
 	locator: string | null;
-	code: string;
 	isDynamic: boolean;
+	posSpan: Span;
 };
 
 export type FileParsingResult = {
 	path: string;
+	fileContent: FileContent;
 	importRecs: ImportRec[];
 };
 
