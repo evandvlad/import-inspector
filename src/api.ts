@@ -32,7 +32,7 @@ export type RootEntry = {
 };
 
 export type Report = {
-	format: "text" | "json" | "yaml";
+	format: "text" | "json" | "yaml" | "html";
 	// absolute path
 	path: string;
 	provide: (context: Context) => unknown | Promise<unknown>;
@@ -140,9 +140,34 @@ export type Package = {
 	modulePaths: string[];
 };
 
+export type HtmlxComponents = {
+	link: (
+		params: { url: string; value: string; singleLine?: boolean; attrs?: Record<string, string> },
+	) => string;
+	dl: (
+		params: { items: Array<[key: string, value: string]>; attrs?: Record<string, string> },
+	) => string;
+	ol: (
+		params: { items: string[]; inline?: boolean; attrs?: Record<string, string> },
+	) => string;
+	ul: (
+		params: { items: string[]; inline?: boolean; attrs?: Record<string, string> },
+	) => string;
+	details: (params: { summary: string; value: string; attrs?: Record<string, string> }) => string;
+	grid: (params: { items: string[]; attrs?: Record<string, string> }) => string;
+	table: (params: { rows: string[][]; columns?: string[]; attrs?: Record<string, string> }) => string;
+	expander: (params: { summary: string; value: string; attrs?: Record<string, string> }) => string;
+	tabs: (params: { items: Array<[key: string, value: string]>; attrs?: Record<string, string> }) => string;
+	code: (params: { value: string; attrs?: Record<string, string> }) => string;
+	json: (params: { data: unknown; attrs?: Record<string, string> }) => string;
+	yaml: (params: { data: unknown; attrs?: Record<string, string> }) => string;
+};
+
 export type ContextEnv = {
 	basePath: string;
+	htmlxComponents: HtmlxComponents;
 	getShortPath: (path: string) => string;
+	getVSCodeUrl: (path: string, line?: number) => string;
 };
 
 export type ContextFrames = {

@@ -1,11 +1,13 @@
 import { assert } from "~/lib/err.ts";
 import { shorten, stripEnd } from "~/lib/upath.ts";
 import type { ContextEnv } from "~/api.ts";
+import { components } from "~/htmlx/index.ts";
 
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
 
 export class Env implements ContextEnv {
 	basePath;
+	htmlxComponents;
 
 	#pathRecProvider;
 
@@ -13,6 +15,7 @@ export class Env implements ContextEnv {
 		this.#pathRecProvider = pathRecProvider;
 
 		this.basePath = this.#pathRecProvider.basePath;
+		this.htmlxComponents = components;
 	}
 
 	getShortPath(path: string) {
@@ -24,5 +27,9 @@ export class Env implements ContextEnv {
 		);
 
 		return shorten(stripEnd(path), this.basePath);
+	}
+
+	getVSCodeUrl(path: string, line?: number) {
+		return `vscode://file/${path}${line ? `:${line}` : ""}`;
 	}
 }

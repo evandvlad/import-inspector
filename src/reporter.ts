@@ -4,6 +4,7 @@ import { ensureFile } from "@std/fs";
 import { remapErr } from "~/lib/err.ts";
 import { assertNever } from "~/lib/ts.ts";
 import type { Context, Report } from "~/api.ts";
+import { render } from "~/htmlx/index.ts";
 
 export class Reporter {
 	#reports;
@@ -41,6 +42,9 @@ export class Reporter {
 
 				case "text":
 					return data?.toString() ?? "";
+
+				case "html":
+					return render(data?.toString() ?? "");
 
 				default:
 					assertNever(format);
