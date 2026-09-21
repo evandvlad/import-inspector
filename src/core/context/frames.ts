@@ -5,16 +5,16 @@ import type { FrameRegistry } from "../frame-registry.ts";
 import type { Modules } from "./modules.ts";
 
 export class Frames implements ContextFrames {
-	names;
-
 	#modules;
 	#frameRegistry;
 
 	constructor({ frameRegistry, modules }: { frameRegistry: FrameRegistry; modules: Modules }) {
 		this.#frameRegistry = frameRegistry;
 		this.#modules = modules;
+	}
 
-		this.names = frameRegistry.names;
+	getAll() {
+		return this.#frameRegistry.names;
 	}
 
 	getModulesByFrame(name: string) {

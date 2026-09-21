@@ -5,7 +5,7 @@ import { isDeclarationFile, isEntryPointFile, isIndependentFile, isTestFile } fr
 export function setTags({ context }: { context: Context }) {
 	const { modules } = context;
 
-	modules.all.forEach((module) => {
+	modules.getAll().forEach((module) => {
 		const { path } = module;
 
 		if (isEntryPointFile(path)) {

@@ -13,11 +13,11 @@ export class ImportDefects implements ContextImportDefects {
 	}
 
 	getAll() {
-		return this.#imports.all.flatMap(({ defectMap }) => Array.from(defectMap.values()));
+		return this.#imports.getAll().flatMap(({ defectMap }) => Array.from(defectMap.values()));
 	}
 
 	getAllRules() {
-		const all = this.#imports.all.flatMap(({ defectMap }) => Array.from(defectMap.keys()));
+		const all = this.#imports.getAll().flatMap(({ defectMap }) => Array.from(defectMap.keys()));
 		return Array.from(new Set(all));
 	}
 
@@ -27,14 +27,14 @@ export class ImportDefects implements ContextImportDefects {
 	}
 
 	getByRule(rule: string) {
-		return Iterator.from(this.#imports.all)
+		return Iterator.from(this.#imports.getAll())
 			.filter(({ defectMap }) => defectMap.has(rule))
 			.map(({ defectMap }) => defectMap.get(rule)!)
 			.toArray();
 	}
 
 	getModulesByRule(rule: string) {
-		return Iterator.from(this.#imports.all)
+		return Iterator.from(this.#imports.getAll())
 			.filter(({ defectMap }) => defectMap.has(rule))
 			.map(({ sourcePath }) => this.#modules.get(sourcePath))
 			.toArray();

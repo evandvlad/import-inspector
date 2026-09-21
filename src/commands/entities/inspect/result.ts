@@ -51,7 +51,7 @@ export class Result {
 
 	#getPackageCounter() {
 		return {
-			total: this.#context.packages.all.length,
+			total: this.#context.packages.getAll().length,
 		};
 	}
 
@@ -63,35 +63,34 @@ export class Result {
 
 	#getFrameCounter() {
 		return {
-			total: this.#context.frames.names.length,
+			total: this.#context.frames.getAll().length,
 		};
 	}
 
 	#getModuleCounter() {
 		const { modules } = this.#context;
 		const langRec = Object.fromEntries(langs.map((lang) => [lang, 0])) as Record<Lang, number>;
+		const allModules = modules.getAll();
 
-		const byLang = modules.all.reduce((acc, module) => {
+		const byLang = allModules.reduce((acc, module) => {
 			acc[module.lang] += 1;
 			return acc;
 		}, langRec);
 
 		return {
-			total: modules.all.length,
+			total: allModules.length,
 			byLang,
 		};
 	}
 
 	#getImportCounter() {
-		const byType = this.#context.imports.all.reduce<{ static: number; dynamic: number }>((acc, imp) => {
-			acc[imp.isDynamic ? "dynamic" : "static"] += 1;
-			return acc;
-		}, { static: 0, dynamic: 0 });
+		const dynamicImportsLength = this.#context.imports.getDynamic().length;
+		const staticImportsLength = this.#context.imports.getStatic().length;
 
 		return {
-			static: byType.static,
-			dynamic: byType.dynamic,
-			total: byType.dynamic + byType.static,
+			static: staticImportsLength,
+			dynamic: dynamicImportsLength,
+			total: dynamicImportsLength + staticImportsLength,
 		};
 	}
 

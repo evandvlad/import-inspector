@@ -10,11 +10,11 @@ export class Tags implements ContextTags {
 	}
 
 	getAll() {
-		const all = this.#modules.all.flatMap(({ tagSet }) => Array.from(tagSet));
+		const all = this.#modules.getAll().flatMap(({ tagSet }) => Array.from(tagSet));
 		return Array.from(new Set(all));
 	}
 
 	getModulesByTag(tag: string) {
-		return this.#modules.all.filter(({ tagSet }) => tagSet.has(tag));
+		return this.#modules.getAll().filter(({ tagSet }) => tagSet.has(tag));
 	}
 }

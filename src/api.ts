@@ -57,10 +57,7 @@ export type PostInspect = (context: Context) => void | Promise<void>;
 export type Settings = {
 	rootEntries: RootEntry[];
 	importRemaps?: Record<string, string>;
-	frames?: Record<
-		/* name */ string,
-		/* root path prefixes */ string[]
-	>;
+	frames?: Record</* name */ string, /* root path prefixes */ string[]>;
 	correctUnresolvedDynamicImports?: CorrectUnresolvedDynamicImports;
 	preInspect?: PreInspect;
 	postInspect?: PostInspect;
@@ -94,11 +91,7 @@ export type Import = {
 	posSpan: Span;
 	isDynamic: boolean;
 	resolution: ImportResolution | null;
-	defectMap: Map<
-		/* rule */
-		string,
-		ImportDefect
-	>;
+	defectMap: Map</* rule */ string, ImportDefect>;
 	addDefect: (params: { rule: string; description?: string }) => void;
 	removeDefect: (rule: string) => void;
 };
@@ -153,20 +146,20 @@ export type ContextEnv = {
 };
 
 export type ContextFrames = {
-	names: string[];
+	getAll: () => string[];
 	getModulesByFrame: (name: string) => Module[];
 	isModuleInFrame: (params: { path: string; name: string }) => boolean;
 };
 
 export type ContextModules = {
-	all: Module[];
+	getAll: () => Module[];
 	find: (path: string) => Module | null;
 	get: (path: string) => Module;
 };
 
 export type ContextPackages = {
-	all: Package[];
-	roots: Package[];
+	getAll: () => Package[];
+	getRoots: () => Package[];
 	find: (path: string) => Package | null;
 	get: (path: string) => Package;
 	isInAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
@@ -182,11 +175,15 @@ export type ContextTags = {
 };
 
 export type ContextImports = {
-	all: Import[];
+	getAll: () => Import[];
 	find: (id: string) => Import | null;
 	get: (id: string) => Import;
 	getFullResolved: () => Import[];
+	getUnresolved: () => Import[];
 	getDynamic: () => Import[];
+	getStatic: () => Import[];
+	getDynamicUnresolved: () => Import[];
+	getExternal: () => Import[];
 	findModule: (id: string) => Module | null;
 	getModule: (id: string) => Module;
 };

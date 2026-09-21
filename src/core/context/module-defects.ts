@@ -10,16 +10,16 @@ export class ModuleDefects implements ContextModuleDefects {
 	}
 
 	getAll() {
-		return this.#modules.all.flatMap(({ defectMap }) => Array.from(defectMap.values()));
+		return this.#modules.getAll().flatMap(({ defectMap }) => Array.from(defectMap.values()));
 	}
 
 	getAllRules() {
-		const all = this.#modules.all.flatMap(({ defectMap }) => Array.from(defectMap.keys()));
+		const all = this.#modules.getAll().flatMap(({ defectMap }) => Array.from(defectMap.keys()));
 		return Array.from(new Set(all));
 	}
 
 	getByRule(rule: string) {
-		return Iterator.from(this.#modules.all)
+		return Iterator.from(this.#modules.getAll())
 			.filter(({ defectMap }) => defectMap.has(rule))
 			.map(({ defectMap }) => defectMap.get(rule)!)
 			.toArray();

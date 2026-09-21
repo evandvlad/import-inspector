@@ -2,16 +2,23 @@ import { assert } from "~/lib/err.ts";
 import type { ContextPackages, Package } from "~/api.ts";
 
 export class Packages implements ContextPackages {
-	all;
-	roots;
-
+	#all;
+	#roots;
 	#packageMap;
 
 	constructor({ packages }: { packages: Package[] }) {
-		this.all = packages;
-		this.roots = this.all.filter(({ parentPackagePath }) => parentPackagePath === null);
+		this.#all = packages;
+		this.#roots = this.#all.filter(({ parentPackagePath }) => parentPackagePath === null);
 
 		this.#packageMap = new Map(packages.map((pack) => [pack.path, pack]));
+	}
+
+	getAll() {
+		return this.#all;
+	}
+
+	getRoots() {
+		return this.#roots;
 	}
 
 	find(path: string) {
