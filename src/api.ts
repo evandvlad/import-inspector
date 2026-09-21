@@ -81,7 +81,7 @@ export type FileContentEntry = {
 
 export type FileContent = {
 	value: string;
-	getAsEntries: () => FileContentEntry[];
+	entries: FileContentEntry[];
 	getContent: (span: Span) => string;
 	getEntries: (span: Span) => FileContentEntry[];
 	getFirstLine: (span: Span) => number;
