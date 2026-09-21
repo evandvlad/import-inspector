@@ -1,3 +1,5 @@
+import { parseArgs } from "@std/cli";
+
 import { assert } from "~/lib/err.ts";
 import { defaultConfigPresetName } from "~/values.ts";
 import {
@@ -31,16 +33,18 @@ async function run() {
 			return;
 
 		case "inspect": {
-			const [preset = defaultConfigPresetName] = params;
+			const { preset } = parseArgs(params, { default: { preset: defaultConfigPresetName } });
 			await inspectCommand({ preset });
 			return;
 		}
 
 		case "set-settings-path": {
-			const [path, preset = defaultConfigPresetName] = params;
-			assert(typeof path === "string", "There is no 'path' parameter for the command.");
+			const { preset, _ } = parseArgs(params, { default: { preset: defaultConfigPresetName } });
+			const [path] = _;
 
+			assert(typeof path === "string", "There is no 'path' parameter for the command.");
 			await setSettingsPathCommand({ path, preset });
+
 			return;
 		}
 

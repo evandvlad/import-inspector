@@ -13,13 +13,14 @@ export function helpCommand() {
 		It contains presets with links to settings files.
 
 		${bold("Commands:")}
-		${bold("inspect")} [preset] - run inspections.
+
+		${bold("inspect")} [--preset] - run inspections.
 		${bold("version")} - show the current program version.
 		${bold("write-api-file")} - write the types file into the current directory.
 		${bold("display-config")} - show the config file contents.
 		${
 		bold("set-settings-path")
-	} path [preset] - link the settings file to the preset. Path can be absolute or relative from the current working directory.
+	} path [--preset] - link the settings file to the preset. Path can be absolute or relative from the current working directory.
 	`);
 
 	console.log(message);
