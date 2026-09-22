@@ -1,14 +1,12 @@
-import { stringifyAttrs } from "./helpers.ts";
+import type { HtmlxComponents } from "~/api.ts";
 
-export function dl(
-	{ items, attrs }: { items: Array<[key: string, value: string]>; attrs?: Record<string, string> },
-) {
-	return `<dl ${stringifyAttrs(attrs)}>
-		${
-		items.map(([key, value]) => `
-			<dt>${key}</dt>
-			<dd>${value}</dd>
-		`).join("")
-	}
-	</dl>`;
-}
+import { stringifyCompAttrs } from "./helpers.ts";
+
+export const dl: HtmlxComponents["dl"] = (props) => {
+	const content = props.items.map(([key, value]) => `
+		<dt>${key}</dt>
+		<dd>${value}</dd>
+	`).join("");
+
+	return `<dl ${stringifyCompAttrs({ props })}>${content}</dl>`;
+};

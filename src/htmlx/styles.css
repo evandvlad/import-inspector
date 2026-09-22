@@ -138,23 +138,15 @@ dd {
 .c-link {
 	word-break: break-all;
 
-	&.c-link--single-line {
+	&.m_single-line {
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 	}
 }
 
-.c-ol {
-	&.c-ol--inline {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 8px 12px;
-	}
-}
-
-.c-ul {
-	&.c-ul--inline {
+.c-list {
+	&.m_inline {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 8px 12px;

@@ -1,11 +1,14 @@
-import { stringifyAttrs } from "./helpers.ts";
+import type { HtmlxComponents } from "~/api.ts";
 
-export function table(
-	{ rows, columns, attrs }: { rows: string[][]; columns?: string[]; attrs?: Record<string, string> },
-) {
+import { stringifyCompAttrs } from "./helpers.ts";
+
+export const table: HtmlxComponents["table"] = (props) => {
+	const { columns, rows } = props;
+
 	return `
-		<table ${stringifyAttrs(attrs)}>
+		<table ${stringifyCompAttrs({ props })}>
 			${columns ? `<tr>${columns.map((value) => `<th>${value}</th>`)}</tr>` : ""}
 			${rows.map((row) => `<tr>${row.map((value) => `<td>${value}</td>`)}</tr>`)}
-		</table>`;
-}
+		</table>
+	`;
+};

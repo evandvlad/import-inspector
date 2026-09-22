@@ -1,10 +1,14 @@
-import { stringifyAttrs } from "./helpers.ts";
+import type { HtmlxComponents } from "~/api.ts";
 
-export function details({ summary, value, attrs }: { summary: string; value: string; attrs?: Record<string, string> }) {
+import { stringifyCompAttrs } from "./helpers.ts";
+
+export const details: HtmlxComponents["details"] = (props) => {
+	const { summary, value } = props;
+
 	return `
-		<details class="c-details" ${stringifyAttrs(attrs)}>
+		<details ${stringifyCompAttrs({ compClass: "c-details", props })}>
 			<summary>${summary}</summary>
 			${value}
 		</details>
 	`;
-}
+};

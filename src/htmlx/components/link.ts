@@ -1,13 +1,10 @@
-import { cls, stringifyAttrs } from "./helpers.ts";
+import type { HtmlxComponents } from "~/api.ts";
 
-export function link(
-	{ url, value, singleLine = false, attrs }: {
-		url: string;
-		value: string;
-		attrs?: Record<string, string>;
-		singleLine?: boolean;
-	},
-) {
-	const classes = cls("c-link", { "c-link--single-line": singleLine });
-	return `<a href="${url}" title="${value}" class="${classes}" ${stringifyAttrs(attrs)}>${value}</a>`;
-}
+import { stringifyCompAttrs } from "./helpers.ts";
+
+export const link: HtmlxComponents["link"] = (props) => {
+	const { url, value } = props;
+	const attrs = { href: url, title: props.value };
+
+	return `<a ${stringifyCompAttrs({ compClass: "c-link", attrs, props })}>${value}</a>`;
+};

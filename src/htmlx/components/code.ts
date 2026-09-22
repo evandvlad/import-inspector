@@ -1,14 +1,12 @@
-import { encodeHTML, stringifyAttrs } from "./helpers.ts";
+import type { HtmlxComponents } from "~/api.ts";
 
-export function code({ value, attrs }: { value: string; attrs?: Record<string, string> }) {
-	return `
-		<div class="c-code" ${stringifyAttrs(attrs)}>
-			${
-		value.split("\n").map((line, index) => `
-				<div>${index + 1}</div>
-				<div>${encodeHTML(line)}</div>
-			`).join("")
-	}
-		</div>
-	`;
-}
+import { encodeHTML, stringifyCompAttrs } from "./helpers.ts";
+
+export const code: HtmlxComponents["code"] = (props) => {
+	const content = props.value.split("\n").map((line, index) => `
+		<div>${index + 1}</div>
+		<div>${encodeHTML(line)}</div>
+	`).join("");
+
+	return `<div ${stringifyCompAttrs({ compClass: "c-code", props })}>${content}</div>`;
+};

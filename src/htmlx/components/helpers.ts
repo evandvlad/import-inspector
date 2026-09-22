@@ -1,4 +1,6 @@
-export function cls(...args: Array<string | null | undefined | Record<string, boolean>>) {
+import type { HtmlxComponentBaseProps } from "~/api.ts";
+
+function cls(...args: Array<string | null | undefined | Record<string, boolean>>) {
 	return args.flatMap((arg) => {
 		if (!arg) {
 			return [];
@@ -15,10 +17,6 @@ export function cls(...args: Array<string | null | undefined | Record<string, bo
 	}).join(" ");
 }
 
-export function stringifyAttrs(attrs: Record<string, string> = {}) {
-	return Object.entries(attrs).map(([key, value]) => `${key}="${value}"`).join(" ");
-}
-
 export function encodeHTML(value: string) {
 	return value
 		.replaceAll("&", "&amp;")
@@ -28,4 +26,19 @@ export function encodeHTML(value: string) {
 		.replaceAll("'", "&apos;")
 		.replaceAll("\t", "&nbsp;".repeat(4))
 		.replaceAll("\n", "&nbsp;");
+}
+
+export function stringifyCompAttrs<
+	P extends HtmlxComponentBaseProps,
+	A extends Record<string, string> = Record<string, string>,
+>(
+	{ compClass, props, attrs }: { compClass?: string; props: P; attrs?: A },
+) {
+	const preparedAttrs = {
+		...props.attrs,
+		class: cls(compClass, props.class, props.mods?.map((mod) => `m_${mod}`).join(" ")),
+		...attrs,
+	};
+
+	return Object.entries(preparedAttrs).map(([key, value]) => `${key}="${value}"`).join(" ");
 }

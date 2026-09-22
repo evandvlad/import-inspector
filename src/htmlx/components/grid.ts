@@ -1,7 +1,11 @@
-import { stringifyAttrs } from "./helpers.ts";
+import type { HtmlxComponents } from "~/api.ts";
 
-export function grid(
-	{ items, attrs }: { items: string[]; attrs?: Record<string, string> },
-) {
-	return `<div class="c-grid" ${stringifyAttrs(attrs)}>${items.join("")}</div>`;
-}
+import { stringifyCompAttrs } from "./helpers.ts";
+
+export const grid: HtmlxComponents["grid"] = (props) => {
+	return `
+		<div ${stringifyCompAttrs({ compClass: "c-grid", props })}>
+			${props.items.join("")}
+		</div>
+	`;
+};

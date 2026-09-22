@@ -1,3 +1,7 @@
+type Rec<T> = Record<string, T>;
+type Nullable<T> = T | null;
+type MaybePromise<T> = T | Promise<T>;
+
 export const langs = ["ts", "js"] as const;
 
 export type Lang = typeof langs[number];
@@ -35,11 +39,11 @@ export type Report = {
 	format: "text" | "json" | "yaml" | "html";
 	// absolute path
 	path: string;
-	provide: (context: Context) => unknown | Promise<unknown>;
+	provide: (context: Context) => MaybePromise<unknown>;
 };
 
 export type ConfigData = {
-	presets: Record<string, /* absolute path */ string>;
+	presets: Rec</* absolute path */ string>;
 };
 
 export type SettingsModule = {
@@ -51,13 +55,13 @@ export type CorrectUnresolvedDynamicImports = (
 	// result - array of import locators
 ) => Promise<string[]>;
 
-export type PreInspect = (context: Context) => void | Promise<void>;
-export type PostInspect = (context: Context) => void | Promise<void>;
+export type PreInspect = (context: Context) => MaybePromise<void>;
+export type PostInspect = (context: Context) => MaybePromise<void>;
 
 export type Settings = {
 	rootEntries: RootEntry[];
-	importRemaps?: Record<string, string>;
-	frames?: Record</* name */ string, /* root path prefixes */ string[]>;
+	importRemaps?: Rec<string>;
+	frames?: Rec</* name: root path prefixes */ string[]>;
 	correctUnresolvedDynamicImports?: CorrectUnresolvedDynamicImports;
 	preInspect?: PreInspect;
 	postInspect?: PostInspect;
@@ -65,7 +69,7 @@ export type Settings = {
 };
 
 export type ImportResolution = {
-	path: string | null;
+	path: Nullable<string>;
 	isExternal: boolean;
 	isRelative: boolean;
 };
@@ -87,10 +91,10 @@ export type FileContent = {
 export type Import = {
 	id: string;
 	sourcePath: string;
-	locator: string | null;
+	locator: Nullable<string>;
 	posSpan: Span;
 	isDynamic: boolean;
-	resolution: ImportResolution | null;
+	resolution: Nullable<ImportResolution>;
 	defectMap: Map</* rule */ string, ImportDefect>;
 	addDefect: (params: { rule: string; description?: string }) => void;
 	removeDefect: (rule: string) => void;
@@ -102,8 +106,8 @@ export type ImportDefect = {
 	importId: string;
 	sourcePath: string;
 	description: string;
-	locator: string | null;
-	importedPath: string | null;
+	locator: Nullable<string>;
+	importedPath: Nullable<string>;
 };
 
 export type ModuleDefect = {
@@ -117,8 +121,8 @@ export type Module = {
 	lang: Lang;
 	path: string;
 	fileContent: FileContent;
-	parentDirPath: string | null;
-	packagePath: string | null;
+	parentDirPath: Nullable<string>;
+	packagePath: Nullable<string>;
 	isPackageEntryPoint: boolean;
 	tagSet: Set<string>;
 	frameSet: Set<string>;
@@ -134,33 +138,34 @@ export type Module = {
 export type Package = {
 	name: string;
 	path: string;
-	parentDirPath: string | null;
-	parentPackagePath: string | null;
+	parentDirPath: Nullable<string>;
+	parentPackagePath: Nullable<string>;
 	subPackagePaths: string[];
 	modulePaths: string[];
 };
 
+export type HtmlxComponentBaseProps<T extends string = string> = {
+	class?: string;
+	attrs?: Rec<string>;
+	mods?: T[];
+};
+
+type HtmlxComponent<P extends Record<string, unknown>, M extends string = string> = (
+	params: P & HtmlxComponentBaseProps<M>,
+) => string;
+
 export type HtmlxComponents = {
-	link: (
-		params: { url: string; value: string; singleLine?: boolean; attrs?: Record<string, string> },
-	) => string;
-	dl: (
-		params: { items: Array<[key: string, value: string]>; attrs?: Record<string, string> },
-	) => string;
-	ol: (
-		params: { items: string[]; inline?: boolean; attrs?: Record<string, string> },
-	) => string;
-	ul: (
-		params: { items: string[]; inline?: boolean; attrs?: Record<string, string> },
-	) => string;
-	details: (params: { summary: string; value: string; attrs?: Record<string, string> }) => string;
-	grid: (params: { items: string[]; attrs?: Record<string, string> }) => string;
-	table: (params: { rows: string[][]; columns?: string[]; attrs?: Record<string, string> }) => string;
-	expander: (params: { summary: string; value: string; attrs?: Record<string, string> }) => string;
-	tabs: (params: { items: Array<[key: string, value: string]>; attrs?: Record<string, string> }) => string;
-	code: (params: { value: string; attrs?: Record<string, string> }) => string;
-	json: (params: { data: unknown; attrs?: Record<string, string> }) => string;
-	yaml: (params: { data: unknown; attrs?: Record<string, string> }) => string;
+	link: HtmlxComponent<{ url: string; value: string }, "single-line">;
+	list: HtmlxComponent<{ items: string[]; ordered?: boolean }, "inline">;
+	dl: HtmlxComponent<{ items: Array<[key: string, value: string]> }>;
+	details: HtmlxComponent<{ summary: string; value: string }>;
+	grid: HtmlxComponent<{ items: string[] }>;
+	table: HtmlxComponent<{ rows: string[][]; columns?: string[] }>;
+	expander: HtmlxComponent<{ summary: string; value: string }>;
+	tabs: HtmlxComponent<{ items: Array<[key: string, value: string]> }>;
+	code: HtmlxComponent<{ value: string }>;
+	json: HtmlxComponent<{ data: unknown }>;
+	yaml: HtmlxComponent<{ data: unknown }>;
 };
 
 export type ContextEnv = {
@@ -178,16 +183,16 @@ export type ContextFrames = {
 
 export type ContextModules = {
 	getAll: () => Module[];
-	find: (path: string) => Module | null;
+	find: (path: string) => Nullable<Module>;
 	get: (path: string) => Module;
 };
 
 export type ContextPackages = {
 	getAll: () => Package[];
 	getRoots: () => Package[];
-	find: (path: string) => Package | null;
+	find: (path: string) => Nullable<Package>;
 	get: (path: string) => Package;
-	findParent: (path: string) => Package | null;
+	findParent: (path: string) => Nullable<Package>;
 	getParent: (path: string) => Package;
 	getSubs: (path: string) => Package[];
 	isInAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
@@ -201,7 +206,7 @@ export type ContextTags = {
 
 export type ContextImports = {
 	getAll: () => Import[];
-	find: (id: string) => Import | null;
+	find: (id: string) => Nullable<Import>;
 	get: (id: string) => Import;
 	getFullResolved: () => Import[];
 	getUnresolved: () => Import[];
@@ -209,7 +214,7 @@ export type ContextImports = {
 	getStatic: () => Import[];
 	getDynamicUnresolved: () => Import[];
 	getExternal: () => Import[];
-	findModule: (id: string) => Module | null;
+	findModule: (id: string) => Nullable<Module>;
 	getModule: (id: string) => Module;
 };
 

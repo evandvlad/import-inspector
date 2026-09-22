@@ -1,5 +1,7 @@
+import type { HtmlxComponents } from "~/api.ts";
+
 import { stringify } from "@std/yaml";
-import { stringifyAttrs } from "./helpers.ts";
+import { stringifyCompAttrs } from "./helpers.ts";
 
 function getValue(data: unknown) {
 	try {
@@ -9,6 +11,6 @@ function getValue(data: unknown) {
 	}
 }
 
-export function yaml({ data, attrs }: { data: unknown; attrs?: Record<string, string> }) {
-	return `<pre class="c-yaml" ${stringifyAttrs(attrs)}>${getValue(data)}</pre>`;
-}
+export const yaml: HtmlxComponents["yaml"] = (props) => {
+	return `<pre ${stringifyCompAttrs({ compClass: "c-yaml", props })}>${getValue(props.data)}</pre>`;
+};

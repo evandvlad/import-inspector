@@ -1,4 +1,6 @@
-import { stringifyAttrs } from "./helpers.ts";
+import type { HtmlxComponents } from "~/api.ts";
+
+import { stringifyCompAttrs } from "./helpers.ts";
 
 function getValue(data: unknown) {
 	try {
@@ -8,6 +10,6 @@ function getValue(data: unknown) {
 	}
 }
 
-export function json({ data, attrs }: { data: unknown; attrs?: Record<string, string> }) {
-	return `<pre class="c-json" ${stringifyAttrs(attrs)}>${getValue(data)}</pre>`;
-}
+export const json: HtmlxComponents["json"] = (props) => {
+	return `<pre ${stringifyCompAttrs({ compClass: "c-json", props })}>${getValue(props.data)}</pre>`;
+};
