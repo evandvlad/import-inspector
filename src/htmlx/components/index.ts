@@ -11,6 +11,7 @@ import { tabs } from "./tabs.ts";
 import { tree } from "./tree.ts";
 import { code } from "./code.ts";
 import { raw } from "./raw.ts";
+import { flist } from "./flist/index.ts";
 
 export const components = {
 	link,
@@ -24,4 +25,5 @@ export const components = {
 	tree,
 	code,
 	raw,
+	flist,
 } satisfies HtmlxComponents;

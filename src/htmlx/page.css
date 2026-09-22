@@ -23,12 +23,13 @@
 	--indents-large: var(--indent-v-large) var(--indent-h-large);
 }
 
-/* Resets */
+/* Resets & globals */
 
 * {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+	scrollbar-color: var(--color-primary) var(--color-light);
 }
 
 body,
@@ -43,12 +44,6 @@ h4,
 h5,
 h6 {
 	font-weight: normal;
-}
-
-/* Globals */
-
-* {
-	scrollbar-color: var(--color-primary) var(--color-light);
 }
 
 body {
@@ -123,6 +118,19 @@ dt {
 
 small {
 	font-size: var(--font-size-small);
+}
+
+input[type="text"],
+input[type="search"] {
+	font: inherit;
+	background: none;
+	border: 1px solid var(--color-primary-light);
+	padding: 5px 10px;
+	width: 100%;
+
+	&:focus {
+		outline: 1px solid var(--color-primary);
+	}
 }
 
 /* Universals */
@@ -276,5 +284,19 @@ small {
 
 	.c_tree__items .c_tree__items {
 		margin-left: 17px;
+	}
+}
+
+.c_flist {
+	display: flex;
+	flex-direction: column;
+	gap: var(--indents-normal);
+	height: inherit;
+	max-height: inherit;
+
+	.c_flist__items {
+		overflow-y: auto;
+		padding-left: var(--indent-h-normal);
+		padding-right: var(--indent-h-normal);
 	}
 }

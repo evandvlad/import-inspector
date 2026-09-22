@@ -1,11 +1,6 @@
 import type { HtmlxComponents } from "~/api.ts";
 
-import { stringifyCompAttrs } from "./helpers.ts";
-
-const incId = (() => {
-	let id = 0;
-	return () => ++id;
-})();
+import { incId, stringifyCompAttrs } from "./helpers.ts";
 
 export const tabs: HtmlxComponents["tabs"] = (props) => {
 	if (!props.items.length) {

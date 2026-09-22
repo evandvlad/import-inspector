@@ -1,4 +1,4 @@
-import type { HtmlxComponentBaseProps } from "~/api.ts";
+import type { HtmlxComponent, HtmlxComponentBaseProps } from "~/api.ts";
 
 function cls(...args: Array<string | null | undefined | Record<string, boolean>>) {
 	return args.flatMap((arg) => {
@@ -28,6 +28,11 @@ export function encodeHTML(value: string) {
 		.replaceAll("\n", "&nbsp;");
 }
 
+export const incId = (() => {
+	let id = 0;
+	return () => ++id;
+})();
+
 export function stringifyCompAttrs<
 	P extends HtmlxComponentBaseProps,
 	A extends Record<string, string> = Record<string, string>,
@@ -41,4 +46,22 @@ export function stringifyCompAttrs<
 	};
 
 	return Object.entries(preparedAttrs).map(([key, value]) => `${key}="${value}"`).join(" ");
+}
+
+// deno-lint-ignore no-explicit-any
+export function decorateComponentOutputOnce<T extends HtmlxComponent<any>>(
+	{ component, decorator }: { component: T; decorator: (content: string) => string },
+) {
+	let isFirstCall = true;
+
+	return ((...args) => {
+		if (!isFirstCall) {
+			return component(...args);
+		}
+
+		isFirstCall = false;
+
+		const result = component(...args);
+		return decorator(result);
+	}) as T;
 }

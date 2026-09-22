@@ -150,7 +150,7 @@ export type HtmlxComponentBaseProps<T extends string = string> = {
 	mods?: T[];
 };
 
-type HtmlxComponent<P extends Record<string, unknown>, M extends string = string> = (
+export type HtmlxComponent<P extends Rec<unknown> = Rec<unknown>, M extends string = string> = (
 	params: P & HtmlxComponentBaseProps<M>,
 ) => string;
 
@@ -164,6 +164,7 @@ export type HtmlxComponentTreeItem = {
 export type HtmlxComponents = {
 	link: HtmlxComponent<{ url: string; value: string }, "single-line" | "block">;
 	list: HtmlxComponent<{ items: string[]; ordered?: boolean }, "inline">;
+	flist: HtmlxComponent<{ items: Array<{ value: string; content: string }> }>;
 	desc: HtmlxComponent<{ items: Array<[key: string, value: string]> }>;
 	details: HtmlxComponent<{ summary: string; value: string }>;
 	grid: HtmlxComponent<{ items: string[] }>;
