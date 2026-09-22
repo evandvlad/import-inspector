@@ -8,5 +8,5 @@ export const dl: HtmlxComponents["dl"] = (props) => {
 		<dd>${value}</dd>
 	`).join("");
 
-	return `<dl ${stringifyCompAttrs({ props })}>${content}</dl>`;
+	return `<dl ${stringifyCompAttrs({ compClass: "c_dl", props })}>${content}</dl>`;
 };

@@ -143,25 +143,20 @@ dd {
 	font-size: var(--font-size-small);
 }
 
+/* Modifiers */
+.m_single-line {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.m_inline {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--indents, var(--indents-normal));
+}
+
 /* Components */
-.c_link {
-	word-break: break-all;
-
-	&.m_single-line {
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-}
-
-.c_list {
-	&.m_inline {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--indents-normal);
-	}
-}
-
 .c_grid {
 	display: grid;
 	gap: var(--indents-normal);

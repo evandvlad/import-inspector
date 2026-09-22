@@ -32,7 +32,7 @@ export function stringifyCompAttrs<
 	P extends HtmlxComponentBaseProps,
 	A extends Record<string, string> = Record<string, string>,
 >(
-	{ compClass, props, attrs }: { compClass?: string; props: P; attrs?: A },
+	{ compClass, props, attrs }: { compClass: `c_${string}`; props: P; attrs?: A },
 ) {
 	const preparedAttrs = {
 		...props.attrs,
