@@ -17,9 +17,9 @@ export const tabs: HtmlxComponents["tabs"] = (props) => {
 		return `
 			<input type="radio" id="${tabId}" name="${name}" ${index === 0 ? "checked" : ""}>
 			<label for="${tabId}">${key}</label>
-			<div>${value}</div>
+			<article>${value}</article>
 		`;
 	}).join("");
 
-	return `<div ${stringifyCompAttrs({ compClass: "c-tabs", props })}>${content}</div>`;
+	return `<div ${stringifyCompAttrs({ compClass: "c_tabs", props })}>${content}</div>`;
 };

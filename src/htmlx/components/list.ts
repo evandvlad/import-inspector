@@ -7,7 +7,7 @@ export const list: HtmlxComponents["list"] = (props) => {
 	const tag = ordered ? "ol" : "ul";
 
 	return `
-		<${tag} ${stringifyCompAttrs({ compClass: "c-list", props })}>
+		<${tag} ${stringifyCompAttrs({ compClass: "c_list", props })}>
 			${items.map((value) => `<li>${value}</li>`).join("")}
 		</${tag}>
 	`;

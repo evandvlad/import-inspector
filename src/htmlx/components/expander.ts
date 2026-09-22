@@ -6,7 +6,7 @@ export const expander: HtmlxComponents["expander"] = (props) => {
 	const { summary, value } = props;
 
 	return `
-		<details ${stringifyCompAttrs({ compClass: "c-expander", props })}>
+		<details ${stringifyCompAttrs({ compClass: "c_expander", props })}>
 			<summary>${summary}</summary>
 			${value}
 		</details>

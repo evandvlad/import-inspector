@@ -12,5 +12,5 @@ function getValue(data: unknown) {
 }
 
 export const yaml: HtmlxComponents["yaml"] = (props) => {
-	return `<pre ${stringifyCompAttrs({ compClass: "c-yaml", props })}>${getValue(props.data)}</pre>`;
+	return `<pre ${stringifyCompAttrs({ compClass: "c_yaml", props })}>${getValue(props.data)}</pre>`;
 };

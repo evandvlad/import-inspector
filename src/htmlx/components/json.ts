@@ -11,5 +11,5 @@ function getValue(data: unknown) {
 }
 
 export const json: HtmlxComponents["json"] = (props) => {
-	return `<pre ${stringifyCompAttrs({ compClass: "c-json", props })}>${getValue(props.data)}</pre>`;
+	return `<pre ${stringifyCompAttrs({ compClass: "c_json", props })}>${getValue(props.data)}</pre>`;
 };

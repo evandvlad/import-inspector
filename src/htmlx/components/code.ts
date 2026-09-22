@@ -8,5 +8,5 @@ export const code: HtmlxComponents["code"] = (props) => {
 		<div>${encodeHTML(line)}</div>
 	`).join("");
 
-	return `<div ${stringifyCompAttrs({ compClass: "c-code", props })}>${content}</div>`;
+	return `<div ${stringifyCompAttrs({ compClass: "c_code", props })}>${content}</div>`;
 };
