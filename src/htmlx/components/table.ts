@@ -3,6 +3,10 @@ import type { HtmlxComponents } from "~/api.ts";
 import { stringifyCompAttrs } from "./helpers.ts";
 
 export const table: HtmlxComponents["table"] = (props) => {
+	if (!props.rows.length) {
+		return "";
+	}
+
 	const { columns, rows } = props;
 
 	return `

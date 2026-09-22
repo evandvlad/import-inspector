@@ -4,7 +4,7 @@ import { encodeHTML, stringifyCompAttrs } from "./helpers.ts";
 
 export const code: HtmlxComponents["code"] = (props) => {
 	const content = props.value.split("\n").map((line, index) => `
-		<div>${index + 1}</div>
+		<div class="c_code__gutter">${index + 1}</div>
 		<div>${encodeHTML(line)}</div>
 	`).join("");
 

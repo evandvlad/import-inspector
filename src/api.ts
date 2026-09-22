@@ -156,6 +156,11 @@ type HtmlxComponent<P extends Record<string, unknown>, M extends string = string
 
 export type HtmlxComponentRawFormat = "json" | "yaml";
 
+export type HtmlxComponentTreeItem = {
+	value: string;
+	children?: HtmlxComponentTreeItem[];
+};
+
 export type HtmlxComponents = {
 	link: HtmlxComponent<{ url: string; value: string }, "single-line" | "block">;
 	list: HtmlxComponent<{ items: string[]; ordered?: boolean }, "inline">;
@@ -165,6 +170,7 @@ export type HtmlxComponents = {
 	table: HtmlxComponent<{ rows: string[][]; columns?: string[] }>;
 	expander: HtmlxComponent<{ summary: string; value: string }>;
 	tabs: HtmlxComponent<{ items: Array<[key: string, value: string]> }>;
+	tree: HtmlxComponent<{ items: HtmlxComponentTreeItem[] }>;
 	code: HtmlxComponent<{ value: string }>;
 	raw: HtmlxComponent<{ data: unknown; format: HtmlxComponentRawFormat }>;
 };

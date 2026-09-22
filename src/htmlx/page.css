@@ -99,6 +99,15 @@ ol {
 	list-style-position: inside;
 }
 
+summary {
+	cursor: pointer;
+	width: fit-content;
+
+	&::marker {
+		color: var(--color-primary);
+	}
+}
+
 dl {
 	--desc-width: auto;
 	--dt-font-weight: 600;
@@ -185,15 +194,15 @@ small {
 	padding: var(--indents-normal);
 	padding-top: 0;
 
-	summary {
+	.c_details__summary {
 		background-color: var(--color-primary-light);
 		border-bottom: 1px solid transparent;
 		padding: var(--indents-normal);
 		margin: 0 -12px -8px;
-		cursor: pointer;
+		width: auto;
 	}
 
-	&:open summary {
+	&:open .c_details__summary {
 		margin-bottom: 8px;
 	}
 }
@@ -202,29 +211,29 @@ small {
 	display: flex;
 	flex-wrap: wrap;
 
-	> label {
+	> .c_tabs__label {
 		padding: 5px 20px;
 		cursor: pointer;
 		border: 1px solid transparent;
 		transform: translateY(1px);
 	}
 
-	> input {
+	> .c_tabs__input {
 		display: none;
 	}
 
-	> article {
+	> .c_tabs__content {
 		display: none;
 		border-top: 1px solid var(--color-primary);
 	}
 
-	& > input:checked + label + article {
+	& > .c_tabs__input:checked + .c_tabs__label + .c_tabs__content {
 		display: block;
 		order: 999;
 		width: 100%;
 	}
 
-	& > input:checked + label {
+	& > .c_tabs__input:checked + .c_tabs__label {
 		border-color: var(--color-primary);
 		border-bottom-color: var(--color-light);
 		border-left-color: transparent;
@@ -235,10 +244,8 @@ small {
 .c_expander {
 	margin-left: 18px;
 
-	summary {
+	.c_expander__summary {
 		margin-left: -15px;
-		cursor: pointer;
-		width: fit-content;
 	}
 }
 
@@ -250,7 +257,7 @@ small {
 	padding: var(--indents-normal);
 	border: 1px solid var(--color-primary-light);
 
-	> *:nth-child(odd) {
+	.c_code__gutter {
 		opacity: 0.2;
 	}
 }
@@ -260,4 +267,14 @@ small {
 	overflow: auto;
 	padding: var(--indents-normal);
 	border: 1px solid var(--color-primary-light);
+}
+
+.c_tree {
+	.c_tree__leaf {
+		margin-left: 15px;
+	}
+
+	.c_tree__items .c_tree__items {
+		margin-left: 17px;
+	}
 }

@@ -8,6 +8,7 @@ import { grid } from "./grid.ts";
 import { table } from "./table.ts";
 import { expander } from "./expander.ts";
 import { tabs } from "./tabs.ts";
+import { tree } from "./tree.ts";
 import { code } from "./code.ts";
 import { raw } from "./raw.ts";
 
@@ -20,6 +21,7 @@ export const components = {
 	grid,
 	expander,
 	tabs,
+	tree,
 	code,
 	raw,
 } satisfies HtmlxComponents;

@@ -3,6 +3,10 @@ import type { HtmlxComponents } from "~/api.ts";
 import { stringifyCompAttrs } from "./helpers.ts";
 
 export const desc: HtmlxComponents["desc"] = (props) => {
+	if (!props.items.length) {
+		return "";
+	}
+
 	const content = props.items.map(([key, value]) => `
 		<dt>${key}</dt>
 		<dd>${value}</dd>

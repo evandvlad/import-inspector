@@ -8,6 +8,10 @@ const incId = (() => {
 })();
 
 export const tabs: HtmlxComponents["tabs"] = (props) => {
+	if (!props.items.length) {
+		return "";
+	}
+
 	const id = incId();
 
 	const content = props.items.map(([key, value], index) => {
@@ -15,9 +19,9 @@ export const tabs: HtmlxComponents["tabs"] = (props) => {
 		const tabId = `tabs-tab-${id}-${index}`;
 
 		return `
-			<input type="radio" id="${tabId}" name="${name}" ${index === 0 ? "checked" : ""}>
-			<label for="${tabId}">${key}</label>
-			<article>${value}</article>
+			<input class="c_tabs__input" type="radio" id="${tabId}" name="${name}" ${index === 0 ? "checked" : ""}>
+			<label class="c_tabs__label" for="${tabId}">${key}</label>
+			<div class="c_tabs__content">${value}</div>
 		`;
 	}).join("");
 
