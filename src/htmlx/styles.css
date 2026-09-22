@@ -156,6 +156,10 @@ dd {
 	gap: var(--indents, var(--indents-normal));
 }
 
+.m_block {
+	display: block;
+}
+
 /* Components */
 .c_grid {
 	display: grid;

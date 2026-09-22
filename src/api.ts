@@ -157,7 +157,7 @@ type HtmlxComponent<P extends Record<string, unknown>, M extends string = string
 export type HtmlxComponentRawFormat = "json" | "yaml";
 
 export type HtmlxComponents = {
-	link: HtmlxComponent<{ url: string; value: string }, "single-line">;
+	link: HtmlxComponent<{ url: string; value: string }, "single-line" | "block">;
 	list: HtmlxComponent<{ items: string[]; ordered?: boolean }, "inline">;
 	dl: HtmlxComponent<{ items: Array<[key: string, value: string]> }>;
 	details: HtmlxComponent<{ summary: string; value: string }>;
