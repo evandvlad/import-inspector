@@ -8,7 +8,7 @@
 	--color-primary: #5f81ac;
 	--color-primary-light: color-mix(in oklab, var(--color-primary), white 75%);
 	--color-primary-x-light: color-mix(in oklab, var(--color-primary), white 82%);
-	--color-primary-dark: color-mix(in oklab, var(--color-primary), black 40%);
+	--color-primary-dark: color-mix(in oklab, var(--color-primary), black 20%);
 	--indent-v-small: 5px;
 	--indent-v-normal: 8px;
 	--indent-v-medium: 14px;
@@ -63,10 +63,7 @@ body {
 
 a {
 	color: var(--color-primary-dark);
-
-	&:hover {
-		text-decoration: none;
-	}
+	text-decoration: none;
 }
 
 table {
@@ -165,11 +162,14 @@ small {
 	gap: var(--indents, var(--indents-normal));
 }
 
-.m_block {
-	display: block;
-}
-
 /* Components */
+
+.c_link {
+	&.m_block {
+		display: block;
+		width: fit-content;
+	}
+}
 
 .c_table {
 	border-top: 1px solid var(--color-primary-light);
@@ -249,7 +249,6 @@ small {
 	grid-template-columns: 40px max-content;
 	padding: var(--indents-normal);
 	border: 1px solid var(--color-primary-light);
-	max-height: 300px;
 
 	> *:nth-child(odd) {
 		opacity: 0.2;
@@ -261,5 +260,4 @@ small {
 	overflow: auto;
 	padding: var(--indents-normal);
 	border: 1px solid var(--color-primary-light);
-	max-height: 300px;
 }

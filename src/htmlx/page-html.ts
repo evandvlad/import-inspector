@@ -1,6 +1,6 @@
-import css from "./styles.css" with { type: "text" };
+import css from "./page.css" with { type: "text" };
 
-export function render(html: string) {
+export function getPageHtml(html: string) {
 	return `
 		<!doctype html>
 		<html lang="en">

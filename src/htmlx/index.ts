@@ -1,2 +1,2 @@
 export { components } from "./components/index.ts";
-export { render } from "./render.ts";
+export { getPageHtml } from "./page-html.ts";
