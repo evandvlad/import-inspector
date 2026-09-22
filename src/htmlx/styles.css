@@ -109,6 +109,10 @@ dt {
 	font-weight: var(--dt-font-weight);
 }
 
+small {
+	font-size: var(--font-size-small);
+}
+
 /* Universals */
 
 .u_flex-v {
@@ -131,10 +135,6 @@ dt {
 .u_frame {
 	border: var(--border-style-primary);
 	padding: var(--indents-medium);
-}
-
-.u_font-small {
-	font-size: var(--font-size-small);
 }
 
 .u_count-badge {
