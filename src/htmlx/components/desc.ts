@@ -2,11 +2,11 @@ import type { HtmlxComponents } from "~/api.ts";
 
 import { stringifyCompAttrs } from "./helpers.ts";
 
-export const dl: HtmlxComponents["dl"] = (props) => {
+export const desc: HtmlxComponents["desc"] = (props) => {
 	const content = props.items.map(([key, value]) => `
 		<dt>${key}</dt>
 		<dd>${value}</dd>
 	`).join("");
 
-	return `<dl ${stringifyCompAttrs({ compClass: "c_dl", props })}>${content}</dl>`;
+	return `<dl ${stringifyCompAttrs({ compClass: "c_desc", props })}>${content}</dl>`;
 };

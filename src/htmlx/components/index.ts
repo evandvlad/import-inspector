@@ -1,7 +1,7 @@
 import type { HtmlxComponents } from "~/api.ts";
 
 import { link } from "./link.ts";
-import { dl } from "./dl.ts";
+import { desc } from "./desc.ts";
 import { details } from "./details.ts";
 import { list } from "./list.ts";
 import { grid } from "./grid.ts";
@@ -12,9 +12,9 @@ import { code } from "./code.ts";
 import { raw } from "./raw.ts";
 
 export const components = {
-	dl,
 	link,
 	list,
+	desc,
 	details,
 	table,
 	grid,

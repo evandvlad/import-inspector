@@ -98,6 +98,7 @@ ol {
 
 dl {
 	--desc-width: auto;
+	--dt-font-weight: 600;
 
 	display: grid;
 	grid-template-columns: var(--desc-width) 1fr;
@@ -105,7 +106,7 @@ dl {
 }
 
 dt {
-	font-weight: 600;
+	font-weight: var(--dt-font-weight);
 }
 
 /* Universals */
