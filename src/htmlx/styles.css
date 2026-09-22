@@ -234,8 +234,7 @@ dd {
 	border: var(--border-style-primary);
 }
 
-.c_json,
-.c_yaml {
+.c_raw {
 	font: var(--mono-font);
 	overflow: auto;
 	padding: var(--indents-normal);

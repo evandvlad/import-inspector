@@ -154,6 +154,8 @@ type HtmlxComponent<P extends Record<string, unknown>, M extends string = string
 	params: P & HtmlxComponentBaseProps<M>,
 ) => string;
 
+export type HtmlxComponentRawFormat = "json" | "yaml";
+
 export type HtmlxComponents = {
 	link: HtmlxComponent<{ url: string; value: string }, "single-line">;
 	list: HtmlxComponent<{ items: string[]; ordered?: boolean }, "inline">;
@@ -164,8 +166,7 @@ export type HtmlxComponents = {
 	expander: HtmlxComponent<{ summary: string; value: string }>;
 	tabs: HtmlxComponent<{ items: Array<[key: string, value: string]> }>;
 	code: HtmlxComponent<{ value: string }>;
-	json: HtmlxComponent<{ data: unknown }>;
-	yaml: HtmlxComponent<{ data: unknown }>;
+	raw: HtmlxComponent<{ data: unknown; format: HtmlxComponentRawFormat }>;
 };
 
 export type ContextEnv = {

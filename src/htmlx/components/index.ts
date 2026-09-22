@@ -9,8 +9,7 @@ import { table } from "./table.ts";
 import { expander } from "./expander.ts";
 import { tabs } from "./tabs.ts";
 import { code } from "./code.ts";
-import { json } from "./json.ts";
-import { yaml } from "./yaml.ts";
+import { raw } from "./raw.ts";
 
 export const components = {
 	dl,
@@ -22,6 +21,5 @@ export const components = {
 	expander,
 	tabs,
 	code,
-	json,
-	yaml,
+	raw,
 } satisfies HtmlxComponents;
