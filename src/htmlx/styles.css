@@ -8,10 +8,21 @@
 	--border-color-primary: gainsboro;
 	--border-style-primary: 1px solid var(--border-color-primary);
 	--accent-color-primary: whitesmoke;
+	--indent-v-small: 5px;
 	--indent-v-normal: 8px;
+	--indent-v-medium: 14px;
+	--indent-v-large: 26px;
+	--indent-h-small: 8px;
 	--indent-h-normal: 12px;
+	--indent-h-medium: 20px;
+	--indent-h-large: 30px;
+	--indents-small: var(--indent-v-small) var(--indent-h-small);
 	--indents-normal: var(--indent-v-normal) var(--indent-h-normal);
+	--indents-medium: var(--indent-v-medium) var(--indent-h-medium);
+	--indents-large: var(--indent-v-large) var(--indent-h-large);
 }
+
+/* Resets */
 
 * {
 	box-sizing: border-box;
@@ -24,6 +35,17 @@ html {
 	height: 100%;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: normal;
+}
+
+/* Globals */
+
 body {
 	background: var(--background);
 	font-family: Verdana, sans-serif;
@@ -32,15 +54,6 @@ body {
 	color: var(--font-color);
 	padding: 40px;
 	word-break: break-all;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-weight: normal;
 }
 
 a {
@@ -84,31 +97,29 @@ ol {
 }
 
 dl {
+	--desc-width: auto;
+
 	display: grid;
-	grid-template-columns: auto 1fr;
-	gap: var(--indents-normal);
+	grid-template-columns: var(--desc-width) 1fr;
+	gap: var(--indents-small);
 }
 
 dt {
 	font-weight: 600;
 }
 
-dd {
-	margin: var(--indents-normal);
-	margin-top: 0;
-	margin-right: 0;
-}
+/* Universals */
 
 .flex-v {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: var(--indents-large);
 }
 
 .flex-h {
 	display: flex;
 	flex-direction: row;
-	gap: 20px;
+	gap: var(--indents-large);
 }
 
 .grid {
@@ -118,7 +129,7 @@ dd {
 
 .frame {
 	border: var(--border-style-primary);
-	padding: 20px;
+	padding: var(--indents-medium);
 }
 
 .font-small {
@@ -144,6 +155,7 @@ dd {
 }
 
 /* Modifiers */
+
 .m_single-line {
 	overflow: hidden;
 	white-space: nowrap;
@@ -161,6 +173,7 @@ dd {
 }
 
 /* Components */
+
 .c_grid {
 	display: grid;
 	gap: var(--indents-normal);
