@@ -3,11 +3,12 @@
 	--line-height-normal: 1.5;
 	--font-size-normal: 14px;
 	--font-size-small: 12px;
-	--font-color: black;
-	--background: white;
-	--border-color-primary: gainsboro;
-	--border-style-primary: 1px solid var(--border-color-primary);
-	--accent-color-primary: whitesmoke;
+	--color-dark: #2e3440;
+	--color-light: #eceff4;
+	--color-primary: #5f81ac;
+	--color-primary-light: color-mix(in oklab, var(--color-primary), white 75%);
+	--color-primary-x-light: color-mix(in oklab, var(--color-primary), white 82%);
+	--color-primary-dark: color-mix(in oklab, var(--color-primary), black 40%);
 	--indent-v-small: 5px;
 	--indent-v-normal: 8px;
 	--indent-v-medium: 14px;
@@ -46,18 +47,22 @@ h6 {
 
 /* Globals */
 
+* {
+	scrollbar-color: var(--color-primary) var(--color-light);
+}
+
 body {
-	background: var(--background);
+	background: var(--color-light);
 	font-family: Verdana, sans-serif;
 	font-size: var(--font-size-normal);
 	line-height: var(--line-height-normal);
-	color: var(--font-color);
+	color: var(--color-dark);
 	padding: 40px;
 	word-break: break-all;
 }
 
 a {
-	color: darkslategray;
+	color: var(--color-primary-dark);
 
 	&:hover {
 		text-decoration: none;
@@ -65,21 +70,22 @@ a {
 }
 
 table {
+	--th-font-weight: 600;
+	--th-text-align: left;
+
 	width: 100%;
 	border-collapse: collapse;
 }
 
 tr {
-	border: var(--border-style-primary);
-
 	&:nth-child(even) {
-		background-color: var(--accent-color-primary);
+		background-color: var(--color-primary-x-light);
 	}
 }
 
 th {
-	font-weight: 600;
-	text-align: left;
+	font-weight: var(--th-font-weight);
+	text-align: var(--th-text-align);
 	padding: var(--indents-normal);
 }
 
@@ -133,26 +139,16 @@ small {
 }
 
 .u_frame {
-	border: var(--border-style-primary);
+	border: 1px solid var(--color-primary);
 	padding: var(--indents-medium);
 }
 
-.u_count-badge {
-	border-radius: 50%;
-	background: var(--border-color-primary);
-	display: inline-block;
-	padding: 5px;
-	margin: -5px 0;
-	font-size: var(--font-size-small);
-	font-style: italic;
-}
-
 .u_mark {
-	background: var(--border-color-primary);
-	border-radius: 5px;
+	background: var(--color-primary);
 	padding: 5px 12px;
 	margin: -5px 0;
 	font-size: var(--font-size-small);
+	color: var(--color-light);
 }
 
 /* Modifiers */
@@ -175,26 +171,30 @@ small {
 
 /* Components */
 
+.c_table {
+	border-top: 1px solid var(--color-primary-light);
+	padding-top: 5px;
+}
+
 .c_grid {
 	display: grid;
 	gap: var(--indents-normal);
 }
 
 .c_details {
-	border: var(--border-style-primary);
 	padding: var(--indents-normal);
 	padding-top: 0;
 
 	summary {
-		background-color: var(--accent-color-primary);
+		background-color: var(--color-primary-light);
 		border-bottom: 1px solid transparent;
 		padding: var(--indents-normal);
 		margin: 0 -12px -8px;
+		cursor: pointer;
 	}
 
 	&:open summary {
 		margin-bottom: 8px;
-		border-bottom-color: var(--border-style-primary);
 	}
 }
 
@@ -203,7 +203,7 @@ small {
 	flex-wrap: wrap;
 
 	> label {
-		padding: var(--indents-normal);
+		padding: 5px 20px;
 		cursor: pointer;
 		border: 1px solid transparent;
 		transform: translateY(1px);
@@ -215,7 +215,7 @@ small {
 
 	> article {
 		display: none;
-		border-top: var(--border-style-primary);
+		border-top: 1px solid var(--color-primary);
 	}
 
 	& > input:checked + label + article {
@@ -225,8 +225,9 @@ small {
 	}
 
 	& > input:checked + label {
-		border-color: var(--border-color-primary);
-		border-bottom-color: var(--background);
+		border-color: var(--color-primary);
+		border-bottom-color: var(--color-light);
+		border-left-color: transparent;
 		cursor: default;
 	}
 }
@@ -242,19 +243,23 @@ small {
 }
 
 .c_code {
-	--gutter-width: 40px;
-
 	font: var(--mono-font);
 	overflow: auto;
 	display: grid;
-	grid-template-columns: var(--gutter-width) max-content;
+	grid-template-columns: 40px max-content;
 	padding: var(--indents-normal);
-	border: var(--border-style-primary);
+	border: 1px solid var(--color-primary-light);
+	max-height: 300px;
+
+	> *:nth-child(odd) {
+		opacity: 0.2;
+	}
 }
 
 .c_raw {
 	font: var(--mono-font);
 	overflow: auto;
 	padding: var(--indents-normal);
-	border: var(--border-style-primary);
+	border: 1px solid var(--color-primary-light);
+	max-height: 300px;
 }
