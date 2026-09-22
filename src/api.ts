@@ -187,11 +187,11 @@ export type ContextPackages = {
 	getRoots: () => Package[];
 	find: (path: string) => Package | null;
 	get: (path: string) => Package;
-	isInAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
-	isInSameOrAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
+	findParent: (path: string) => Package | null;
+	getParent: (path: string) => Package;
 	getSubs: (path: string) => Package[];
+	isInAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
 	getAncestryBranch: (path: string) => Package[];
-	getWithAncestryBranch: (path: string) => Package[];
 };
 
 export type ContextTags = {

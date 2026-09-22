@@ -18,7 +18,7 @@ export const dontReferToPackageEntryInside: InspectionHandler = ({ imports, modu
 				return false;
 			}
 
-			return packages.isInSameOrAncestryBranch({
+			return sourceModule.packagePath === importedModule.packagePath || packages.isInAncestryBranch({
 				sourcePath: sourceModule.packagePath,
 				testablePath: importedModule.packagePath,
 			});

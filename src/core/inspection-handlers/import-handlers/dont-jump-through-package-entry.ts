@@ -14,23 +14,25 @@ export const dontJumpThroughPackageEntry: InspectionHandler = ({ imports, module
 		}
 
 		const importedPackage = packages.get(importedModule.packagePath!);
+		const isSourceModulePackaged = sourceModule.packagePath !== null;
 
-		const isImportedFromSameOrAncestorPackage = sourceModule.packagePath !== null &&
-			packages.isInSameOrAncestryBranch({
-				sourcePath: sourceModule.packagePath,
-				testablePath: importedPackage.path,
-			});
+		const isImportedFromSameOrAncestorPackage = isSourceModulePackaged &&
+			(sourceModule.packagePath === importedPackage.path ||
+				packages.isInAncestryBranch({
+					sourcePath: sourceModule.packagePath!,
+					testablePath: importedPackage.path,
+				}));
 
 		if (isImportedFromSameOrAncestorPackage) {
 			return false;
 		}
 
-		if (!sourceModule.packagePath) {
+		if (!isSourceModulePackaged) {
 			return !(roots.includes(importedPackage) && importedModule.isPackageEntryPoint);
 		}
 
-		const sourcePackage = packages.get(sourceModule.packagePath);
-		const ancestryBranchWithSelf = packages.getWithAncestryBranch(sourcePackage.path);
+		const sourcePackage = packages.get(sourceModule.packagePath!);
+		const ancestryBranchWithSelf = [sourcePackage].concat(packages.getAncestryBranch(sourcePackage.path));
 
 		const surroundingPackageSet = new Set(
 			ancestryBranchWithSelf.flatMap(({ path }) => packages.getSubs(path)).concat(roots),

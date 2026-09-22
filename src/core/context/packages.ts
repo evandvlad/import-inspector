@@ -9,7 +9,6 @@ export class Packages implements ContextPackages {
 	constructor({ packages }: { packages: Package[] }) {
 		this.#all = packages;
 		this.#roots = this.#all.filter(({ parentPackagePath }) => parentPackagePath === null);
-
 		this.#packageMap = new Map(packages.map((pack) => [pack.path, pack]));
 	}
 
@@ -35,20 +34,23 @@ export class Packages implements ContextPackages {
 		return this.get(path).subPackagePaths.map((subPath) => this.get(subPath));
 	}
 
+	findParent(path: string) {
+		const { parentPackagePath } = this.get(path);
+		return parentPackagePath ? this.get(parentPackagePath) : null;
+	}
+
+	getParent(path: string) {
+		const { parentPackagePath } = this.get(path);
+		assert(parentPackagePath, `Can't find parent package for path '${path}'.`);
+		return this.get(parentPackagePath);
+	}
+
 	isInAncestryBranch({ sourcePath, testablePath }: { sourcePath: string; testablePath: string }) {
 		return this.#getAncestryBranch(sourcePath).some(({ path }) => path === testablePath);
 	}
 
-	isInSameOrAncestryBranch({ sourcePath, testablePath }: { sourcePath: string; testablePath: string }) {
-		return sourcePath === testablePath || this.isInAncestryBranch({ sourcePath, testablePath });
-	}
-
 	getAncestryBranch(path: string) {
 		return Array.from(this.#getAncestryBranch(path));
-	}
-
-	getWithAncestryBranch(path: string) {
-		return [this.get(path), ...this.#getAncestryBranch(path)];
 	}
 
 	*#getAncestryBranch(path: string) {
