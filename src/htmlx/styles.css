@@ -111,33 +111,33 @@ dt {
 
 /* Universals */
 
-.flex-v {
+.u_flex-v {
 	display: flex;
 	flex-direction: column;
 	gap: var(--indents-large);
 }
 
-.flex-h {
+.u_flex-h {
 	display: flex;
 	flex-direction: row;
 	gap: var(--indents-large);
 }
 
-.grid {
+.u_grid {
 	display: grid;
 	gap: var(--indents-normal);
 }
 
-.frame {
+.u_frame {
 	border: var(--border-style-primary);
 	padding: var(--indents-medium);
 }
 
-.font-small {
+.u_font-small {
 	font-size: var(--font-size-small);
 }
 
-.count-badge {
+.u_count-badge {
 	border-radius: 50%;
 	background: var(--border-color-primary);
 	display: inline-block;
@@ -147,7 +147,7 @@ dt {
 	font-style: italic;
 }
 
-.mark {
+.u_mark {
 	background: var(--border-color-primary);
 	border-radius: 5px;
 	padding: 5px 12px;
