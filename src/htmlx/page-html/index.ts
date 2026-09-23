@@ -1,4 +1,5 @@
-import css from "./page.css" with { type: "text" };
+import styles from "./styles.css" with { type: "text" };
+import scripts from "./scripts.js" with { type: "text" };
 
 export function getPageHtml(html: string) {
 	return `
@@ -8,11 +9,14 @@ export function getPageHtml(html: string) {
 				<meta charset="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<style>
-					${css}
+					${styles}
 				</style>
 			</head>
 			<body>
 				${html}
+				<script>
+					${scripts}
+				</script>
 			</body>
 		</html>
 	`;

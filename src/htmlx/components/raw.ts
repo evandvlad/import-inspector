@@ -20,5 +20,5 @@ export const raw: HtmlxComponents["raw"] = (props) => {
 		}
 	})();
 
-	return `<pre ${stringifyCompAttrs({ compClass: "c_raw", props })}>${content}</pre>`;
+	return `<pre ${stringifyCompAttrs({ classes: ["raw"], props })}>${content}</pre>`;
 };

@@ -7,10 +7,10 @@ export const desc: HtmlxComponents["desc"] = (props) => {
 		return "";
 	}
 
-	const content = props.items.map(([key, value]) => `
-		<dt>${key}</dt>
+	const content = props.items.map(({ label, value }) => `
+		<dt class="desc__dt">${label}</dt>
 		<dd>${value}</dd>
 	`).join("");
 
-	return `<dl ${stringifyCompAttrs({ compClass: "c_desc", props })}>${content}</dl>`;
+	return `<dl ${stringifyCompAttrs({ classes: ["desc"], props })}>${content}</dl>`;
 };

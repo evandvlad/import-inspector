@@ -8,13 +8,26 @@ export const table: HtmlxComponents["table"] = (props) => {
 	}
 
 	const { columns, rows } = props;
+	const cols = rows[0].length;
+
+	const headerCells = columns
+		? columns.map((value) => `<div class="table__cell table__cell--header">${value}</div>`).join("")
+		: "";
+
+	const dataCells = rows.map((row, i) => {
+		const isOdd = Boolean(i % 2);
+
+		return row.map((value) => `
+			<div class="table__cell table__cell--data-cell-${isOdd ? "odd" : "even"}">
+				${value}
+			</div>
+		`).join("");
+	}).join("");
 
 	return `
-		<div ${stringifyCompAttrs({ compClass: "c_table", props })}>
-			<table>
-				${columns ? `<tr>${columns.map((value) => `<th>${value}</th>`).join("")}</tr>` : ""}
-				${rows.map((row) => `<tr>${row.map((value) => `<td>${value}</td>`).join("")}</tr>`).join("")}
-			</table>
+		<div ${stringifyCompAttrs({ classes: ["table"], props })} data-columns=${cols}>
+			${headerCells}
+			${dataCells}
 		</div>
 	`;
 };

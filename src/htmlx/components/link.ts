@@ -3,8 +3,13 @@ import type { HtmlxComponents } from "~/api.ts";
 import { stringifyCompAttrs } from "./helpers.ts";
 
 export const link: HtmlxComponents["link"] = (props) => {
-	const { url, value } = props;
+	const { url, value, block } = props;
 	const attrs = { href: url, title: props.value };
+	const classes = ["link"];
 
-	return `<a ${stringifyCompAttrs({ compClass: "c_link", attrs, props })}>${value}</a>`;
+	if (block) {
+		classes.push("link--block");
+	}
+
+	return `<a ${stringifyCompAttrs({ classes, attrs, props })}>${value}</a>`;
 };

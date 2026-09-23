@@ -7,18 +7,26 @@ export const tabs: HtmlxComponents["tabs"] = (props) => {
 		return "";
 	}
 
+	const { items } = props;
 	const id = incId();
+	const attrs = { "data-js-tabs": id.toString() };
 
-	const content = props.items.map(([key, value], index) => {
-		const name = `tabs-${id}`;
-		const tabId = `tabs-tab-${id}-${index}`;
+	const links = `
+		<div class="tabs__links">
+			${items.map(({ label }) => `<div class="tabs__link" data-js-tabs-link="${id}">${label}</div>`).join("")}
+		</div>
+	`;
 
-		return `
-			<input class="c_tabs__input" type="radio" id="${tabId}" name="${name}" ${index === 0 ? "checked" : ""}>
-			<label class="c_tabs__label" for="${tabId}">${key}</label>
-			<div class="c_tabs__content">${value}</div>
-		`;
-	}).join("");
+	const contents = items.map(({ value }) => `
+		<div class="tabs__content" data-js-tabs-content="${id}">
+			${value}
+		</div>
+	`).join("");
 
-	return `<div ${stringifyCompAttrs({ compClass: "c_tabs", props })}>${content}</div>`;
+	return `
+		<div ${stringifyCompAttrs({ classes: ["tabs"], attrs, props })}>
+			${links}
+			${contents}
+		</div>
+	`;
 };

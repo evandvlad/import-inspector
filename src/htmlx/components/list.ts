@@ -7,11 +7,20 @@ export const list: HtmlxComponents["list"] = (props) => {
 		return "";
 	}
 
-	const { items, ordered = false } = props;
+	const { items, ordered, inline } = props;
 	const tag = ordered ? "ol" : "ul";
+	const classes = ["list"];
+
+	if (inline) {
+		classes.push("list--inline");
+	}
+
+	if (!ordered) {
+		classes.push("list--unordered");
+	}
 
 	return `
-		<${tag} ${stringifyCompAttrs({ compClass: "c_list", props })}>
+		<${tag} ${stringifyCompAttrs({ classes, props })}>
 			${items.map((value) => `<li>${value}</li>`).join("")}
 		</${tag}>
 	`;

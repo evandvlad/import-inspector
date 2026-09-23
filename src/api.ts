@@ -144,14 +144,13 @@ export type Package = {
 	modulePaths: string[];
 };
 
-export type HtmlxComponentBaseProps<T extends string = string> = {
-	class?: string;
+export type HtmlxComponentBaseProps = {
+	classes?: string[];
 	attrs?: Rec<string>;
-	mods?: T[];
 };
 
-export type HtmlxComponent<P extends Rec<unknown> = Rec<unknown>, M extends string = string> = (
-	params: P & HtmlxComponentBaseProps<M>,
+export type HtmlxComponent<P extends Rec<unknown> = Rec<unknown>> = (
+	params: P & HtmlxComponentBaseProps,
 ) => string;
 
 export type HtmlxComponentRawFormat = "json" | "yaml";
@@ -162,15 +161,20 @@ export type HtmlxComponentTreeItem = {
 };
 
 export type HtmlxComponents = {
-	link: HtmlxComponent<{ url: string; value: string }, "single-line" | "block">;
-	list: HtmlxComponent<{ items: string[]; ordered?: boolean }, "inline">;
+	h: HtmlxComponent<{ value: string; level: 1 | 2 | 3 }>;
+	inline: HtmlxComponent<{ value: string }>;
+	block: HtmlxComponent<{ value: string }>;
+	blocks: HtmlxComponent<{ items: string[]; direction?: "v" | "h" }>;
+	link: HtmlxComponent<{ url: string; value: string; block?: boolean }>;
+	list: HtmlxComponent<{ items: string[]; ordered?: boolean; inline?: boolean }>;
 	flist: HtmlxComponent<{ items: Array<{ value: string; content: string }> }>;
-	desc: HtmlxComponent<{ items: Array<[key: string, value: string]> }>;
+	desc: HtmlxComponent<{ items: Array<{ label: string; value: string }> }>;
+	mark: HtmlxComponent<{ value: string }>;
+	figure: HtmlxComponent<{ label: string; value: string }>;
 	details: HtmlxComponent<{ summary: string; value: string }>;
-	grid: HtmlxComponent<{ items: string[] }>;
 	table: HtmlxComponent<{ rows: string[][]; columns?: string[] }>;
 	expander: HtmlxComponent<{ summary: string; value: string }>;
-	tabs: HtmlxComponent<{ items: Array<[key: string, value: string]> }>;
+	tabs: HtmlxComponent<{ items: Array<{ label: string; value: string }> }>;
 	tree: HtmlxComponent<{ items: HtmlxComponentTreeItem[] }>;
 	code: HtmlxComponent<{ value: string }>;
 	raw: HtmlxComponent<{ data: unknown; format: HtmlxComponentRawFormat }>;
