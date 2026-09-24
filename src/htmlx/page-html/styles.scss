@@ -48,6 +48,23 @@ body {
 	height: 100%;
 }
 
+/* Mixins */
+
+@mixin summary-overrides {
+	cursor: pointer;
+	width: fit-content;
+
+	&::marker {
+		color: var(--color-primary);
+	}
+}
+
+@mixin text-overflow {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
 /* Component classes */
 
 .h {
@@ -154,16 +171,13 @@ body {
 	padding-top: 0;
 
 	&__summary {
+		@include summary-overrides;
+
 		background-color: var(--color-primary-light);
 		border-bottom: 1px solid transparent;
 		padding: var(--indents-normal);
 		margin: 0 -12px -8px;
 		width: auto;
-		cursor: pointer;
-
-		&::marker {
-			color: var(--color-primary);
-		}
 	}
 
 	&:open &__summary {
@@ -207,13 +221,9 @@ body {
 	margin-left: 18px;
 
 	&__summary {
-		margin-left: -15px;
-		cursor: pointer;
-		width: fit-content;
+		@include summary-overrides;
 
-		&::marker {
-			color: var(--color-primary);
-		}
+		margin-left: -15px;
 	}
 }
 
@@ -243,12 +253,7 @@ body {
 	}
 
 	&__branch-handle {
-		cursor: pointer;
-		width: fit-content;
-
-		&::marker {
-			color: var(--color-primary);
-		}
+		@include summary-overrides;
 	}
 
 	&__items &__items {
@@ -324,9 +329,7 @@ body {
 }
 
 .-text-overflow {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+	@include text-overflow;
 }
 
 .-no-gaps {
