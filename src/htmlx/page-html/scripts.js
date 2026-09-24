@@ -12,9 +12,10 @@ Array.from(document.querySelectorAll("[data-js-flist]")).forEach((container) => 
 
 			if (isVisible) {
 				itemElement.removeAttribute("hidden");
-			} else {
-				itemElement.setAttribute("hidden", "");
+				return;
 			}
+
+			itemElement.setAttribute("hidden", "");
 		});
 	});
 });
@@ -24,7 +25,7 @@ Array.from(document.querySelectorAll("[data-js-tabs]")).forEach((container) => {
 	const linkElements = Array.from(container.querySelectorAll(`[data-js-tabs-link="${id}"`));
 	const contentElements = Array.from(container.querySelectorAll(`[data-js-tabs-content="${id}"]`));
 	const len = linkElements.length;
-	const activeClass = "active";
+	const activeAttrName = "data-state-active";
 
 	function changeActiveStateByIndex(index) {
 		for (let i = 0; i < len; i += 1) {
@@ -33,10 +34,10 @@ Array.from(document.querySelectorAll("[data-js-tabs]")).forEach((container) => {
 			const isVisible = index === i;
 
 			if (isVisible) {
-				linkElement.classList.add(activeClass);
+				linkElement.setAttribute(activeAttrName, "");
 				contentElement.removeAttribute("hidden");
 			} else {
-				linkElement.classList.remove(activeClass);
+				linkElement.removeAttribute(activeAttrName);
 				contentElement.setAttribute("hidden", "");
 			}
 		}

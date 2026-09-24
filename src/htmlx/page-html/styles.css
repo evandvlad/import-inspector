@@ -70,7 +70,6 @@ body {
 	--indents: 0;
 
 	padding: var(--indents);
-	overflow: auto;
 }
 
 .blocks {
@@ -80,7 +79,6 @@ body {
 	flex-direction: column;
 	flex-wrap: wrap;
 	gap: var(--indents);
-	overflow: auto;
 
 	&.blocks--h-dir {
 		flex-direction: row;
@@ -191,11 +189,11 @@ body {
 		transform: translateY(1px);
 		flex-shrink: 0;
 
-		&:not(.active) {
+		&:not([data-state-active]) {
 			cursor: pointer;
 		}
 
-		&.active {
+		&[data-state-active] {
 			background: var(--color-light);
 			border-color: var(--color-primary) var(--color-primary) var(--color-light) transparent;
 		}
@@ -290,6 +288,7 @@ body {
 	display: inline-block;
 	background: var(--color-primary);
 	padding: 5px 12px;
+	margin: -5px 0;
 	font-size: var(--font-size-small);
 	color: var(--color-light);
 }
