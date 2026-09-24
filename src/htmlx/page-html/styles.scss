@@ -53,15 +53,15 @@ body {
 .h {
 	font-weight: normal;
 
-	&.h--1 {
+	&--1 {
 		font-size: var(--font-size-x-large);
 	}
 
-	&.h--2 {
+	&--2 {
 		font-size: var(--font-size-large);
 	}
 
-	&.h--3 {
+	&--3 {
 		font-size: var(--font-size-medium);
 	}
 }
@@ -80,7 +80,7 @@ body {
 	flex-wrap: wrap;
 	gap: var(--indents);
 
-	&.blocks--h-dir {
+	&--h-dir {
 		flex-direction: row;
 	}
 }
@@ -94,7 +94,7 @@ body {
 	grid-template-columns: var(--grid-template-columns);
 	gap: var(--indents);
 
-	.desc__dt {
+	&__dt {
 		font-style: italic;
 		padding-right: var(--dt-right-padding);
 	}
@@ -104,7 +104,7 @@ body {
 	color: var(--color-primary-dark);
 	text-decoration: none;
 
-	&.link--block {
+	&--block {
 		display: block;
 		width: fit-content;
 	}
@@ -113,11 +113,11 @@ body {
 .list {
 	list-style-position: inside;
 
-	&.list--unordered {
+	&--unordered {
 		list-style-type: none;
 	}
 
-	&.list--inline {
+	&--inline {
 		--indents: var(--indents-normal);
 
 		display: flex;
@@ -136,14 +136,14 @@ body {
 	display: grid;
 	grid-template-columns: var(--grid-template-columns);
 
-	.table__cell {
+	&__cell {
 		padding: var(--indents);
 
-		&.table__cell--header {
+		&--header {
 			font-style: italic;
 		}
 
-		&.table__cell--data-cell-even {
+		&--data-cell-even {
 			background-color: var(--color-primary-x-light);
 		}
 	}
@@ -153,7 +153,7 @@ body {
 	padding: var(--indents-normal);
 	padding-top: 0;
 
-	.details__summary {
+	&__summary {
 		background-color: var(--color-primary-light);
 		border-bottom: 1px solid transparent;
 		padding: var(--indents-normal);
@@ -166,7 +166,7 @@ body {
 		}
 	}
 
-	&:open .details__summary {
+	&:open &__summary {
 		margin-bottom: 8px;
 	}
 }
@@ -177,29 +177,27 @@ body {
 	display: flex;
 	flex-direction: column;
 
-	.tabs__links {
+	&__links {
 		display: flex;
 		overflow: hidden;
 		margin-bottom: -1px;
 	}
 
-	.tabs__link {
+	&__link {
 		border: 1px solid transparent;
 		padding: 5px 20px;
 		transform: translateY(1px);
 		flex-shrink: 0;
-
-		&:not([data-state-active]) {
-			cursor: pointer;
-		}
+		cursor: pointer;
 
 		&[data-state-active] {
 			background: var(--color-light);
 			border-color: var(--color-primary) var(--color-primary) var(--color-light) transparent;
+			cursor: default;
 		}
 	}
 
-	.tabs__content {
+	&__content {
 		border-top: 1px solid var(--color-primary);
 		padding-top: var(--indent);
 	}
@@ -208,7 +206,7 @@ body {
 .expander {
 	margin-left: 18px;
 
-	.expander__summary {
+	&__summary {
 		margin-left: -15px;
 		cursor: pointer;
 		width: fit-content;
@@ -227,7 +225,7 @@ body {
 	padding: var(--indents-normal);
 	border: 1px solid var(--color-primary-light);
 
-	.code__gutter {
+	&__gutter {
 		opacity: 0.2;
 	}
 }
@@ -240,11 +238,11 @@ body {
 }
 
 .tree {
-	.tree__leaf {
+	&__leaf {
 		margin-left: 15px;
 	}
 
-	.tree__branch-handle {
+	&__branch-handle {
 		cursor: pointer;
 		width: fit-content;
 
@@ -253,7 +251,7 @@ body {
 		}
 	}
 
-	.tree__items .tree__items {
+	&__items &__items {
 		margin-left: 17px;
 	}
 }
@@ -265,7 +263,7 @@ body {
 	height: inherit;
 	max-height: inherit;
 
-	.flist__input {
+	&__input {
 		font: inherit;
 		background: none;
 		border: 1px solid var(--color-primary);
@@ -277,7 +275,7 @@ body {
 		}
 	}
 
-	.flist__items {
+	&__items {
 		overflow-y: auto;
 		padding-left: var(--indent-h-normal);
 		padding-right: var(--indent-h-normal);
@@ -301,7 +299,7 @@ body {
 	gap: var(--indents-medium);
 	padding: var(--indents);
 
-	.figure__label {
+	&__label {
 		font-weight: normal;
 		font-size: var(--font-size-large);
 	}
