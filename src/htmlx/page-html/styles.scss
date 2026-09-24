@@ -34,6 +34,7 @@
 }
 
 html {
+	display: grid;
 	height: 100%;
 }
 
@@ -43,7 +44,7 @@ body {
 	font-size: var(--font-size-normal);
 	line-height: var(--line-height-normal);
 	color: var(--color-dark);
-	padding: 40px;
+	padding: 40px 48px;
 	word-break: break-all;
 	height: 100%;
 }
@@ -167,17 +168,26 @@ body {
 }
 
 .details {
+	--summary-background-color: var(--color-primary-x-light);
+
 	padding: var(--indents-normal);
 	padding-top: 0;
 
 	&__summary {
 		@include summary-overrides;
 
-		background-color: var(--color-primary-light);
-		border-bottom: 1px solid transparent;
+		background-color: var(--summary-background-color);
 		padding: var(--indents-normal);
 		margin: 0 -12px -8px;
 		width: auto;
+	}
+
+	&--theme-light {
+		--summary-background-color: var(--color-light);
+	}
+
+	&--theme-dark {
+		--summary-background-color: var(--color-primary-light);
 	}
 
 	&:open &__summary {
@@ -262,9 +272,12 @@ body {
 }
 
 .flist {
+	--indents: var(--indents-normal);
+	--list-indents: 0;
+
 	display: flex;
 	flex-direction: column;
-	gap: var(--indents-normal);
+	gap: var(--indents);
 	height: inherit;
 	max-height: inherit;
 
@@ -281,6 +294,9 @@ body {
 	}
 
 	&__items {
+		display: flex;
+		flex-direction: column;
+		gap: var(--list-indents);
 		overflow-y: auto;
 		padding-left: var(--indent-h-normal);
 		padding-right: var(--indent-h-normal);

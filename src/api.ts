@@ -172,7 +172,7 @@ export type HtmlxComponents = {
 	desc: HtmlxComponent<{ items: Array<{ label: string; value: string }> }>;
 	mark: HtmlxComponent<{ value: string }>;
 	figure: HtmlxComponent<{ label: string; value: string }>;
-	details: HtmlxComponent<{ summary: string; value: string }>;
+	details: HtmlxComponent<{ summary: string; value: string; theme?: "standard" | "light" | "dark" }>;
 	table: HtmlxComponent<{ rows: string[][]; columns?: string[] }>;
 	expander: HtmlxComponent<{ summary: string; value: string }>;
 	tabs: HtmlxComponent<{ items: Array<{ label: string; value: string }> }>;
