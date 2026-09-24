@@ -25,7 +25,7 @@ export const table: HtmlxComponents["table"] = (props) => {
 	}).join("");
 
 	return `
-		<div ${stringifyCompAttrs({ classes: ["table"], props })} data-columns=${cols}>
+		<div ${stringifyCompAttrs({ classes: ["table"], styles: { "--cols-number": cols.toString() }, props })}>
 			${headerCells}
 			${dataCells}
 		</div>

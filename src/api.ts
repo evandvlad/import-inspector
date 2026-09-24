@@ -147,6 +147,7 @@ export type Package = {
 export type HtmlxComponentBaseProps = {
 	classes?: string[];
 	attrs?: Rec<string>;
+	styles?: Rec<string>;
 };
 
 export type HtmlxComponent<P extends Rec<unknown> = Rec<unknown>> = (

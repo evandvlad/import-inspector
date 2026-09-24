@@ -16,17 +16,25 @@ export const incId = (() => {
 	return () => ++id;
 })();
 
-export function stringifyCompAttrs<
-	P extends HtmlxComponentBaseProps,
-	A extends Record<string, string> = Record<string, string>,
->(
-	params: { classes?: string[]; props: P; attrs?: A },
+export function stringifyCompAttrs<T extends HtmlxComponentBaseProps>(
+	{ props, attrs, styles, classes = [] }: {
+		props: T;
+		classes?: string[];
+		attrs?: Record<string, string>;
+		styles?: Record<string, string>;
+	},
 ) {
-	const preparedAttrs = {
-		...params.props.attrs,
-		class: (params.classes ?? []).concat(params.props.classes ?? []).join(" "),
-		...params.attrs,
+	const preparedAttrs: Record<string, string> = {
+		...props.attrs,
+		class: classes.concat(props.classes ?? []).join(" "),
+		...attrs,
 	};
+
+	const styleEntries = Object.entries({ ...styles, ...props.styles });
+
+	if (styleEntries.length) {
+		preparedAttrs.style = styleEntries.map(([key, value]) => `${key}: ${value}`).join("; ");
+	}
 
 	return Object.entries(preparedAttrs).map(([key, value]) => `${key}="${value}"`).join(" ");
 }

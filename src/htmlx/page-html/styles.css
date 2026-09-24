@@ -129,8 +129,9 @@ body {
 }
 
 .table {
+	--cols-number: 1;
 	--indents: var(--indents-normal);
-	--grid-template-columns: repeat(attr(data-columns type(<integer>)), auto);
+	--grid-template-columns: repeat(var(--cols-number), auto);
 
 	border-top: 1px solid var(--color-primary-light);
 	padding-top: 5px;
