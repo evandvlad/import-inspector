@@ -1,5 +1,9 @@
-import styles from "./styles.css" with { type: "text" };
+import sass from "sass";
+
+import scssStyles from "./styles.scss" with { type: "text" };
 import scripts from "./scripts.js" with { type: "text" };
+
+const styles = sass(scssStyles).to_string();
 
 export function getPageHtml(html: string) {
 	return `
