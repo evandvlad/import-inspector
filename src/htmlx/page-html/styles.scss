@@ -107,11 +107,13 @@ body {
 
 .blocks {
 	--indents: var(--indents-medium);
+	--out-indents: 0;
 
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
 	gap: var(--indents);
+	padding: var(--out-indents);
 
 	&--h-dir {
 		flex-direction: row;
@@ -215,12 +217,18 @@ body {
 }
 
 .expander {
+	--indents: 0;
+
 	margin-left: 18px;
 
 	&__summary {
 		@include summary-overrides;
 
 		margin-left: -15px;
+	}
+
+	&__content {
+		padding: var(--indents);
 	}
 }
 
