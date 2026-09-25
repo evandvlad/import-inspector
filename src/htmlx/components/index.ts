@@ -1,8 +1,8 @@
 import type { HtmlxComponents } from "~/api.ts";
 
 import { h } from "./h.ts";
-import { block } from "./block.ts";
-import { blocks } from "./blocks.ts";
+import { elem } from "./elem.ts";
+import { box } from "./box.ts";
 import { link } from "./link.ts";
 import { details } from "./details.ts";
 import { table } from "./table.ts";
@@ -17,8 +17,8 @@ import { figure } from "./figure.ts";
 
 export const components = {
 	h,
-	block,
-	blocks,
+	elem,
+	box,
 	link,
 	details,
 	table,

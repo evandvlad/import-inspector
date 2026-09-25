@@ -163,8 +163,8 @@ export type HtmlxComponentTreeItem = {
 
 export type HtmlxComponents = {
 	h: HtmlxComponent<{ value: string; level: 1 | 2 | 3 }>;
-	block: HtmlxComponent<{ value: string }>;
-	blocks: HtmlxComponent<{ items: string[]; direction?: "v" | "h" }>;
+	elem: HtmlxComponent<{ value: string }>;
+	box: HtmlxComponent<{ items: string[]; direction?: "v" | "h" }>;
 	link: HtmlxComponent<{ url: string; value: string; block?: boolean }>;
 	flist: HtmlxComponent<{ items: Array<{ value: string; content: string }> }>;
 	mark: HtmlxComponent<{ value: string }>;

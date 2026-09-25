@@ -2,9 +2,9 @@ import type { HtmlxComponents } from "~/api.ts";
 
 import { stringifyCompAttrs } from "./helpers.ts";
 
-export const block: HtmlxComponents["block"] = (props) => {
+export const elem: HtmlxComponents["elem"] = (props) => {
 	return `
-		<div ${stringifyCompAttrs({ classes: ["block"], props })}>
+		<div ${stringifyCompAttrs({ classes: ["elem"], props })}>
 			${props.value}
 		</div>
 	`;

@@ -16,6 +16,7 @@ $indent-h-large: 30px;
 	--font-size-large: 20px;
 	--font-size-x-large: 26px;
 	--color-dark: #2e3440;
+	--color-gray: #4c5669;
 	--color-light: #eceff4;
 	--color-primary: #5f81ac;
 	--color-primary-light: color-mix(in oklab, var(--color-primary), white 75%);
@@ -106,13 +107,13 @@ body {
 	}
 }
 
-.block {
+.elem {
 	--indents: 0;
 
 	padding: var(--indents);
 }
 
-.blocks {
+.box {
 	--indents: var(--indents-medium);
 	--out-indents: 0;
 

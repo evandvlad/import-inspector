@@ -2,11 +2,11 @@ import type { HtmlxComponents } from "~/api.ts";
 
 import { stringifyCompAttrs } from "./helpers.ts";
 
-export const blocks: HtmlxComponents["blocks"] = (props) => {
-	const classes = ["blocks"];
+export const box: HtmlxComponents["box"] = (props) => {
+	const classes = ["box"];
 
 	if (props.direction === "h") {
-		classes.push("blocks--h-dir");
+		classes.push("box--h-dir");
 	}
 
 	return `
