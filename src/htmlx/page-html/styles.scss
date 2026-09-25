@@ -57,6 +57,12 @@ body {
 	padding: 40px 48px;
 	word-break: break-all;
 	height: 100%;
+	opacity: 0.2;
+	transition: opacity 3s;
+
+	&.ready {
+		opacity: 1;
+	}
 }
 
 /* Mixins */

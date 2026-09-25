@@ -10,6 +10,11 @@ export function getPageHtml(html: string) {
 				<style>
 					${assetsManager.styles}
 				</style>
+				<script>
+					document.addEventListener("DOMContentLoaded", () => {
+						document.body.classList.add("ready");
+					}, false);
+				</script>
 			</head>
 			<body>
 				${html}
