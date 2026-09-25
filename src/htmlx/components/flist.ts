@@ -7,9 +7,10 @@ export const flist: HtmlxComponents["flist"] = (props) => {
 		return "";
 	}
 
+	const { items } = props;
 	const id = incId();
 
-	const items = props.items.map(({ value, content }) => `
+	const content = items.map(({ value, content }) => `
 		<div data-js-flist-item="${id}" data-js-flist-value="${value}">
 			${content}
 		</div>
@@ -17,8 +18,11 @@ export const flist: HtmlxComponents["flist"] = (props) => {
 
 	return `
 		<div ${stringifyCompAttrs({ classes: ["flist"], props })} data-js-flist="${id}">
-			<input class="flist__input" type="search" placeholder="..." data-js-flist-input="${id}"/>
-			<div class="flist__items">${items}</div>
+			<div class="flist__bar">
+				<input class="flist__input" type="search" placeholder="..." data-js-flist-input="${id}"/>
+				<div class="flist__counter" data-js-flist-counter="${id}">${items.length}</div>
+			</div>
+			<div class="flist__items">${content}</div>
 		</div>
 	`;
 };
