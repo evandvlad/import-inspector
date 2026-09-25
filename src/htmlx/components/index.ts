@@ -3,11 +3,8 @@ import type { HtmlxComponents } from "~/api.ts";
 import { h } from "./h.ts";
 import { block } from "./block.ts";
 import { blocks } from "./blocks.ts";
-import { inline } from "./inline.ts";
 import { link } from "./link.ts";
-import { desc } from "./desc.ts";
 import { details } from "./details.ts";
-import { list } from "./list.ts";
 import { table } from "./table.ts";
 import { expander } from "./expander.ts";
 import { tabs } from "./tabs.ts";
@@ -22,10 +19,7 @@ export const components = {
 	h,
 	block,
 	blocks,
-	inline,
 	link,
-	list,
-	desc,
 	details,
 	table,
 	expander,
