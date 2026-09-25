@@ -79,7 +79,12 @@ body {
 /* Component classes */
 
 .h {
+	--indents: var(--indents-small);
+
 	font-weight: normal;
+	display: flex;
+	align-items: center;
+	gap: var(--indents);
 
 	&--1 {
 		font-size: var(--font-size-x-large);
