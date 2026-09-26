@@ -6,7 +6,7 @@ function renderTree(items: HtmlxComponentTreeItem[]): string {
 	const content = items
 		.map(({ value, children }) => {
 			if (!children || !children.length) {
-				return `<div class="tree__leaf">${value}</div>`;
+				return `<div>${value}</div>`;
 			}
 
 			return `

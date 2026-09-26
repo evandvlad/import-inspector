@@ -31,8 +31,18 @@ export class FileContent implements IFileContent {
 		return endIndex === -1 ? this.entries.slice(startIndex) : this.entries.slice(startIndex, endIndex + 1);
 	}
 
-	getFirstLine(span: Span) {
-		return this.getEntries(span)[0]?.line ?? 0;
+	getLineRange(span: Span): [number] | [number, number] {
+		const lines = this.getEntries(span).map(({ line }) => line); 
+		
+		if (!lines.length) {
+			return [0];
+		}
+
+		if (lines.length === 1) {
+			return [lines[0]];
+		}
+
+		return [lines[0], lines.at(-1)!];
 	}
 
 	#splitToEntries() {
