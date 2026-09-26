@@ -26,16 +26,18 @@ export class Imports implements ContextImports {
 		return this.#all.filter(({ resolution }) => Boolean(resolution?.path));
 	}
 
-	getUnresolved() {
-		return this.#all.filter(({ resolution }) => !resolution);
+	getFullUnresolved() {
+		return this.#all.filter(({ locator, isDynamic, resolution }) => {
+			if (!locator) {
+				return true;
+			}
+
+			return isDynamic && resolution && !resolution.isExternal && !resolution.path;
+		});
 	}
 
 	getDynamic() {
 		return this.#all.filter(({ isDynamic }) => isDynamic);
-	}
-
-	getDynamicUnresolved() {
-		return this.getDynamic().filter(({ locator }) => !locator);
 	}
 
 	getStatic() {
