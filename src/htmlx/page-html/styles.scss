@@ -47,6 +47,7 @@ html {
 	display: grid;
 	height: 100%;
 	overflow-y: scroll;
+	min-width: 1000px;
 }
 
 body {
@@ -173,10 +174,19 @@ body {
 	&__summary {
 		@include summary-overrides;
 
+		display: flex;
 		background-color: var(--summary-background-color);
 		padding: $indent-v $indent-h;
 		margin: 0 -#{$indent-h} -#{$indent-v};
 		width: auto;
+
+		&::before {
+			content: "+";
+			font-family: monospace;
+			color: var(--color-gray);
+			display: block;
+			width: 15px;
+		}
 	}
 
 	&--theme-light {
@@ -189,6 +199,10 @@ body {
 
 	&:open &__summary {
 		margin-bottom: $indent-v;
+
+		&::before {
+			content: "-";
+		}
 	}
 }
 
@@ -300,14 +314,14 @@ body {
 
 	&__input {
 		font: inherit;
-		background: var(--color-primary-x-light);
+		background: transparent;
 		border: 1px solid var(--color-primary);
 		padding: 5px 10px;
 		width: 100%;
 
 		&:focus {
 			outline: none;
-			background: transparent;
+			background: var(--color-primary-x-light);
 		}
 	}
 

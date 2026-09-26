@@ -8,7 +8,9 @@ export const details: HtmlxComponents["details"] = (props) => {
 
 	return `
 		<details ${stringifyCompAttrs({ classes, props })}>
-			<summary class="details__summary">${summary}</summary>
+			<summary class="details__summary">
+				${summary}
+			</summary>
 			${value}
 		</details>
 	`;
