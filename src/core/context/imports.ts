@@ -1,5 +1,5 @@
 import { assert } from "~/lib/err.ts";
-import type { ContextImports } from "~/api.ts";
+import type { ContextImports, Import } from "~/api.ts";
 
 import type { Modules } from "./modules.ts";
 
@@ -42,8 +42,14 @@ export class Imports implements ContextImports {
 		return this.#all.filter(({ isDynamic }) => !isDynamic);
 	}
 
-	getExternal() {
-		return this.#all.filter(({ resolution }) => Boolean(resolution?.isExternal));
+	getExternalMap() {
+		return Iterator.from(this.#all)
+			.filter(({ locator, resolution }) => Boolean(locator && resolution?.isExternal))
+			.reduce((acc, imp) => {
+				const imports = acc.getOrInsert(imp.locator!, []);
+				imports.push(imp);
+				return acc;
+			}, new Map<string, Import[]>());
 	}
 
 	find(id: string) {

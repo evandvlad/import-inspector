@@ -32,8 +32,8 @@ export class FileContent implements IFileContent {
 	}
 
 	getLineRange(span: Span): [number] | [number, number] {
-		const lines = this.getEntries(span).map(({ line }) => line); 
-		
+		const lines = this.getEntries(span).map(({ line }) => line);
+
 		if (!lines.length) {
 			return [0];
 		}

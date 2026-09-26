@@ -230,7 +230,7 @@ export type ContextImports = {
 	getDynamic: () => Import[];
 	getStatic: () => Import[];
 	getDynamicUnresolved: () => Import[];
-	getExternal: () => Import[];
+	getExternalMap: () => Map</* name */ string, Import[]>;
 	findModule: (id: string) => Nullable<Module>;
 	getModule: (id: string) => Module;
 };
