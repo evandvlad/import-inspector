@@ -16,7 +16,7 @@ $indent-h-large: 30px;
 	--font-size-large: 20px;
 	--font-size-x-large: 26px;
 	--color-dark: #2e3440;
-	--color-gray: #4c5669;
+	--color-gray: #677692;
 	--color-light: #eceff4;
 	--color-primary: #5f81ac;
 	--color-primary-light: color-mix(in oklab, var(--color-primary), white 75%);
@@ -172,20 +172,20 @@ body {
 	padding-top: 0;
 
 	&__summary {
-		@include summary-overrides;
-
 		display: flex;
+		cursor: pointer;
 		background-color: var(--summary-background-color);
 		padding: $indent-v $indent-h;
 		margin: 0 -#{$indent-h} -#{$indent-v};
-		width: auto;
 
 		&::before {
-			content: "+";
-			font-family: monospace;
-			color: var(--color-gray);
-			display: block;
-			width: 15px;
+			content: "";
+			width: 0;
+			height: 0;
+			border: 5px solid transparent;
+			border-left-color: var(--color-gray);
+			transform: translateY(6px);
+			margin-right: 3px;
 		}
 	}
 
@@ -201,7 +201,7 @@ body {
 		margin-bottom: $indent-v;
 
 		&::before {
-			content: "-";
+			transform: rotate(90deg) translate(9px, 3px);
 		}
 	}
 }
