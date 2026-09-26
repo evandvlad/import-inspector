@@ -21,6 +21,7 @@ $indent-h-large: 30px;
 	--color-primary: #5f81ac;
 	--color-primary-light: color-mix(in oklab, var(--color-primary), white 75%);
 	--color-primary-x-light: color-mix(in oklab, var(--color-primary), white 82%);
+	--color-primary-xx-light: color-mix(in oklab, var(--color-primary), white 86%);
 	--color-primary-dark: color-mix(in oklab, var(--color-primary), black 20%);
 	--indent-v-small: $indent-v-small;
 	--indent-v-normal: $indent-v-normal;
@@ -182,15 +183,16 @@ body {
 			content: "";
 			width: 0;
 			height: 0;
-			border: 5px solid transparent;
+			border-style: solid;
+			border-color: transparent;
+			border-width: 5px 7px;
 			border-left-color: var(--color-gray);
 			transform: translateY(6px);
-			margin-right: 3px;
 		}
 	}
 
 	&--theme-light {
-		--summary-background-color: var(--color-light);
+		--summary-background-color: var(--color-primary-xx-light);
 	}
 
 	&--theme-dark {
@@ -201,7 +203,7 @@ body {
 		margin-bottom: $indent-v;
 
 		&::before {
-			transform: rotate(90deg) translate(9px, 3px);
+			transform: rotate(90deg) translate(10px, 4px);
 		}
 	}
 }

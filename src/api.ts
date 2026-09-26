@@ -178,6 +178,11 @@ export type HtmlxComponents = {
 	raw: HtmlxComponent<{ data: unknown; format: HtmlxComponentRawFormat }>;
 };
 
+export type ContextFramesModuleDependencyItem = {
+	source: Module;
+	imported: Module;
+};
+
 export type ContextEnv = {
 	basePath: string;
 	htmlxComponents: HtmlxComponents;
@@ -187,8 +192,10 @@ export type ContextEnv = {
 
 export type ContextFrames = {
 	getAll: () => string[];
+	getPathPrefixes: (name: string) => string[];
 	getModulesByFrame: (name: string) => Module[];
 	isModuleInFrame: (params: { path: string; name: string }) => boolean;
+	getImportedFramesMap: (name: string) => Map</* name */ string, ContextFramesModuleDependencyItem[]>;
 };
 
 export type ContextModules = {

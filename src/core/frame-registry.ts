@@ -5,9 +5,11 @@ import type { PathRecProvider } from "./path-rec-provider/index.ts";
 export class FrameRegistry {
 	names;
 
+	#frameSettings;
 	#frameMap;
 
 	constructor({ settings, pathRecProvider }: { settings: Settings; pathRecProvider: PathRecProvider }) {
+		this.#frameSettings = settings.frames;
 		this.#frameMap = this.#createFrameMap({ settings, pathRecProvider });
 		this.names = Array.from(this.#frameMap.keys());
 	}
@@ -16,8 +18,8 @@ export class FrameRegistry {
 		return this.#frameMap.get(name) ?? [];
 	}
 
-	getByPath(path: string) {
-		return this.#frameMap.values().filter((paths) => paths.includes(path)).toArray();
+	getPathPrefixes(name: string) {
+		return Object.hasOwn(this.#frameSettings, name) ? this.#frameSettings[name] : [];
 	}
 
 	getNamesByPath(path: string) {
@@ -29,14 +31,14 @@ export class FrameRegistry {
 
 	#createFrameMap({ settings, pathRecProvider }: { settings: Settings; pathRecProvider: PathRecProvider }) {
 		const frameList = Object.entries(settings.frames)
-			.map(([name, rootPathPrefixes]) => ({ name, rootPathPrefixes }));
+			.map(([name, pathPrefixes]) => ({ name, pathPrefixes }));
 
 		const map = new Map<string, string[]>();
 
 		pathRecProvider.filePaths.forEach((path) => {
-			frameList.forEach(({ name, rootPathPrefixes }) => {
-				rootPathPrefixes.forEach((rootPathPrefix) => {
-					if (path.startsWith(rootPathPrefix)) {
+			frameList.forEach(({ name, pathPrefixes }) => {
+				pathPrefixes.forEach((pathPrefix) => {
+					if (path.startsWith(pathPrefix)) {
 						const items = map.getOrInsert(name, []);
 						items.push(path);
 					}
