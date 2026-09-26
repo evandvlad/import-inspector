@@ -5,7 +5,7 @@ import { stringifyCompAttrs } from "./helpers.ts";
 export const box: HtmlxComponents["box"] = (props) => {
 	const classes = ["box"];
 
-	if (props.direction === "h") {
+	if (props.dir === "h") {
 		classes.push("box--h-dir");
 	}
 

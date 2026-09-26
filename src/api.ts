@@ -164,14 +164,13 @@ export type HtmlxComponentTreeItem = {
 export type HtmlxComponents = {
 	h: HtmlxComponent<{ value: string; level: 1 | 2 | 3 }>;
 	elem: HtmlxComponent<{ value: string }>;
-	box: HtmlxComponent<{ items: string[]; direction?: "v" | "h" }>;
-	link: HtmlxComponent<{ url: string; value: string; block?: boolean }>;
+	box: HtmlxComponent<{ items: string[]; dir?: "v" | "h" }>;
+	link: HtmlxComponent<{ url: string; value: string }>;
 	flist: HtmlxComponent<{ items: Array<{ value: string; content: string }> }>;
 	mark: HtmlxComponent<{ value: string }>;
-	figure: HtmlxComponent<{ label: string; value: string }>;
-	details: HtmlxComponent<{ summary: string; value: string; theme?: "standard" | "light" | "dark" }>;
+	details: HtmlxComponent<{ label: string; value: string; theme?: "standard" | "light" | "dark" }>;
 	table: HtmlxComponent<{ rows: string[][]; columns?: string[] }>;
-	expander: HtmlxComponent<{ summary: string; value: string }>;
+	expander: HtmlxComponent<{ label: string; value: string }>;
 	tabs: HtmlxComponent<{ items: Array<{ label: string; value: string }> }>;
 	tree: HtmlxComponent<{ items: HtmlxComponentTreeItem[] }>;
 	code: HtmlxComponent<{ value: string }>;

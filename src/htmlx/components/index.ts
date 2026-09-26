@@ -13,7 +13,6 @@ import { code } from "./code.ts";
 import { raw } from "./raw.ts";
 import { flist } from "./flist.ts";
 import { mark } from "./mark.ts";
-import { figure } from "./figure.ts";
 
 export const components = {
 	h,
@@ -29,5 +28,4 @@ export const components = {
 	raw,
 	flist,
 	mark,
-	figure,
 } satisfies HtmlxComponents;
