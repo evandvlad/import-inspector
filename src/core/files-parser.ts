@@ -1,4 +1,4 @@
-import { rethrowErr } from "~/lib/err.ts";
+import { readFile } from "~/lib/file.ts";
 import { PubSub } from "~/lib/pub-sub.ts";
 import type { Settings } from "~/settings.ts";
 
@@ -28,7 +28,7 @@ export class FilesParser {
 		const result: FileParsingResult[] = [];
 
 		for await (const path of filePaths) {
-			const content = await Deno.readTextFile(path).catch(rethrowErr(`Can't read file at path '${path}'.`));
+			const content = await readFile(path);
 			result.push(await this.#fileParser.parse({ path, content }));
 			this.#pub.send("file-parsed", path);
 		}

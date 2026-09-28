@@ -1,6 +1,6 @@
 {
 	"name": "import-inspector",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"fmt": {
 		"indentWidth": 4,
 		"lineWidth": 120,
@@ -19,7 +19,6 @@
 		"@std/fmt": "jsr:@std/fmt@^1.0.10",
 		"@std/fs": "jsr:@std/fs@^1.0.24",
 		"@std/path": "jsr:@std/path@^1.1.6",
-		"@std/testing": "jsr:@std/testing@^1.0.19",
 		"@std/yaml": "jsr:@std/yaml@^1.1.2",
 		"oxc-parser": "npm:oxc-parser@^0.139.0",
 		"sass": "npm:sass@^1.105.0",

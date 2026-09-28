@@ -1,8 +1,11 @@
 import { type Context, type ImportDefect, type Lang, langs, type ModuleDefect } from "~/api.ts";
+import type { Settings } from "~/settings.ts";
 
 import type { DefectDetails } from "./values.ts";
 
 export class Result {
+	preset;
+	reportPaths;
 	hasDefects;
 	tagCounter;
 	frameCounter;
@@ -15,11 +18,12 @@ export class Result {
 
 	#context;
 
-	constructor({ context }: { context: Context }) {
+	constructor({ context, settings }: { context: Context; settings: Settings }) {
 		this.#context = context;
 
 		const { counter, defectDetailsMap } = this.#getDefects();
 
+		this.preset = settings.preset;
 		this.defectCounter = counter;
 		this.defectDetailsMap = defectDetailsMap;
 		this.tagCounter = this.#getTagCounter();
@@ -28,6 +32,8 @@ export class Result {
 		this.moduleCounter = this.#getModuleCounter();
 		this.importCounter = this.#getImportCounter();
 		this.unresolvedImportCounter = this.#getUnresolvedImportCounter();
+
+		this.reportPaths = settings.reports.map(({ path }) => path);
 
 		this.hasDefects = counter.total > 0;
 	}
@@ -123,16 +129,17 @@ export class Result {
 		importDefects.forEach(({ sourcePath, importedPath, posSpan, rule, description }) => {
 			const { fileContent } = modules.get(sourcePath);
 			const module = importedPath ? { path: importedPath, shortPath: env.getShortPath(importedPath) } : null;
+			const lineRange = fileContent.getLineRange(posSpan);
 
 			map.getOrInsert(sourcePath, []).push({
 				kind: "import",
 				rule,
 				module,
+				lineRange,
 				description,
 				path: sourcePath,
 				shortPath: env.getShortPath(sourcePath),
-				code: fileContent.getContent(posSpan),
-				lineRange: fileContent.getLineRange(posSpan),
+				code: fileContent.getContentByLineRange(lineRange),
 			});
 		});
 

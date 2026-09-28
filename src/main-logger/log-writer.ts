@@ -1,6 +1,5 @@
-import { ensureFile } from "@std/fs";
-
-import { remapErr, rethrowErr } from "~/lib/err.ts";
+import { appendToFile, createEmptyFile } from "~/lib/file.ts";
+import { withBrBot } from "~/lib/text.ts";
 import { mainLogFilePath } from "~/values.ts";
 import { LazyAsyncBox } from "~/lib/async.ts";
 
@@ -9,13 +8,7 @@ export class LogWriter {
 	#asyncBox;
 
 	static async create() {
-		try {
-			await ensureFile(mainLogFilePath);
-			await Deno.create(mainLogFilePath);
-		} catch (e) {
-			remapErr(e, `Can't create the file '${mainLogFilePath}'.`);
-		}
-
+		await createEmptyFile(mainLogFilePath);
 		return new this();
 	}
 
@@ -37,25 +30,19 @@ export class LogWriter {
 
 	#createLine({ name, value }: { name: string; value?: string }) {
 		const time = new Date().toISOString();
-		return `${time} [${name}] ${value ?? ""}\n`;
+		return withBrBot(`${time} [${name}] ${value ?? ""}`);
 	}
 
 	#write(): Promise<void> {
 		const content = this.#buffer;
 		this.#buffer = "";
 
-		return this.#writeToFile(content).then(() => {
+		return appendToFile(mainLogFilePath, content).then(() => {
 			if (this.#buffer) {
 				return this.#write();
 			}
 
 			return;
 		});
-	}
-
-	async #writeToFile(content: string) {
-		await Deno.writeTextFile(mainLogFilePath, content, { append: true }).catch(
-			rethrowErr(`An error occurred while writing to the file '${mainLogFilePath}'.`),
-		);
 	}
 }

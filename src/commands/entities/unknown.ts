@@ -1,13 +1,13 @@
-import { bold, green, red } from "@std/fmt/colors";
+import { blue, bold, red } from "@std/fmt/colors";
 
-import { dedent } from "../format.ts";
+import { fromLines, withBrBoth } from "~/lib/text.ts";
 
 export function unknownCommand() {
-	const message = dedent(`
-		${red(bold("Incorrect usage"))}
-
-		You can use ${green("help")} command for your help.
-	`);
+	const message = withBrBoth(fromLines([
+		red(bold("Incorrect usage")),
+		"",
+		`You can use ${blue("help")} command (... help) for your help.`,
+	]));
 
 	console.error(message);
 

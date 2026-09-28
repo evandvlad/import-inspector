@@ -1,6 +1,7 @@
-import { Spinner } from "@std/cli/unstable-spinner";
-
+import { withBrBoth, withBrTop } from "~/lib/text.ts";
+import { spin } from "~/lib/cli-view.ts";
 import type { Context } from "~/api.ts";
+import type { Settings } from "~/settings.ts";
 
 import { Result } from "./result.ts";
 import { createDefectsRepresentation } from "./defects-representation.ts";
@@ -12,21 +13,19 @@ export class Presenter {
 
 	constructor() {
 		this.#timestamp = Date.now();
-
-		this.#spinner = new Spinner({ message: "Processing..." });
-		this.#spinner.start();
+		this.#spinner = spin({ message: "Processing..." });
 	}
 
-	summarize({ context }: { context: Context }) {
-		const result = new Result({ context });
+	summarize({ context, settings }: { context: Context; settings: Settings }) {
+		const result = new Result({ context, settings });
 
 		this.#spinner.stop();
 
 		if (result.hasDefects) {
-			console.error(createDefectsRepresentation({ result }));
+			console.error(withBrTop(createDefectsRepresentation({ result })));
 		}
 
-		console.log(createSummaryRepresentation({ result, timestamp: this.#timestamp }));
+		console.log(withBrBoth(createSummaryRepresentation({ result, timestamp: this.#timestamp })));
 
 		return result.hasDefects;
 	}

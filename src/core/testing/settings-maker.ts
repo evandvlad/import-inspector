@@ -1,6 +1,7 @@
 import type { Settings } from "~/settings.ts";
 
 export const minSettings: Settings = {
+	preset: "default",
 	rootEntries: [{ path: "C:/foo" }],
 	correctUnresolvedDynamicImports: () => Promise.resolve([]),
 	reports: [],

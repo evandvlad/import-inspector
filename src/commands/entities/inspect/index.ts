@@ -20,7 +20,7 @@ export async function inspectCommand({ preset }: { preset: string }) {
 
 		const settingsPath = config.getSettingsPath({ preset });
 		assert(settingsPath, `There is no settings path for preset '${preset}'.`);
-		const settings = await Settings.create({ path: settingsPath });
+		const settings = await Settings.create({ preset, path: settingsPath });
 		mainLogger.log("settings-created", settingsPath);
 
 		const coreRunner = new CoreRunner({ settings });
@@ -31,7 +31,7 @@ export async function inspectCommand({ preset }: { preset: string }) {
 		const context = await coreRunner.run();
 
 		await reporter.write({ context });
-		const hasDefects = presenter.summarize({ context });
+		const hasDefects = presenter.summarize({ context, settings });
 
 		await mainLogger.log("finished");
 

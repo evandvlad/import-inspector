@@ -1,13 +1,13 @@
 import { bold } from "@std/fmt/colors";
 import { format } from "@std/fmt/duration";
 
-import { mainLogFilePath } from "~/values.ts";
-
-import { dedent, link } from "../../format.ts";
+import { fromLines } from "~/lib/text.ts";
+import { mainLogFilePath, version } from "~/values.ts";
+import { link } from "~/lib/cli-view.ts";
 
 import type { Result } from "./result.ts";
 
-function line(caption: string, text: string | number) {
+function ln(caption: string, text: string | number) {
 	return `${bold(caption)}: ${text}`;
 }
 
@@ -30,28 +30,40 @@ function getImportsText({ importCounter }: Result) {
 	return `${importCounter.total} (static: ${importCounter.static}, dynamic: ${importCounter.dynamic})`;
 }
 
-function createLink(path: string) {
-	return link({ text: path, path });
-}
-
 export function createSummaryRepresentation(
 	{ result, timestamp }: { result: Result; timestamp: number },
 ) {
 	const duration = format(Date.now() - timestamp, { ignoreZero: true });
+	const hrWidth = 70;
 
-	const content = dedent(`
-		${"=".repeat(20)}
-		${line("Duration", duration)}
-		${"-".repeat(20)}
-		${line("Tags", result.tagCounter.total)}
-		${line("Frames", result.frameCounter.total)}
-		${line("Packages", result.packageCounter.total)}
-		${line("Modules", getModulesText(result))}
-		${line("Imports", getImportsText(result))}
-		${line("Defects", getDefectsText(result))}
-		${line("Unresolved imports", result.unresolvedImportCounter.total)}
-		${line("Main log", `${createLink(mainLogFilePath)}`)}
-	`);
+	const lines = [
+		"=".repeat(hrWidth),
+		"",
+		ln("Program version", version),
+		ln("Duration", duration),
+		ln("Preset", result.preset),
+		ln("Main log", link({ path: mainLogFilePath })),
+		"",
+		"-".repeat(hrWidth),
+		"",
+		ln("Tags", result.tagCounter.total),
+		ln("Frames", result.frameCounter.total),
+		ln("Packages", result.packageCounter.total),
+		ln("Modules", getModulesText(result)),
+		ln("Imports", getImportsText(result)),
+		ln("Defects", getDefectsText(result)),
+		ln("Unresolved imports", result.unresolvedImportCounter.total),
+	];
 
-	return `${content}\n`;
+	if (result.reportPaths.length > 0) {
+		lines.push(
+			"",
+			"-".repeat(hrWidth),
+			"",
+			ln("Reports", ""),
+			...result.reportPaths.map((path) => `  ${link({ path })}`),
+		);
+	}
+
+	return fromLines(lines);
 }

@@ -85,9 +85,11 @@ export type FileContentEntry = {
 export type FileContent = {
 	value: string;
 	entries: FileContentEntry[];
-	getContent: (span: Span) => string;
-	getEntries: (span: Span) => FileContentEntry[];
 	getLineRange: (span: Span) => LineRange;
+	getContentBySpan: (span: Span) => string;
+	getEntriesBySpan: (span: Span) => FileContentEntry[];
+	getContentByLineRange: (lineRange: LineRange) => string;
+	getEntriesByLineRange: (lineRange: LineRange) => FileContentEntry[];
 };
 
 export type Import = {
@@ -176,7 +178,7 @@ export type HtmlxComponents = {
 	expander: HtmlxComponent<{ label: string; value: string }>;
 	tabs: HtmlxComponent<{ items: Array<{ label: string; value: string }> }>;
 	tree: HtmlxComponent<{ items: HtmlxComponentTreeItem[] }>;
-	code: HtmlxComponent<{ value: string; lines?: LineRange }>;
+	code: HtmlxComponent<{ entries: FileContentEntry[] }>;
 	raw: HtmlxComponent<{ data: unknown; format: HtmlxComponentRawFormat }>;
 };
 

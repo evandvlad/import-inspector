@@ -1,7 +1,8 @@
-import { ensureFile, exists } from "@std/fs";
 import { isAbsolute } from "@std/path";
 
-import { assert, isErr, remapErr, rethrowErr } from "~/lib/err.ts";
+import { assert, isErr, remapErr } from "~/lib/err.ts";
+import { fileExists, readFile, writeFile } from "~/lib/file.ts";
+import { tab } from "~/lib/text.ts";
 import type { ConfigData } from "~/api.ts";
 import { configFilePath } from "~/values.ts";
 
@@ -20,21 +21,16 @@ function assertConfigData(data: unknown): asserts data is ConfigData {
 
 export class ConfigService {
 	async load() {
-		const doesConfigExist = await exists(configFilePath);
+		const doesConfigExist = await fileExists(configFilePath);
 
 		if (!doesConfigExist) {
 			return null;
 		}
 
 		try {
-			const content = await Deno.readTextFile(configFilePath).catch(
-				rethrowErr(`Can't read the file '${configFilePath}'.`),
-			);
-
+			const content = await readFile(configFilePath);
 			const data = JSON.parse(content);
-
 			assertConfigData(data);
-
 			return data;
 		} catch (e) {
 			const messages = [`Can't process the config file. Check the file: ${configFilePath}.`];
@@ -48,13 +44,7 @@ export class ConfigService {
 	}
 
 	async save(data: ConfigData) {
-		const content = JSON.stringify(data, null, "\t");
-
-		try {
-			await ensureFile(configFilePath);
-			await Deno.writeTextFile(configFilePath, content);
-		} catch (e) {
-			throw remapErr(e, `Can't write the file '${configFilePath}'.`);
-		}
+		const content = JSON.stringify(data, null, tab);
+		await writeFile(configFilePath, content);
 	}
 }

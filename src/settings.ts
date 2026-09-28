@@ -3,6 +3,7 @@ import { unify } from "~/lib/upath.ts";
 import type { SettingsModule } from "~/api.ts";
 
 export class Settings {
+	preset;
 	frames;
 	reports;
 	preInspect;
@@ -11,15 +12,17 @@ export class Settings {
 	importRemaps;
 	correctUnresolvedDynamicImports;
 
-	static async create({ path }: { path: string }) {
+	static async create({ preset, path }: { preset: string; path: string }) {
 		const settingsModule = await import(path).catch(
-			rethrowErr(`Can't dynamically import settings file '${path}'.`),
+			rethrowErr(`Can't dynamically import settings file '${path}'. Preset name is '${preset}.'`),
 		);
 
-		return new this(settingsModule as SettingsModule);
+		return new this(settingsModule as SettingsModule, { preset });
 	}
 
-	private constructor(settingsModule: SettingsModule) {
+	private constructor(settingsModule: SettingsModule, { preset }: { preset: string }) {
+		this.preset = preset;
+
 		const {
 			rootEntries,
 			reports = [],

@@ -1,9 +1,9 @@
-import { bold, dim, gray, yellow } from "@std/fmt/colors";
+import { blue, bold, dim, gray } from "@std/fmt/colors";
 
-import type { LineRange } from "~/api.ts";
 import { assertNever } from "~/lib/ts.ts";
-
-import { link } from "../../format.ts";
+import { fromLines, withBrBot } from "~/lib/text.ts";
+import { code as formatCode, link } from "~/lib/cli-view.ts";
+import type { LineRange } from "~/api.ts";
 
 import type { ImportDefectDetails, ModuleDefectDetails } from "./values.ts";
 import type { Result } from "./result.ts";
@@ -11,25 +11,20 @@ import type { Result } from "./result.ts";
 function createPathLink(
 	{ shortPath, path, lineRange }: { shortPath: string; path: string; lineRange?: LineRange },
 ) {
-	const pathLink = lineRange
-		? link({
-			path,
-			line: lineRange[0],
-			text: [shortPath, lineRange.join("-")].join(":"),
-		})
-		: link({
-			path,
-			text: shortPath,
-		});
+	const pathLink = link({
+		path,
+		line: lineRange ? lineRange[0] : undefined,
+		text: shortPath,
+	});
 
-	return bold(yellow(pathLink));
+	return bold(blue(pathLink));
 }
 
 function getDescriptionContent(description: string) {
 	return description ? `(${description})` : "";
 }
 
-function createImportDefectContent(
+function createImportDefectBlock(
 	{ shortPath, path, rule, description, code, lineRange, module }: ImportDefectDetails,
 ) {
 	const title = createPathLink({ shortPath, path, lineRange });
@@ -37,38 +32,42 @@ function createImportDefectContent(
 
 	const ruleInfo = [dim("rule (import):"), rule, getDescriptionContent(description)].join(" ");
 	const importedModule = [dim("imported module:"), moduleLink].join(" ");
-	const codeLine = gray(code);
+	const codeLine = gray(formatCode({ value: code, startLine: lineRange[0] }));
 
-	return [title, "\n", ruleInfo, "\n", importedModule, "\n\n", codeLine, "\n\n"].join("");
+	return fromLines([title, ruleInfo, importedModule, "", codeLine]);
 }
 
-function createModuleDefectContent({ path, shortPath, rule, description }: ModuleDefectDetails) {
+function createModuleDefectBlock({ path, shortPath, rule, description }: ModuleDefectDetails) {
 	const title = createPathLink({ shortPath, path });
 	const ruleInfo = [dim("rule (module):"), rule, getDescriptionContent(description)].join(" ");
 
-	return [title, "\n", ruleInfo, "\n"].join("");
+	return fromLines([title, ruleInfo]);
 }
 
 export function createDefectsRepresentation({ result }: { result: Result }) {
-	return result.defectDetailsMap
-		.values()
-		.map((detailsList) =>
-			detailsList.map((details) => {
-				const { kind } = details;
+	return fromLines(
+		result.defectDetailsMap
+			.values()
+			.map((detailsList) =>
+				Iterator.from(detailsList)
+					.map((details) => {
+						const { kind } = details;
 
-				switch (kind) {
-					case "import":
-						return createImportDefectContent(details);
+						switch (kind) {
+							case "import":
+								return createImportDefectBlock(details);
 
-					case "module":
-						return createModuleDefectContent(details);
+							case "module":
+								return createModuleDefectBlock(details);
 
-					default:
-						assertNever(kind);
-				}
-			})
-		)
-		.map((items) => items.join("\n"))
-		.toArray()
-		.join("\n");
+							default:
+								assertNever(kind);
+						}
+					})
+					.map((block) => withBrBot(block, 2))
+					.toArray()
+			)
+			.map((items) => fromLines(items))
+			.toArray(),
+	);
 }

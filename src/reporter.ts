@@ -1,7 +1,8 @@
 import { stringify } from "@std/yaml";
-import { ensureFile } from "@std/fs";
 
 import { remapErr } from "~/lib/err.ts";
+import { writeFile } from "~/lib/file.ts";
+import { tab } from "~/lib/text.ts";
 import { assertNever } from "~/lib/ts.ts";
 import type { Context, Report } from "~/api.ts";
 import { getPageHtml } from "~/htmlx/index.ts";
@@ -19,13 +20,7 @@ export class Reporter {
 
 	async #writeReport({ report, context }: { report: Report; context: Context }) {
 		const content = await this.#getContent({ report, context });
-
-		try {
-			await ensureFile(report.path);
-			await Deno.writeTextFile(report.path, content);
-		} catch (e) {
-			throw remapErr(e, `Can't write to the file '${report.path}'.`);
-		}
+		await writeFile(report.path, content);
 	}
 
 	async #getContent({ report, context }: { report: Report; context: Context }) {
@@ -38,7 +33,7 @@ export class Reporter {
 					return stringify(data, { indent: 4, lineWidth: 120 });
 
 				case "json":
-					return JSON.stringify(data, null, "\t");
+					return JSON.stringify(data, null, tab);
 
 				case "text":
 					return data?.toString() ?? "";

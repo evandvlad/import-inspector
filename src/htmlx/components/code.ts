@@ -1,32 +1,12 @@
-import type { HtmlxComponents, LineRange } from "~/api.ts";
+import type { HtmlxComponents } from "~/api.ts";
+import { encodeHtml } from "~/lib/text.ts";
 
-import { encodeHTML, stringifyCompAttrs } from "./helpers.ts";
-
-function getLines(value: string, range?: LineRange) {
-	const lines = value.split("\n");
-
-	if (!range) {
-		return lines;
-	}
-
-	const startIndex = range[0] - 1;
-
-	if (range.length === 1) {
-		return [lines.at(startIndex) ?? ""];
-	}
-
-	return lines.slice(startIndex, range[1]);
-}
+import { stringifyCompAttrs } from "./helpers.ts";
 
 export const code: HtmlxComponents["code"] = (props) => {
-	const { value, lines } = props;
-
-	const codeLines = getLines(value, lines);
-	const startLine = lines ? lines[0] : 1;
-
-	const content = codeLines.map((line, index) => `
-		<div class="code__gutter">${startLine + index}</div>
-		<div>${encodeHTML(line)}</div>
+	const content = props.entries.map(({ line, value }) => `
+		<div class="code__gutter">${line}</div>
+		<div>${encodeHtml(value)}</div>
 	`).join("");
 
 	return `
