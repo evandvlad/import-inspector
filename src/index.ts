@@ -1,56 +1,34 @@
-import { parseArgs } from "@std/cli";
+import { magenta } from "@std/fmt/colors";
 
-import { assert } from "~/lib/err.ts";
-import { defaultConfigPresetName } from "~/values.ts";
-import {
-	displayConfigCommand,
-	helpCommand,
-	inspectCommand,
-	setSettingsPathCommand,
-	unknownCommand,
-	versionCommand,
-	writeApiFileCommand,
-} from "~/commands/index.ts";
+import { fromLines } from "~/lib/text.ts";
+import { link } from "~/lib/cli-view.ts";
+import { CommandName, errorLogFilePath } from "~/values.ts";
+import { ErrorLogger } from "~/error-logger.ts";
+
+import { commands } from "~/commands/index.ts";
 
 async function run() {
-	const [command, ...params] = Deno.args;
+	const errorLogger = await ErrorLogger.create();
 
-	switch (command) {
-		case "help":
-			helpCommand();
-			return;
+	try {
+		const [commandName, ...args] = Deno.args;
 
-		case "version":
-			versionCommand();
-			return;
-
-		case "write-api-file":
-			await writeApiFileCommand();
-			return;
-
-		case "display-config":
-			await displayConfigCommand();
-			return;
-
-		case "inspect": {
-			const { preset } = parseArgs(params, { default: { preset: defaultConfigPresetName } });
-			await inspectCommand({ preset });
+		if (Object.hasOwn(commands, commandName)) {
+			await commands[commandName as CommandName]({ args });
 			return;
 		}
 
-		case "set-settings-path": {
-			const { preset, _ } = parseArgs(params, { default: { preset: defaultConfigPresetName } });
-			const [path] = _;
+		await commands[CommandName.Unknown]({ args });
+	} catch (e) {
+		await errorLogger.log(e);
 
-			assert(typeof path === "string", "There is no 'path' parameter for the command.");
-			await setSettingsPathCommand({ path, preset });
+		const message = fromLines([
+			magenta(Error.isError(e) ? e.message : (e?.toString() ?? "Unknown error")),
+			`See ${link({ path: errorLogFilePath })} for details.`,
+		]);
 
-			return;
-		}
-
-		default:
-			unknownCommand();
-			return;
+		console.error(message);
+		Deno.exit(1);
 	}
 }
 

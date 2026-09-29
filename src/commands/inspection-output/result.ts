@@ -23,9 +23,7 @@ export class Result {
 
 		const { counter, defectDetailsMap } = this.#getDefects();
 
-		this.preset = settings.preset;
 		this.defectCounter = counter;
-		this.defectDetailsMap = defectDetailsMap;
 		this.tagCounter = this.#getTagCounter();
 		this.frameCounter = this.#getFrameCounter();
 		this.packageCounter = this.#getPackageCounter();
@@ -33,7 +31,10 @@ export class Result {
 		this.importCounter = this.#getImportCounter();
 		this.unresolvedImportCounter = this.#getUnresolvedImportCounter();
 
+		this.preset = settings.preset;
 		this.reportPaths = settings.reports.map(({ path }) => path);
+
+		this.defectDetailsMap = defectDetailsMap;
 
 		this.hasDefects = counter.total > 0;
 	}

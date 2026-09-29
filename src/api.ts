@@ -44,16 +44,30 @@ export type Report = {
 	provide: (context: Context) => MaybePromise<unknown>;
 };
 
-export type ConfigData = {
-	presets: Rec</* absolute path */ string>;
+export type ConfigPreset = {
+	name: string;
+	// absolute path
+	settingsPath: string;
+	// absolute path
+	projectPath: string;
+};
+
+export type Config = {
+	presets: Rec</* name */ ConfigPreset>;
 };
 
 export type SettingsModule = {
-	default: Settings;
+	default: (preset: ConfigPreset) => Promise<Settings>;
+};
+
+export type UnresolvedDynamicImportData = {
+	sourcePath: string;
+	posSpan: Span;
+	fileContent: FileContent;
 };
 
 export type CorrectUnresolvedDynamicImports = (
-	params: { sourcePath: string; posSpan: Span; fileContent: FileContent },
+	params: UnresolvedDynamicImportData,
 	// result - array of import locators
 ) => Promise<string[]>;
 
@@ -188,8 +202,8 @@ export type ContextFramesModuleDependencyItem = {
 };
 
 export type ContextEnv = {
+	preset: ConfigPreset;
 	version: string;
-	preset: string;
 	basePath: string;
 	htmlxComponents: HtmlxComponents;
 	getShortPath: (path: string) => string;

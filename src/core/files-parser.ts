@@ -1,38 +1,20 @@
-import { readFile } from "~/lib/file.ts";
-import { PubSub } from "~/lib/pub-sub.ts";
+import { readFile } from "~/lib/fs.ts";
 import type { Settings } from "~/settings.ts";
 
 import type { FileParsingResult } from "./values.ts";
 import { FileParser } from "./file-parser/index.ts";
 
-type LocalEventMap = {
-	"file-parsed": [path: string];
-};
+export async function parseFiles({ settings, filePaths }: { settings: Settings; filePaths: string[] }) {
+	const fileParser = new FileParser({ settings });
 
-export class FilesParser {
-	sub;
+	const results: FileParsingResult[] = [];
 
-	#fileParser;
-	#pub;
+	for await (const path of filePaths) {
+		const content = await readFile(path);
+		const result = await fileParser.parse({ path, content });
 
-	constructor({ settings }: { settings: Settings }) {
-		const { pub, sub } = new PubSub<LocalEventMap>();
-
-		this.sub = sub;
-		this.#pub = pub;
-
-		this.#fileParser = new FileParser({ settings });
+		results.push(result);
 	}
 
-	async parse(filePaths: string[]) {
-		const result: FileParsingResult[] = [];
-
-		for await (const path of filePaths) {
-			const content = await readFile(path);
-			result.push(await this.#fileParser.parse({ path, content }));
-			this.#pub.send("file-parsed", path);
-		}
-
-		return result;
-	}
+	return results;
 }

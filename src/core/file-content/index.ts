@@ -1,4 +1,4 @@
-import { fromLines, normalizeBrs, toLines } from "~/lib/text.ts";
+import { fromLines, normalizeBr, toLines } from "~/lib/text.ts";
 import type { FileContent as IFileContent, FileContentEntry, LineRange, Span } from "~/api.ts";
 
 function isInSpan({ start, end }: Span, value: number) {
@@ -10,7 +10,7 @@ export class FileContent implements IFileContent {
 	entries;
 
 	constructor({ value }: { value: string }) {
-		this.value = normalizeBrs(value);
+		this.value = normalizeBr(value);
 		this.entries = this.#splitToEntries();
 	}
 

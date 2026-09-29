@@ -1,6 +1,5 @@
-import { rethrowErr } from "~/lib/err.ts";
 import { unify } from "~/lib/upath.ts";
-import type { SettingsModule } from "~/api.ts";
+import type { ConfigPreset, Settings as ISettings } from "~/api.ts";
 
 export class Settings {
 	preset;
@@ -12,15 +11,7 @@ export class Settings {
 	importRemaps;
 	correctUnresolvedDynamicImports;
 
-	static async create({ preset, path }: { preset: string; path: string }) {
-		const settingsModule = await import(path).catch(
-			rethrowErr(`Can't dynamically import settings file '${path}'. Preset name is '${preset}.'`),
-		);
-
-		return new this(settingsModule as SettingsModule, { preset });
-	}
-
-	private constructor(settingsModule: SettingsModule, { preset }: { preset: string }) {
+	constructor({ data, preset }: { data: ISettings; preset: ConfigPreset }) {
 		this.preset = preset;
 
 		const {
@@ -31,7 +22,7 @@ export class Settings {
 			preInspect = () => {},
 			postInspect = () => {},
 			correctUnresolvedDynamicImports = () => Promise.resolve([]),
-		} = settingsModule.default;
+		} = data;
 
 		this.rootEntries = rootEntries.map(({ path, ...rest }) => ({ path: unify(path), ...rest }));
 

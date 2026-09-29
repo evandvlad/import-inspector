@@ -1,7 +1,7 @@
 import { stringify } from "@std/yaml";
 
 import { remapErr } from "~/lib/err.ts";
-import { writeFile } from "~/lib/file.ts";
+import { writeFile } from "~/lib/fs.ts";
 import { tab } from "~/lib/text.ts";
 import { assertNever } from "~/lib/ts.ts";
 import type { Context, Report } from "~/api.ts";

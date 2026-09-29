@@ -1,7 +1,7 @@
 import { blue, bold, dim, gray } from "@std/fmt/colors";
 
 import { assertNever } from "~/lib/ts.ts";
-import { fromLines, withBrBot } from "~/lib/text.ts";
+import { fromLines, withBr } from "~/lib/text.ts";
 import { code as formatCode, link } from "~/lib/cli-view.ts";
 import type { LineRange } from "~/api.ts";
 
@@ -64,7 +64,7 @@ export function createDefectsRepresentation({ result }: { result: Result }) {
 								assertNever(kind);
 						}
 					})
-					.map((block) => withBrBot(block, 2))
+					.map((block) => withBr(block, 2))
 					.toArray()
 			)
 			.map((items) => fromLines(items))

@@ -1,26 +1,36 @@
-import { isAbsolute } from "@std/path";
-
 import { assert, isErr, remapErr } from "~/lib/err.ts";
-import { fileExists, readFile, writeFile } from "~/lib/file.ts";
+import { fileExists, readFile, writeFile } from "~/lib/fs.ts";
 import { tab } from "~/lib/text.ts";
-import type { ConfigData } from "~/api.ts";
+import type { Config, ConfigPreset, SettingsModule } from "~/api.ts";
 import { configFilePath } from "~/values.ts";
 
-function assertConfigData(data: unknown): asserts data is ConfigData {
+function assertConfigData(data: unknown): asserts data is Config {
 	assert(
 		data && typeof data === "object" && "presets" in data && data.presets &&
 			typeof data.presets === "object",
 		"Config data is in an unpropriate format.",
 	);
 
-	for (const [preset, settingsPath] of Object.entries(data.presets)) {
-		assert(typeof settingsPath === "string", `The value for the preset '${preset}' must be a string.`);
-		assert(isAbsolute(settingsPath), `The value for the preset '${preset}' is not an absolute path.`);
+	for (const [name, preset] of Object.entries(data.presets)) {
+		assert(
+			name === preset.name,
+			`'name' property for preset '${name}' must be '${name}' but '${preset.name}' was given.`,
+		);
+
+		assert(
+			typeof preset.settingsPath === "string",
+			`'settingsPath' property for preset '${preset.name}' must be string.`,
+		);
+
+		assert(
+			typeof preset.projectPath === "string",
+			`'projectPath' property for preset '${preset.name}' must be string.`,
+		);
 	}
 }
 
 export class ConfigService {
-	async load() {
+	async loadConfig() {
 		const doesConfigExist = await fileExists(configFilePath);
 
 		if (!doesConfigExist) {
@@ -43,7 +53,18 @@ export class ConfigService {
 		}
 	}
 
-	async save(data: ConfigData) {
+	async loadSettings(preset: ConfigPreset) {
+		const { settingsPath } = preset;
+
+		try {
+			const settingsModule: SettingsModule = await import(settingsPath);
+			return settingsModule.default(preset);
+		} catch (e) {
+			throw remapErr(e, `Can't dynamically import settings file '${settingsPath}'. Preset name is '${name}.'`);
+		}
+	}
+
+	async saveConfig(data: Config) {
 		const content = JSON.stringify(data, null, tab);
 		await writeFile(configFilePath, content);
 	}

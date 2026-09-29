@@ -2,7 +2,7 @@ import { bold } from "@std/fmt/colors";
 import { format } from "@std/fmt/duration";
 
 import { fromLines } from "~/lib/text.ts";
-import { mainLogFilePath, version } from "~/values.ts";
+import { version } from "~/values.ts";
 import { link } from "~/lib/cli-view.ts";
 
 import type { Result } from "./result.ts";
@@ -34,18 +34,16 @@ export function createSummaryRepresentation(
 	{ result, timestamp }: { result: Result; timestamp: number },
 ) {
 	const duration = format(Date.now() - timestamp, { ignoreZero: true });
-	const hrWidth = 70;
+	const hrWidth = 75;
 
 	const lines = [
 		"=".repeat(hrWidth),
-		"",
 		ln("Program version", version),
 		ln("Duration", duration),
-		ln("Preset", result.preset),
-		ln("Main log", link({ path: mainLogFilePath })),
-		"",
+		ln("Preset", result.preset.name),
+		ln("Settings", link({ path: result.preset.settingsPath })),
+		ln("Project path", result.preset.projectPath),
 		"-".repeat(hrWidth),
-		"",
 		ln("Tags", result.tagCounter.total),
 		ln("Frames", result.frameCounter.total),
 		ln("Packages", result.packageCounter.total),
@@ -57,9 +55,7 @@ export function createSummaryRepresentation(
 
 	if (result.reportPaths.length > 0) {
 		lines.push(
-			"",
 			"-".repeat(hrWidth),
-			"",
 			ln("Reports", ""),
 			...result.reportPaths.map((path) => `  ${link({ path })}`),
 		);
