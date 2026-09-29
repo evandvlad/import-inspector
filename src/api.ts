@@ -188,6 +188,8 @@ export type ContextFramesModuleDependencyItem = {
 };
 
 export type ContextEnv = {
+	version: string;
+	preset: string;
 	basePath: string;
 	htmlxComponents: HtmlxComponents;
 	getShortPath: (path: string) => string;

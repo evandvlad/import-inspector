@@ -66,7 +66,7 @@ export class CoreRunner {
 		const packages = buildPackages({ pathRecProvider, packageFinder, modules });
 		this.#pub.send("core:packages-building-finished", packages);
 
-		const context = new Context({ modules, packages, pathRecProvider, frameRegistry });
+		const context = new Context({ settings: this.#settings, modules, packages, pathRecProvider, frameRegistry });
 
 		this.#pub.send("core:tagging-started");
 		setTags({ context });

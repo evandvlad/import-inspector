@@ -1,4 +1,5 @@
 import type { Context as IContext, Package } from "~/api.ts";
+import type { Settings } from "~/settings.ts";
 
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
 import type { FrameRegistry } from "../frame-registry.ts";
@@ -24,7 +25,8 @@ export class Context implements IContext {
 	moduleDefects;
 
 	constructor(
-		{ modules, packages, pathRecProvider, frameRegistry }: {
+		{ settings, modules, packages, pathRecProvider, frameRegistry }: {
+			settings: Settings;
 			modules: Module[];
 			packages: Package[];
 			pathRecProvider: PathRecProvider;
@@ -33,7 +35,7 @@ export class Context implements IContext {
 	) {
 		this.modules = new Modules({ modules });
 		this.packages = new Packages({ packages });
-		this.env = new Env({ pathRecProvider });
+		this.env = new Env({ settings, pathRecProvider });
 		this.imports = new Imports({ modules: this.modules });
 		this.tags = new Tags({ modules: this.modules });
 		this.frames = new Frames({ frameRegistry, modules: this.modules });

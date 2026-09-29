@@ -1,19 +1,25 @@
 import { assert } from "~/lib/err.ts";
 import { shorten, stripEnd } from "~/lib/upath.ts";
 import type { ContextEnv } from "~/api.ts";
+import type { Settings } from "~/settings.ts";
+import { version } from "~/values.ts";
 import { components } from "~/htmlx/index.ts";
 
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
 
 export class Env implements ContextEnv {
+	preset;
+	version;
 	basePath;
 	htmlxComponents;
 
 	#pathRecProvider;
 
-	constructor({ pathRecProvider }: { pathRecProvider: PathRecProvider }) {
+	constructor({ settings, pathRecProvider }: { settings: Settings; pathRecProvider: PathRecProvider }) {
 		this.#pathRecProvider = pathRecProvider;
 
+		this.version = version;
+		this.preset = settings.preset;
 		this.basePath = this.#pathRecProvider.basePath;
 		this.htmlxComponents = components;
 	}

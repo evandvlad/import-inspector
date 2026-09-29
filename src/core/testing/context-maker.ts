@@ -46,7 +46,7 @@ export async function createContext({ localFs, aliases }: {
 
 	const packages = buildPackages({ pathRecProvider, packageFinder, modules });
 
-	const context = new Context({ modules, packages, pathRecProvider, frameRegistry });
+	const context = new Context({ settings, modules, packages, pathRecProvider, frameRegistry });
 
 	setTags({ context });
 
