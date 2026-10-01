@@ -11,6 +11,8 @@ export class Settings {
 	importRemaps;
 	correctUnresolvedDynamicImports;
 
+	reportPaths;
+
 	constructor({ data, preset }: { data: ISettings; preset: ConfigPreset }) {
 		this.preset = preset;
 
@@ -39,5 +41,7 @@ export class Settings {
 		this.preInspect = preInspect;
 		this.postInspect = postInspect;
 		this.correctUnresolvedDynamicImports = correctUnresolvedDynamicImports;
+
+		this.reportPaths = this.reports.map(({ path }) => path);
 	}
 }

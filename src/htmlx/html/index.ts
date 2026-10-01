@@ -1,6 +1,6 @@
 import { assetsManager } from "./assets-manager.ts";
 
-export async function getPageHtml(html: string) {
+export async function createHtml(value: string) {
 	return `
 		<!doctype html>
 		<html lang="en">
@@ -17,7 +17,7 @@ export async function getPageHtml(html: string) {
 				</script>
 			</head>
 			<body>
-				${html}
+				${value}
 				<script>
 					${await assetsManager.scripts}
 				</script>

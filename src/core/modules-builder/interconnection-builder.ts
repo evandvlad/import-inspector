@@ -33,9 +33,9 @@ export class InterconnectionBuilder {
 
 	#fillLinks() {
 		this.#interconnectionMap.forEach(({ imports }, path) => {
-			imports.forEach(({ resolution }) => {
-				if (resolution?.path) {
-					const { links } = this.#getConnections(resolution.path);
+			imports.forEach(({ resolutionPath }) => {
+				if (resolutionPath) {
+					const { links } = this.#getConnections(resolutionPath);
 
 					if (!links.includes(path)) {
 						links.push(path);

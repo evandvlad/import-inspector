@@ -1,25 +1,24 @@
-import type { ContextImportDefects, ImportDefect } from "~/api.ts";
+import { assertNever } from "~/lib/ts.ts";
+import type { ContextImportDefects, Json, ViewDataMode } from "~/api.ts";
 
+import type { ImportDefect } from "../import-defect.ts";
 import type { Imports } from "./imports.ts";
-import type { Modules } from "./modules.ts";
 
 export class ImportDefects implements ContextImportDefects {
 	#imports;
-	#modules;
 
-	constructor({ imports, modules }: { imports: Imports; modules: Modules }) {
+	constructor({ imports }: { imports: Imports }) {
 		this.#imports = imports;
-		this.#modules = modules;
 	}
 
 	getAll() {
-		return this.#imports.getAll().flatMap(({ defectMap }) => Array.from(defectMap.values()));
+		return this.#imports.getAll().flatMap(({ defects }) => defects);
 	}
 
 	getAllAsRuleMap() {
-		return this.#imports.getAll().reduce((acc, { defectMap }) => {
-			defectMap.forEach((defect, rule) => {
-				acc.getOrInsert(rule, []).push(defect);
+		return this.#imports.getAll().reduce((acc, { defects }) => {
+			defects.forEach((defect) => {
+				acc.getOrInsert(defect.rule, []).push(defect);
 			});
 
 			return acc;
@@ -27,8 +26,8 @@ export class ImportDefects implements ContextImportDefects {
 	}
 
 	getAllAsModulePathMap() {
-		return this.#imports.getAll().reduce((acc, { sourcePath, defectMap }) => {
-			defectMap.forEach((defect) => {
+		return this.#imports.getAll().reduce((acc, { sourcePath, defects }) => {
+			defects.forEach((defect) => {
 				acc.getOrInsert(sourcePath, []).push(defect);
 			});
 
@@ -37,32 +36,27 @@ export class ImportDefects implements ContextImportDefects {
 	}
 
 	getAllRules() {
-		const all = this.#imports.getAll().flatMap(({ defectMap }) => Array.from(defectMap.keys()));
+		const all = this.#imports.getAll().flatMap(({ defects }) => defects.map(({ rule }) => rule));
 		return Array.from(new Set(all));
-	}
-
-	getByImportId(id: string) {
-		const imp = this.#imports.get(id);
-		return Array.from(imp.defectMap.values());
 	}
 
 	getByRule(rule: string) {
 		return Iterator.from(this.#imports.getAll())
-			.filter(({ defectMap }) => defectMap.has(rule))
-			.map(({ defectMap }) => defectMap.get(rule)!)
+			.map((imp) => imp.findDefect(rule))
+			.filter((defect): defect is ImportDefect => Boolean(defect))
 			.toArray();
 	}
 
-	getModulesByRule(rule: string) {
+	getModulePathsByRule(rule: string) {
 		return Iterator.from(this.#imports.getAll())
-			.filter(({ defectMap }) => defectMap.has(rule))
-			.map(({ sourcePath }) => this.#modules.get(sourcePath))
+			.filter((imp) => imp.hasDefect(rule))
+			.map(({ sourcePath }) => sourcePath)
 			.toArray();
 	}
 
 	remove({ importId, rule }: { importId: string; rule: string }) {
 		const imp = this.#imports.get(importId);
-		imp.defectMap.delete(rule);
+		imp.removeDefect(rule);
 	}
 
 	removeByRule(rule: string) {
@@ -75,5 +69,21 @@ export class ImportDefects implements ContextImportDefects {
 		this.getAll().forEach(({ importId, rule }) => {
 			this.remove({ importId, rule });
 		});
+	}
+
+	toViewData(mode: ViewDataMode = "brief"): Json {
+		switch (mode) {
+			case "minimal":
+				return this.getAll().length;
+
+			case "brief":
+				return this.getAll().map((defect) => defect.toViewData("brief"));
+
+			case "verbose":
+				return this.getAll().map((defect) => defect.toViewData("verbose"));
+
+			default:
+				assertNever(mode);
+		}
 	}
 }

@@ -5,6 +5,7 @@ export const minSettings: Settings = {
 	rootEntries: [{ path: "C:/foo" }],
 	correctUnresolvedDynamicImports: () => Promise.resolve([]),
 	reports: [],
+	reportPaths: [],
 	frames: {},
 	importRemaps: {},
 	preInspect() {},

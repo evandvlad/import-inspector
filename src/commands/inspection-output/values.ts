@@ -5,12 +5,11 @@ export type DefectDetails = ImportDefectDetails | ModuleDefectDetails;
 export type ImportDefectDetails = {
 	kind: "import";
 	code: string;
-	rule: string;
+	info: string;
 	path: string;
 	shortPath: string;
-	description: string;
 	lineRange: LineRange;
-	module: {
+	mod: {
 		path: string;
 		shortPath: string;
 	} | null;
@@ -18,8 +17,7 @@ export type ImportDefectDetails = {
 
 export type ModuleDefectDetails = {
 	kind: "module";
-	rule: string;
+	info: string;
 	path: string;
 	shortPath: string;
-	description: string;
 };

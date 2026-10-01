@@ -5,23 +5,23 @@ import { isDeclarationFile, isEntryPointFile, isIndependentFile, isTestFile } fr
 export function setTags({ context }: { context: Context }) {
 	const { modules } = context;
 
-	modules.getAll().forEach((module) => {
-		const { path } = module;
+	modules.getAll().forEach((mod) => {
+		const { path } = mod;
 
 		if (isEntryPointFile(path)) {
-			module.setTag(Tag.EntryPoint);
+			mod.setTag(Tag.EntryPoint);
 		}
 
 		if (isTestFile(path)) {
-			module.setTag(Tag.Test);
+			mod.setTag(Tag.Test);
 		}
 
 		if (isIndependentFile(path)) {
-			module.setTag(Tag.Independent);
+			mod.setTag(Tag.Independent);
 		}
 
 		if (isDeclarationFile(path)) {
-			module.setTag(Tag.Declaration);
+			mod.setTag(Tag.Declaration);
 		}
 	});
 }

@@ -22,8 +22,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -43,8 +42,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -64,8 +62,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -86,8 +83,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -106,8 +102,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
@@ -127,8 +122,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
@@ -149,8 +143,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
@@ -168,8 +161,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
@@ -188,8 +180,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontJumpThroughPackageEntry)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});

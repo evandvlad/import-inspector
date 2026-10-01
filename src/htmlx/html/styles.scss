@@ -7,6 +7,8 @@ $indent-h-normal: 12px;
 $indent-h-medium: 20px;
 $indent-h-large: 30px;
 
+$details-marker-size-offset: 17px;
+
 :root {
 	--mono-font: 13px Monaco, monospace;
 	--line-height-normal: 1.5;
@@ -242,7 +244,7 @@ body {
 .expander {
 	--indents: 0;
 
-	margin-left: 17px;
+	margin-left: $details-marker-size-offset;
 
 	&__label {
 		@include summary-overrides;
@@ -266,15 +268,47 @@ body {
 	}
 }
 
-.raw {
+.json {
+	--indent: var(--indent-v-small);
+
 	font: var(--mono-font);
 	overflow: auto;
 	padding: var(--indents-normal);
 	border: 1px solid var(--color-primary-light);
+
+	&__block {
+		margin-left: $details-marker-size-offset;
+	}
+
+	&__empty-value {
+		color: var(--color-gray);
+		font-style: italic;
+		padding: var(--indent) 0 0 $details-marker-size-offset;
+
+		&::before {
+			content: "<";
+		}
+
+		&::after {
+			content: ">";
+		}
+	}
+
+	&__item {
+		margin: var(--indent) 0;
+	}
+
+	&__item-key {
+		color: var(--color-gray);
+
+		&--compound-value {
+			@include summary-overrides;
+		}
+	}
 }
 
 .tree {
-	$left-indent: 17px;
+	$left-indent: $details-marker-size-offset;
 
 	padding-left: $left-indent;
 

@@ -20,8 +20,7 @@ describe("inspection-handlers/import-handlers/dont-import-entry-file", () => {
 		dontImportEntryFile(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontImportEntryFile)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontImportEntryFile);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});

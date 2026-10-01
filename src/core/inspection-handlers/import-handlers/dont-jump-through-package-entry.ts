@@ -8,16 +8,15 @@ export const dontJumpThroughPackageEntry: InspectionHandler = ({ imports, module
 	Iterator.from(imports.getFullResolved())
 		.filter((imp) => {
 			const sourceModule = modules.get(imp.sourcePath);
-			const importedModule = modules.get(imp.resolution!.path!);
+			const importedModule = modules.get(imp.resolutionPath!);
 
-			if (!importedModule.packagePath) {
+			if (!importedModule.isInPackage) {
 				return false;
 			}
 
 			const importedPackage = packages.get(importedModule.packagePath!);
-			const isSourceModulePackaged = sourceModule.packagePath !== null;
 
-			const isImportedFromSameOrAncestorPackage = isSourceModulePackaged &&
+			const isImportedFromSameOrAncestorPackage = sourceModule.isInPackage &&
 				(sourceModule.packagePath === importedPackage.path ||
 					packages.isInAncestryBranch({
 						sourcePath: sourceModule.packagePath!,
@@ -28,7 +27,7 @@ export const dontJumpThroughPackageEntry: InspectionHandler = ({ imports, module
 				return false;
 			}
 
-			if (!isSourceModulePackaged) {
+			if (!sourceModule.isInPackage) {
 				return !(roots.includes(importedPackage) && importedModule.isPackageEntryPoint);
 			}
 

@@ -20,26 +20,22 @@ function createPathLink(
 	return bold(blue(pathLink));
 }
 
-function getDescriptionContent(description: string) {
-	return description ? `(${description})` : "";
-}
-
 function createImportDefectBlock(
-	{ shortPath, path, rule, description, code, lineRange, module }: ImportDefectDetails,
+	{ shortPath, path, info, code, lineRange, mod }: ImportDefectDetails,
 ) {
 	const title = createPathLink({ shortPath, path, lineRange });
-	const moduleLink = module ? link({ text: module.shortPath, path: module.path }) : " ? ";
+	const moduleLink = mod ? link({ text: mod.shortPath, path: mod.path }) : " ? ";
 
-	const ruleInfo = [dim("rule (import):"), rule, getDescriptionContent(description)].join(" ");
+	const ruleInfo = [dim("rule (import):"), info].join(" ");
 	const importedModule = [dim("imported module:"), moduleLink].join(" ");
 	const codeLine = gray(formatCode({ value: code, startLine: lineRange[0] }));
 
 	return fromLines([title, ruleInfo, importedModule, "", codeLine]);
 }
 
-function createModuleDefectBlock({ path, shortPath, rule, description }: ModuleDefectDetails) {
+function createModuleDefectBlock({ path, shortPath, info }: ModuleDefectDetails) {
 	const title = createPathLink({ shortPath, path });
-	const ruleInfo = [dim("rule (module):"), rule, getDescriptionContent(description)].join(" ");
+	const ruleInfo = [dim("rule (module):"), info].join(" ");
 
 	return fromLines([title, ruleInfo]);
 }

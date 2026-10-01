@@ -1,6 +1,6 @@
 import type { HtmlxComponents, HtmlxComponentTreeItem } from "~/api.ts";
 
-import { stringifyCompAttrs } from "./helpers.ts";
+import { stringifyCompAttrs } from "../helpers.ts";
 
 function renderTree(items: HtmlxComponentTreeItem[]): string {
 	const content = items
@@ -26,13 +26,15 @@ function renderTree(items: HtmlxComponentTreeItem[]): string {
 }
 
 export const tree: HtmlxComponents["tree"] = (props) => {
-	if (!props.items.length) {
+	const { items } = props;
+
+	if (items.length === 0) {
 		return "";
 	}
 
 	return `
 		<div ${stringifyCompAttrs({ classes: ["tree"], props })}>
-			${renderTree(props.items)}
+			${renderTree(items)}
 		</div>
 	`;
 };

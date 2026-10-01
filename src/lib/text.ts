@@ -3,7 +3,7 @@ import { CRLF, LF } from "@std/fs";
 export const br = LF;
 export const tab = "\t";
 
-export function encodeHtml(value: string) {
+export function sanitizeForHtml(value: string) {
 	return value
 		.replaceAll("&", "&amp;")
 		.replaceAll("<", "&lt;")
@@ -11,7 +11,7 @@ export function encodeHtml(value: string) {
 		.replaceAll('"', "&quot;")
 		.replaceAll("'", "&apos;")
 		.replaceAll(tab, "&nbsp;".repeat(4))
-		.replaceAll(br, "&nbsp;");
+		.replaceAll(br, "<br />");
 }
 
 export function fromLines(lines: string[]) {

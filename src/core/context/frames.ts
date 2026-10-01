@@ -1,6 +1,9 @@
-import type { ContextFrames, Module } from "~/api.ts";
+import { assertNever } from "~/lib/ts.ts";
+import type { ContextFrames, Json, ViewDataMode } from "~/api.ts";
 
 import type { FrameRegistry } from "../frame-registry.ts";
+
+import type { Module } from "../module.ts";
 
 import type { Modules } from "./modules.ts";
 
@@ -21,38 +24,52 @@ export class Frames implements ContextFrames {
 		return this.#frameRegistry.getPathPrefixes(name);
 	}
 
-	getModulesByFrame(name: string) {
-		const paths = this.#frameRegistry.get(name);
-		return paths.map((path) => this.#modules.get(path));
+	getModulePathsByFrame(name: string) {
+		return this.#frameRegistry.get(name);
 	}
 
 	isModuleInFrame({ path, name }: { path: string; name: string }) {
-		const paths = this.#frameRegistry.get(name);
+		const paths = this.getModulePathsByFrame(name);
 		return paths.includes(path);
 	}
 
 	getImportedFramesMap(name: string) {
-		return this.getModulesByFrame(name).reduce((acc, mod) => {
-			mod.importMap
-				.values()
-				.forEach(({ resolution }) => {
-					const path = resolution?.path;
+		return this.getModulePathsByFrame(name).reduce((acc, path) => {
+			const mod = this.#modules.get(path);
 
-					if (!path) {
-						return;
-					}
+			mod.imports.forEach(({ resolutionPath }) => {
+				if (!resolutionPath) {
+					return;
+				}
 
-					const importedModule = this.#modules.get(path);
+				const importedModule = this.#modules.get(resolutionPath);
 
-					importedModule.frameSet
-						.values()
-						.filter((frameName) => frameName !== name)
-						.forEach((frameName) => {
-							acc.getOrInsert(frameName, []).push({ source: mod, imported: importedModule });
-						});
-				});
+				importedModule.frames
+					.filter((frameName) => frameName !== name)
+					.forEach((frameName) => {
+						acc.getOrInsert(frameName, []).push({ source: mod, imported: importedModule });
+					});
+			});
 
 			return acc;
 		}, new Map<string, Array<{ source: Module; imported: Module }>>());
+	}
+
+	toViewData(mode: ViewDataMode = "brief"): Json {
+		switch (mode) {
+			case "minimal":
+				return this.getAll().length;
+
+			case "brief":
+				return this.getAll();
+
+			case "verbose":
+				return Object.fromEntries(
+					this.#frameRegistry.names.map((name) => [name, this.getModulePathsByFrame(name)]),
+				);
+
+			default:
+				assertNever(mode);
+		}
 	}
 }

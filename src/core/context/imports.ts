@@ -1,18 +1,18 @@
 import { assert } from "~/lib/err.ts";
-import type { ContextImports, Import } from "~/api.ts";
+import { assertNever } from "~/lib/ts.ts";
+import type { ContextImports, Json, ViewDataMode } from "~/api.ts";
+
+import type { Import } from "../import.ts";
 
 import type { Modules } from "./modules.ts";
 
 export class Imports implements ContextImports {
 	#all;
-	#modules;
 	#importMap;
 
 	constructor({ modules }: { modules: Modules }) {
-		this.#modules = modules;
-
 		this.#importMap = new Map(
-			modules.getAll().flatMap(({ importMap }) => Array.from(importMap.entries())),
+			modules.getAll().flatMap(({ imports }) => imports.map((imp) => [imp.id, imp])),
 		);
 
 		this.#all = Array.from(this.#importMap.values());
@@ -22,8 +22,16 @@ export class Imports implements ContextImports {
 		return this.#all;
 	}
 
+	getLocal() {
+		return this.#all.filter(({ resolution }) => resolution && !resolution.isExternal);
+	}
+
+	getExternal() {
+		return this.#all.filter(({ resolution }) => resolution && resolution.isExternal);
+	}
+
 	getFullResolved() {
-		return this.#all.filter(({ resolution }) => Boolean(resolution?.path));
+		return this.#all.filter(({ resolutionPath }) => Boolean(resolutionPath));
 	}
 
 	getFullUnresolved() {
@@ -36,6 +44,10 @@ export class Imports implements ContextImports {
 		});
 	}
 
+	getLocalUnresolved() {
+		return this.getLocal().filter(({ resolutionPath }) => !resolutionPath);
+	}
+
 	getDynamic() {
 		return this.#all.filter(({ isDynamic }) => isDynamic);
 	}
@@ -45,12 +57,10 @@ export class Imports implements ContextImports {
 	}
 
 	getExternalMap() {
-		return Iterator.from(this.#all)
-			.filter(({ locator, resolution }) => Boolean(locator && resolution?.isExternal))
-			.reduce((acc, imp) => {
-				acc.getOrInsert(imp.locator!, []).push(imp);
-				return acc;
-			}, new Map<string, Import[]>());
+		return this.getExternal().reduce((acc, imp) => {
+			acc.getOrInsert(String(imp.locator), []).push(imp);
+			return acc;
+		}, new Map<string, Import[]>());
 	}
 
 	find(id: string) {
@@ -63,14 +73,19 @@ export class Imports implements ContextImports {
 		return imp;
 	}
 
-	findModule(id: string) {
-		const imp = this.find(id);
-		return imp ? this.#modules.find(imp.sourcePath) : null;
-	}
+	toViewData(mode: ViewDataMode = "brief"): Json {
+		switch (mode) {
+			case "minimal":
+				return this.getAll().length;
 
-	getModule(id: string) {
-		const module = this.findModule(id);
-		assert(module, `Can't find module for import id '${id}'.`);
-		return module;
+			case "brief":
+				return this.getAll().map((imp) => imp.toViewData("minimal"));
+
+			case "verbose":
+				return this.getAll().map((imp) => imp.toViewData("verbose"));
+
+			default:
+				assertNever(mode);
+		}
 	}
 }

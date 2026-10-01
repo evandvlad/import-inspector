@@ -5,7 +5,7 @@ import { writeFile } from "~/lib/fs.ts";
 import { tab } from "~/lib/text.ts";
 import { assertNever } from "~/lib/ts.ts";
 import type { Context, Report } from "~/api.ts";
-import { getPageHtml } from "~/htmlx/index.ts";
+import { createHtml } from "~/htmlx/index.ts";
 
 export class Reporter {
 	#reports;
@@ -39,7 +39,7 @@ export class Reporter {
 					return data?.toString() ?? "";
 
 				case "html":
-					return await getPageHtml(data?.toString() ?? "");
+					return await createHtml(data?.toString() ?? "");
 
 				default:
 					assertNever(format);

@@ -22,8 +22,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 		dontUseAbsolutePathInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontUseAbsolutePathInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual(["C:/foo/baz/index.tsx"]);
 	});
@@ -43,8 +42,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 		dontUseAbsolutePathInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontUseAbsolutePathInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual(["C:/foo/baz/qux/quux/quuux.ts"]);
 	});
@@ -62,8 +60,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 		dontUseAbsolutePathInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontUseAbsolutePathInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual([]);
 	});
@@ -83,8 +80,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 		dontUseAbsolutePathInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontUseAbsolutePathInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual([]);
 	});

@@ -2,6 +2,8 @@ type Rec<T> = Record<string, T>;
 type Nullable<T> = T | null;
 type MaybePromise<T> = T | Promise<T>;
 
+export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+
 export const langs = ["ts", "js"] as const;
 
 export type Lang = typeof langs[number];
@@ -30,6 +32,8 @@ export enum ImportInspectionRule {
 export enum ModuleInspectionRule {
 	DontLeaveUnusedModule = "don't-leave-unused-module",
 }
+
+export type ViewDataMode = "verbose" | "brief" | "minimal";
 
 export type RootEntry = {
 	// absolute path
@@ -104,53 +108,72 @@ export type FileContent = {
 	getEntriesBySpan: (span: Span) => FileContentEntry[];
 	getContentByLineRange: (lineRange: LineRange) => string;
 	getEntriesByLineRange: (lineRange: LineRange) => FileContentEntry[];
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Import = {
 	id: string;
 	sourcePath: string;
 	locator: Nullable<string>;
+	location: Nullable<string>;
 	posSpan: Span;
 	isDynamic: boolean;
 	resolution: Nullable<ImportResolution>;
-	defectMap: Map</* rule */ string, ImportDefect>;
+	resolutionPath: Nullable<string>;
+	defects: ImportDefect[];
+	hasDefect: (rule: string) => boolean;
+	findDefect: (rule: string) => Nullable<ImportDefect>;
+	getDefect: (rule: string) => ImportDefect;
 	addDefect: (params: { rule: string; description?: string }) => void;
 	removeDefect: (rule: string) => void;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ImportDefect = {
 	rule: string;
+	info: string;
 	posSpan: Span;
 	importId: string;
 	sourcePath: string;
 	description: string;
 	locator: Nullable<string>;
+	imported: Nullable<string>;
 	importedPath: Nullable<string>;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ModuleDefect = {
 	rule: string;
+	info: string;
 	sourcePath: string;
 	description: string;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Module = {
 	name: string;
 	lang: Lang;
 	path: string;
+	tags: string[];
+	frames: string[];
 	fileContent: FileContent;
 	parentDirPath: Nullable<string>;
 	packagePath: Nullable<string>;
+	isInPackage: boolean;
 	isPackageEntryPoint: boolean;
-	tagSet: Set<string>;
-	frameSet: Set<string>;
 	links: /* path */ string[];
-	importMap: Map</* id */ string, Import>;
-	defectMap: Map</* rule */ string, ModuleDefect>;
+	imports: Import[];
+	defects: ModuleDefect[];
+	hasDefect: (rule: string) => boolean;
+	findDefect: (rule: string) => Nullable<ModuleDefect>;
+	getDefect: (rule: string) => ModuleDefect;
 	addDefect: (params: { rule: string; description?: string }) => void;
 	removeDefect: (rule: string) => void;
+	hasTag: (tag: string) => boolean;
 	setTag: (tag: string) => void;
 	removeTag: (tag: string) => void;
+	hasFrame: (frame: string) => boolean;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Package = {
@@ -158,8 +181,15 @@ export type Package = {
 	path: string;
 	parentDirPath: Nullable<string>;
 	parentPackagePath: Nullable<string>;
+	hasParentPackage: boolean;
 	subPackagePaths: string[];
 	modulePaths: string[];
+	toViewData: (mode?: ViewDataMode) => Json;
+};
+
+export type Htmlx = {
+	components: HtmlxComponents;
+	createHtml: (value: string) => Promise<string>;
 };
 
 export type HtmlxComponentBaseProps = {
@@ -171,8 +201,6 @@ export type HtmlxComponentBaseProps = {
 export type HtmlxComponent<P extends Rec<unknown> = Rec<unknown>> = (
 	params: P & HtmlxComponentBaseProps,
 ) => string;
-
-export type HtmlxComponentRawFormat = "json" | "yaml";
 
 export type HtmlxComponentTreeItem = {
 	value: string;
@@ -193,7 +221,7 @@ export type HtmlxComponents = {
 	tabs: HtmlxComponent<{ items: Array<{ label: string; value: string }> }>;
 	tree: HtmlxComponent<{ items: HtmlxComponentTreeItem[] }>;
 	code: HtmlxComponent<{ entries: FileContentEntry[] }>;
-	raw: HtmlxComponent<{ data: unknown; format: HtmlxComponentRawFormat }>;
+	json: HtmlxComponent<{ data: unknown }>;
 };
 
 export type ContextFramesModuleDependencyItem = {
@@ -202,26 +230,29 @@ export type ContextFramesModuleDependencyItem = {
 };
 
 export type ContextEnv = {
-	preset: ConfigPreset;
+	htmlx: Htmlx;
 	version: string;
 	basePath: string;
-	htmlxComponents: HtmlxComponents;
+	preset: ConfigPreset;
 	getShortPath: (path: string) => string;
-	getVSCodeUrl: (path: string, line?: number) => string;
+	getEditorUrl: (path: string, line?: number) => string;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ContextFrames = {
 	getAll: () => string[];
 	getPathPrefixes: (name: string) => string[];
-	getModulesByFrame: (name: string) => Module[];
+	getModulePathsByFrame: (name: string) => string[];
 	isModuleInFrame: (params: { path: string; name: string }) => boolean;
 	getImportedFramesMap: (name: string) => Map</* name */ string, ContextFramesModuleDependencyItem[]>;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ContextModules = {
 	getAll: () => Module[];
 	find: (path: string) => Nullable<Module>;
 	get: (path: string) => Module;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ContextPackages = {
@@ -234,24 +265,28 @@ export type ContextPackages = {
 	getSubs: (path: string) => Package[];
 	isInAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
 	getAncestryBranch: (path: string) => Package[];
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ContextTags = {
 	getAll: () => string[];
-	getModulesByTag: (tag: string) => Module[];
+	getModulePathsByTag: (tag: string) => string[];
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ContextImports = {
 	getAll: () => Import[];
 	find: (id: string) => Nullable<Import>;
 	get: (id: string) => Import;
+	getLocal: () => Import[];
+	getExternal: () => Import[];
 	getFullResolved: () => Import[];
 	getFullUnresolved: () => Import[];
+	getLocalUnresolved: () => Import[];
 	getDynamic: () => Import[];
 	getStatic: () => Import[];
 	getExternalMap: () => Map</* name */ string, Import[]>;
-	findModule: (id: string) => Nullable<Module>;
-	getModule: (id: string) => Module;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ContextImportDefects = {
@@ -259,12 +294,12 @@ export type ContextImportDefects = {
 	getAllAsRuleMap: () => Map</* rule */ string, ImportDefect[]>;
 	getAllAsModulePathMap: () => Map</* module path */ string, ImportDefect[]>;
 	getAllRules: () => string[];
-	getByImportId: (importId: string) => ImportDefect[];
 	getByRule: (rule: string) => ImportDefect[];
-	getModulesByRule: (rule: string) => Module[];
+	getModulePathsByRule: (rule: string) => string[];
 	remove: (params: { importId: string; rule: string }) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ContextModuleDefects = {
@@ -276,6 +311,7 @@ export type ContextModuleDefects = {
 	remove: (params: { path: string; rule: string }) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
+	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Context = {
@@ -287,4 +323,5 @@ export type Context = {
 	frames: ContextFrames;
 	importDefects: ContextImportDefects;
 	moduleDefects: ContextModuleDefects;
+	toViewData: (mode?: ViewDataMode) => Json;
 };

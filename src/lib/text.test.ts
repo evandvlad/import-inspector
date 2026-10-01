@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { dedent, encodeHtml, fromLines, normalizeBr, toLines, withBr } from "./text.ts";
+import { dedent, fromLines, normalizeBr, sanitizeForHtml, toLines, withBr } from "./text.ts";
 
 describe("lib/text", () => {
 	it("dedent", () => {
@@ -20,8 +20,8 @@ describe("lib/text", () => {
 		`)).toBe("foo\nbar\nbaz");
 	});
 
-	it("encodeHtml", () => {
-		expect(encodeHtml("	<div class=\"foo\" id'bar'> & </div>")).toBe(
+	it("sanitizeForHtml", () => {
+		expect(sanitizeForHtml("	<div class=\"foo\" id'bar'> & </div>")).toBe(
 			"&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;foo&quot; id&apos;bar&apos;&gt; &amp; &lt;/div&gt;",
 		);
 	});

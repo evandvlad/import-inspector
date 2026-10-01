@@ -20,8 +20,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontReferToPackageEntryInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
@@ -38,8 +37,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontReferToPackageEntryInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
@@ -56,8 +54,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontReferToPackageEntryInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -74,8 +71,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontReferToPackageEntryInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -93,8 +89,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontReferToPackageEntryInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -114,8 +109,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontReferToPackageEntryInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/qux/quux/other.tsx"]);
 	});
@@ -138,8 +132,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulesByRule(ImportInspectionRule.DontReferToPackageEntryInside)
-			.map(({ path }) => path);
+			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual([]);
 	});

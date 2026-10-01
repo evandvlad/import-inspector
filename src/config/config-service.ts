@@ -54,7 +54,7 @@ export class ConfigService {
 	}
 
 	async loadSettings(preset: ConfigPreset) {
-		const { settingsPath } = preset;
+		const { name, settingsPath } = preset;
 
 		try {
 			const settingsModule: SettingsModule = await import(settingsPath);

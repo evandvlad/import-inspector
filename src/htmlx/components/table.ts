@@ -1,13 +1,14 @@
 import type { HtmlxComponents } from "~/api.ts";
 
-import { stringifyCompAttrs } from "./helpers.ts";
+import { stringifyCompAttrs } from "../helpers.ts";
 
 export const table: HtmlxComponents["table"] = (props) => {
-	if (!props.rows.length) {
+	const { columns, rows } = props;
+
+	if (rows.length === 0) {
 		return "";
 	}
 
-	const { columns, rows } = props;
 	const cols = rows[0].length;
 
 	const headerCells = columns

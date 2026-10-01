@@ -32,7 +32,7 @@ export class Result {
 		this.unresolvedImportCounter = this.#getUnresolvedImportCounter();
 
 		this.preset = settings.preset;
-		this.reportPaths = settings.reports.map(({ path }) => path);
+		this.reportPaths = settings.reportPaths;
 
 		this.defectDetailsMap = defectDetailsMap;
 
@@ -87,8 +87,8 @@ export class Result {
 		const langRec = Object.fromEntries(langs.map((lang) => [lang, 0])) as Record<Lang, number>;
 		const allModules = modules.getAll();
 
-		const byLang = allModules.reduce((acc, module) => {
-			acc[module.lang] += 1;
+		const byLang = allModules.reduce((acc, { lang }) => {
+			acc[lang] += 1;
 			return acc;
 		}, langRec);
 
@@ -117,27 +117,25 @@ export class Result {
 		const { env, modules } = this.#context;
 		const map: Map<string, DefectDetails[]> = new Map();
 
-		moduleDefects.forEach(({ sourcePath, rule, description }) => {
+		moduleDefects.forEach(({ sourcePath, info }) => {
 			map.getOrInsert(sourcePath, []).push({
 				kind: "module",
-				rule,
-				description,
+				info,
 				path: sourcePath,
 				shortPath: env.getShortPath(sourcePath),
 			});
 		});
 
-		importDefects.forEach(({ sourcePath, importedPath, posSpan, rule, description }) => {
+		importDefects.forEach(({ sourcePath, importedPath, posSpan, info }) => {
 			const { fileContent } = modules.get(sourcePath);
-			const module = importedPath ? { path: importedPath, shortPath: env.getShortPath(importedPath) } : null;
+			const mod = importedPath ? { path: importedPath, shortPath: env.getShortPath(importedPath) } : null;
 			const lineRange = fileContent.getLineRange(posSpan);
 
 			map.getOrInsert(sourcePath, []).push({
 				kind: "import",
-				rule,
-				module,
+				mod,
+				info,
 				lineRange,
-				description,
 				path: sourcePath,
 				shortPath: env.getShortPath(sourcePath),
 				code: fileContent.getContentByLineRange(lineRange),

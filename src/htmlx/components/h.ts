@@ -1,6 +1,6 @@
 import type { HtmlxComponents } from "~/api.ts";
 
-import { stringifyCompAttrs } from "./helpers.ts";
+import { stringifyCompAttrs } from "../helpers.ts";
 
 export const h: HtmlxComponents["h"] = (props) => {
 	const { value, level } = props;

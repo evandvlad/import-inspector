@@ -1,13 +1,14 @@
 import type { HtmlxComponents } from "~/api.ts";
 
-import { incId, stringifyCompAttrs } from "./helpers.ts";
+import { incId, stringifyCompAttrs } from "../helpers.ts";
 
 export const tabs: HtmlxComponents["tabs"] = (props) => {
-	if (!props.items.length) {
+	const { items } = props;
+
+	if (items.length === 0) {
 		return "";
 	}
 
-	const { items } = props;
 	const id = incId();
 	const attrs = { "data-js-tabs": id.toString() };
 

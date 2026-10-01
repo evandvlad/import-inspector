@@ -1,5 +1,8 @@
 import { assert } from "~/lib/err.ts";
-import type { ContextPackages, Package } from "~/api.ts";
+import { assertNever } from "~/lib/ts.ts";
+import type { ContextPackages, Json, ViewDataMode } from "~/api.ts";
+
+import type { Package } from "../package.ts";
 
 export class Packages implements ContextPackages {
 	#all;
@@ -8,7 +11,7 @@ export class Packages implements ContextPackages {
 
 	constructor({ packages }: { packages: Package[] }) {
 		this.#all = packages;
-		this.#roots = this.#all.filter(({ parentPackagePath }) => parentPackagePath === null);
+		this.#roots = this.#all.filter(({ hasParentPackage }) => !hasParentPackage);
 		this.#packageMap = new Map(packages.map((pack) => [pack.path, pack]));
 	}
 
@@ -51,6 +54,22 @@ export class Packages implements ContextPackages {
 
 	getAncestryBranch(path: string) {
 		return Array.from(this.#getAncestryBranch(path));
+	}
+
+	toViewData(mode: ViewDataMode = "brief"): Json {
+		switch (mode) {
+			case "minimal":
+				return this.getAll().length;
+
+			case "brief":
+				return this.getAll().map((pack) => pack.toViewData("minimal"));
+
+			case "verbose":
+				return this.getAll().map((pack) => pack.toViewData("verbose"));
+
+			default:
+				assertNever(mode);
+		}
 	}
 
 	*#getAncestryBranch(path: string) {

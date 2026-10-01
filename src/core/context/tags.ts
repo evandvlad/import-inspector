@@ -1,4 +1,5 @@
-import type { ContextTags } from "~/api.ts";
+import { assertNever } from "~/lib/ts.ts";
+import type { ContextTags, Json, ViewDataMode } from "~/api.ts";
 
 import type { Modules } from "./modules.ts";
 
@@ -10,11 +11,32 @@ export class Tags implements ContextTags {
 	}
 
 	getAll() {
-		const all = this.#modules.getAll().flatMap(({ tagSet }) => Array.from(tagSet));
+		const all = this.#modules.getAll().flatMap(({ tags }) => tags);
 		return Array.from(new Set(all));
 	}
 
-	getModulesByTag(tag: string) {
-		return this.#modules.getAll().filter(({ tagSet }) => tagSet.has(tag));
+	getModulePathsByTag(tag: string) {
+		return Iterator.from(this.#modules.getAll())
+			.filter((mod) => mod.hasTag(tag))
+			.map(({ path }) => path)
+			.toArray();
+	}
+
+	toViewData(mode: ViewDataMode = "brief"): Json {
+		switch (mode) {
+			case "minimal":
+				return this.getAll().length;
+
+			case "brief":
+				return this.getAll();
+
+			case "verbose":
+				return Object.fromEntries(
+					this.getAll().map((tag) => [tag, this.getModulePathsByTag(tag)]),
+				);
+
+			default:
+				assertNever(mode);
+		}
 	}
 }
