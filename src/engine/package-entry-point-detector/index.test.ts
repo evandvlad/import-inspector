@@ -26,7 +26,7 @@ describe("package-entry-point-detector", () => {
 			expect(canEveryFileBeEntryPoint).toBe(true);
 		});
 
-		it("no file can be an entry point", () => {
+		it("no file can be entry point", () => {
 			const filePaths = [
 				"C:/foo/main.ts",
 				"C:/foo/index.entry.d.ts",

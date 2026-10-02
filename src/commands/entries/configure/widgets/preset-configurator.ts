@@ -127,7 +127,7 @@ export class PresetConfigurator {
 			return {
 				isValid: false,
 				newValue: path,
-				message: "Can't find the settings file.",
+				message: "Can't find settings file.",
 			};
 		}
 
@@ -162,7 +162,7 @@ export class PresetConfigurator {
 			return {
 				isValid: false,
 				newValue: path,
-				message: "Can't find the project directory.",
+				message: "Can't find project directory.",
 			};
 		}
 

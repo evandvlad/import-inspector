@@ -18,15 +18,15 @@ describe("file-parser", () => {
 		expect(importRecs).toEqual([]);
 	});
 
-	it("throw an error on file parsing", async () => {
+	it("throw error on file parsing", async () => {
 		const params = createParams({ content: "parse error" });
 
 		await expect(parseFile(params)).rejects.toThrow(
-			"An error occurred while parsing the file 'C:/foo/bar.ts'. Expected a semicolon or an implicit semicolon after a statement, but found none\n  x Expected a semicolon or an implicit semicolon after a statement, but found\n  | none\n   ,-[C:/foo/bar.ts:1:6]\n 1 | parse error\n   :      ^\n   `----\n  help: Try inserting a semicolon here\n",
+			"Error occurred while parsing file 'C:/foo/bar.ts'. Expected a semicolon or an implicit semicolon after a statement, but found none\n  x Expected a semicolon or an implicit semicolon after a statement, but found\n  | none\n   ,-[C:/foo/bar.ts:1:6]\n 1 | parse error\n   :      ^\n   `----\n  help: Try inserting a semicolon here\n",
 		);
 	});
 
-	it("no error for react syntax in the js file", async () => {
+	it("no error for react syntax in js file", async () => {
 		const params = createParams({
 			path: "C:/foo/bar.js",
 			content: `

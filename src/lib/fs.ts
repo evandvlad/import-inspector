@@ -7,7 +7,7 @@ export async function writeFile(path: string, content: string) {
 		await ensureFile(path);
 		await Deno.writeTextFile(path, content);
 	} catch (e) {
-		throw remapErr(e, `Can't write to the file '${path}'.`);
+		throw remapErr(e, `Can't write to file '${path}'.`);
 	}
 }
 
@@ -15,7 +15,7 @@ export async function readFile(path: string) {
 	try {
 		return await Deno.readTextFile(path);
 	} catch (e) {
-		throw remapErr(e, `Can't read the file '${path}'.`);
+		throw remapErr(e, `Can't read file '${path}'.`);
 	}
 }
 
@@ -29,7 +29,7 @@ export async function removeFile(path: string) {
 
 		return await Deno.remove(path);
 	} catch (e) {
-		throw remapErr(e, `Can't remove the file '${path}'.`);
+		throw remapErr(e, `Can't remove file '${path}'.`);
 	}
 }
 

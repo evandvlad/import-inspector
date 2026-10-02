@@ -8,7 +8,7 @@ function assertConfigData(data: unknown): asserts data is Config {
 	assert(
 		data && typeof data === "object" && "presets" in data && data.presets &&
 			typeof data.presets === "object",
-		"Config data is in an unpropriate format.",
+		"Config data is in unpropriate format.",
 	);
 
 	for (const [name, preset] of Object.entries(data.presets)) {
@@ -43,7 +43,7 @@ export class ConfigService {
 			assertConfigData(data);
 			return data;
 		} catch (e) {
-			const messages = [`Can't process the config file. Check the file: ${configFilePath}.`];
+			const messages = [`Can't process config file. Check file: ${configFilePath}.`];
 
 			if (isErr(e)) {
 				messages.push(e.message);

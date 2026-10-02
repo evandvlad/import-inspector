@@ -13,10 +13,10 @@ export const typesFile = join(dirname, "./api.ts");
 export const defaultConfigPresetName = "default";
 
 export enum CommandName {
+	Lint = "lint",
 	Help = "help",
 	Version = "version",
 	Configure = "configure",
-	Inspect = "inspect",
 	WriteApiFile = "write-api-file",
 	Unknown = "unknown",
 }

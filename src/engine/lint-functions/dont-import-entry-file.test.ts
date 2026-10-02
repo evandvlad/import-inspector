@@ -1,13 +1,13 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { ImportInspectionRule } from "~/api.ts";
+import { ImportLintRule } from "~/api.ts";
 
-import { createContext } from "../../testing/context-maker.ts";
+import { createContext } from "../testing/context-maker.ts";
 
 import { dontImportEntryFile } from "./dont-import-entry-file.ts";
 
-describe("inspection-handlers/import-handlers/dont-import-entry-file", () => {
+describe("dont-import-entry-file", () => {
 	it("not ok", async () => {
 		const context = await createContext({
 			files: {
@@ -20,7 +20,7 @@ describe("inspection-handlers/import-handlers/dont-import-entry-file", () => {
 		dontImportEntryFile(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontImportEntryFile);
+			.getModulePathsByRule(ImportLintRule.DontImportEntryFile);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});

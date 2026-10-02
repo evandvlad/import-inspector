@@ -1,13 +1,13 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { ImportInspectionRule } from "~/api.ts";
+import { ImportLintRule } from "~/api.ts";
 
-import { createContext } from "../../testing/context-maker.ts";
+import { createContext } from "../testing/context-maker.ts";
 
 import { dontReferToPackageEntryInside } from "./dont-refer-to-package-entry-inside.ts";
 
-describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside", () => {
+describe("dont-refer-to-package-entry-inside", () => {
 	it("via import '.'", async () => {
 		const context = await createContext({
 			files: {
@@ -20,7 +20,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
+			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
@@ -37,7 +37,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
+			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
@@ -54,7 +54,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
+			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -71,7 +71,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
+			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -89,7 +89,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
+			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -109,7 +109,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
+			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/qux/quux/other.tsx"]);
 	});
@@ -132,7 +132,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 		dontReferToPackageEntryInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontReferToPackageEntryInside);
+			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual([]);
 	});

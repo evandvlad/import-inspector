@@ -6,12 +6,12 @@ import { Config } from "~/config/index.ts";
 import { Reporter } from "~/reporter.ts";
 import { type Command, CommandName, defaultConfigPresetName } from "~/values.ts";
 
-import { InspectionOutput } from "../inspection-output/index.ts";
+import { LintOutput } from "../lint-output/index.ts";
 
-export const inspect: Command = async ({ args }: { args: string[] }) => {
+export const lint: Command = async ({ args }: { args: string[] }) => {
 	const { preset } = parseArgs(args, { default: { preset: defaultConfigPresetName } });
 
-	const inspectionOutput = new InspectionOutput();
+	const lintOutput = new LintOutput();
 
 	const config = await Config.load();
 	assert(config, `Workflow is not configured yet. Use '${CommandName.Configure}' command to do that easily.`);
@@ -22,7 +22,7 @@ export const inspect: Command = async ({ args }: { args: string[] }) => {
 	const reporter = new Reporter({ reports: settings.reports });
 	await reporter.write({ context });
 
-	const hasDefects = inspectionOutput.summarize({ context, settings });
+	const hasDefects = lintOutput.summarize({ context, settings });
 
 	Deno.exit(hasDefects ? 1 : 0);
 };

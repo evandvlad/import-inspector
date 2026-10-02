@@ -37,7 +37,7 @@ export function split(path: string) {
 export function shorten(path: string, base: string) {
 	assert(
 		path.length >= base.length && path.startsWith(base),
-		`Can't shorten the path '${path}' with the base '${base}'. There is an invariant violation.`,
+		`Can't shorten path '${path}' with base '${base}'. There is invariant violation.`,
 	);
 
 	return stripStart(path.slice(base.length));

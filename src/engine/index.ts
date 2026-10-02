@@ -10,8 +10,8 @@ import { PackageFinder } from "./package-finder/index.ts";
 import { PackageEntryPointDetector } from "./package-entry-point-detector/index.ts";
 import { Context } from "./context/index.ts";
 import { setTags } from "./tagger/index.ts";
-import { inspectionHandlers } from "./inspection-handlers/index.ts";
-import { inspect } from "./inspector.ts";
+import { lintFunctions } from "./lint-functions/index.ts";
+import { lint } from "./linter.ts";
 
 export async function runEngine({ settings }: { settings: Settings }) {
 	const { filePaths, files } = await collectFiles({ settings });
@@ -34,7 +34,7 @@ export async function runEngine({ settings }: { settings: Settings }) {
 	const context = new Context({ settings, modules, packages, pathRecProvider, frameRegistry });
 
 	setTags({ context });
-	await inspect({ context, inspectionHandlers, settings });
+	await lint({ context, lintFunctions, settings });
 
 	return context;
 }

@@ -1,13 +1,13 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { ImportInspectionRule } from "~/api.ts";
+import { ImportLintRule } from "~/api.ts";
 
-import { createContext } from "../../testing/context-maker.ts";
+import { createContext } from "../testing/context-maker.ts";
 
 import { dontJumpThroughPackageEntry } from "./dont-jump-through-package-entry.ts";
 
-describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", () => {
+describe("dont-jump-through-package-entry", () => {
 	it("not ok for module imported from child package not via entry point", async () => {
 		const context = await createContext({
 			files: {
@@ -22,7 +22,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -42,7 +42,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -62,7 +62,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -83,7 +83,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -102,12 +102,12 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
 
-	it("ok to import from the parent module", async () => {
+	it("ok to import from parent module", async () => {
 		const context = await createContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -122,12 +122,12 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
 
-	it("ok to import from the ancestor module", async () => {
+	it("ok to import from ancestor module", async () => {
 		const context = await createContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -143,7 +143,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
@@ -161,12 +161,12 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
 
-	it("ok if both modules are in the same package", async () => {
+	it("ok if both modules are in same package", async () => {
 		const context = await createContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -180,7 +180,7 @@ describe("inspection-handlers/import-handlers/dont-jump-through-package-entry", 
 		dontJumpThroughPackageEntry(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontJumpThroughPackageEntry);
+			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});

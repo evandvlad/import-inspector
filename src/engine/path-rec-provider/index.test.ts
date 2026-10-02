@@ -25,7 +25,7 @@ describe("path-rec-provider", () => {
 
 		expect(() => {
 			provider.getPathRec("C:/foo/bar/baz/unknown");
-		}).toThrow("Can't find the path rec by the path 'C:/foo/bar/baz/unknown'.");
+		}).toThrow("Can't find path rec by path 'C:/foo/bar/baz/unknown'.");
 	});
 
 	it("find file path rec", () => {
@@ -38,7 +38,7 @@ describe("path-rec-provider", () => {
 
 		expect(() => {
 			provider.getFilePathRec("C:/foo/bar/baz");
-		}).toThrow("Can't find the file path rec by the path 'C:/foo/bar/baz'.");
+		}).toThrow("Can't find file path rec by path 'C:/foo/bar/baz'.");
 	});
 
 	it("can't find dir rec by file path", () => {
@@ -60,7 +60,7 @@ describe("path-rec-provider", () => {
 
 		expect(() => {
 			provider.getDirPathRec("C:/foo/bar/baz/unknown");
-		}).toThrow("Can't find the dir path rec by the path 'C:/foo/bar/baz/unknown'.");
+		}).toThrow("Can't find dir path rec by path 'C:/foo/bar/baz/unknown'.");
 	});
 
 	it("find file or dir path rec", () => {
@@ -80,7 +80,7 @@ describe("path-rec-provider", () => {
 		]);
 	});
 
-	it("throws an error if fewer than 2 paths are provided", () => {
+	it("throws error if fewer than 2 paths are provided", () => {
 		expect(() => {
 			new PathRecProvider({ filePaths: [] });
 		}).toThrow("More than one file path is required for file processing, but 0 were given.");

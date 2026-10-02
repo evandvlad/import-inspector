@@ -5,8 +5,8 @@ export class Settings {
 	preset;
 	frames;
 	reports;
-	preInspect;
-	postInspect;
+	preLint;
+	postLint;
 	rootEntries;
 	importRemaps;
 	correctUnresolvedDynamicImports;
@@ -21,8 +21,8 @@ export class Settings {
 			reports = [],
 			frames = {},
 			importRemaps = {},
-			preInspect = () => {},
-			postInspect = () => {},
+			preLint = () => {},
+			postLint = () => {},
 			correctUnresolvedDynamicImports = () => Promise.resolve([]),
 		} = data;
 
@@ -38,8 +38,8 @@ export class Settings {
 		);
 
 		this.reports = reports;
-		this.preInspect = preInspect;
-		this.postInspect = postInspect;
+		this.preLint = preLint;
+		this.postLint = postLint;
 		this.correctUnresolvedDynamicImports = correctUnresolvedDynamicImports;
 
 		this.reportPaths = this.reports.map(({ path }) => path);

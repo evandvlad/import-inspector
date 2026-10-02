@@ -1,8 +1,8 @@
-import { ImportInspectionRule } from "~/api.ts";
+import { ImportLintRule } from "~/api.ts";
 
-import type { InspectionHandler } from "../../values.ts";
+import type { LintFunction } from "../values.ts";
 
-export const dontReferToPackageEntryInside: InspectionHandler = ({ imports, modules, packages }) => {
+export const dontReferToPackageEntryInside: LintFunction = ({ imports, modules, packages }) => {
 	Iterator.from(imports.getFullResolved())
 		.filter((imp) => {
 			const importedModule = modules.get(imp.resolutionPath!);
@@ -23,6 +23,6 @@ export const dontReferToPackageEntryInside: InspectionHandler = ({ imports, modu
 				testablePath: importedModule.packagePath!,
 			});
 		}).forEach((imp) => {
-			imp.addDefect({ rule: ImportInspectionRule.DontReferToPackageEntryInside });
+			imp.addDefect({ rule: ImportLintRule.DontReferToPackageEntryInside });
 		});
 };

@@ -47,7 +47,7 @@ export class InterconnectionBuilder {
 
 	#getConnections(path: string) {
 		const connections = this.#interconnectionMap.get(path);
-		assert(connections, `Can't find the connections by the path '${path}'.`);
+		assert(connections, `Can't find connections by path '${path}'.`);
 		return connections;
 	}
 }

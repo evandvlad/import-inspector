@@ -19,4 +19,4 @@ export type ImportResolution = {
 	isRelative: boolean;
 };
 
-export type InspectionHandler = (context: Context) => void;
+export type LintFunction = (context: Context) => Promise<void> | void;

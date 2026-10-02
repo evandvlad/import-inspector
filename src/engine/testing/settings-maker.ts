@@ -8,8 +8,8 @@ export const minSettings: Settings = {
 	reportPaths: [],
 	frames: {},
 	importRemaps: {},
-	preInspect() {},
-	postInspect() {},
+	preLint() {},
+	postLint() {},
 };
 
 export function createSettings(parts: Partial<Settings> = {}): Settings {

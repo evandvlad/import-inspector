@@ -42,7 +42,7 @@ export class Reporter {
 		} catch (e) {
 			throw remapErr(
 				e,
-				`An error occurred while preparing data for the reporter. Format - '${report.format}', path - '${report.path}'.`,
+				`Error occurred while preparing data for reporter. Format - '${report.format}', path - '${report.path}'.`,
 			);
 		}
 	}

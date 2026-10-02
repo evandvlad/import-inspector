@@ -22,14 +22,14 @@ export enum Tag {
 	Independent = "independent",
 }
 
-export enum ImportInspectionRule {
+export enum ImportLintRule {
 	DontReferToPackageEntryInside = "don't-refer-to-package-entry-inside",
 	DontJumpThroughPackageEntry = "don't-jump-through-package-entry",
 	DontUseAbsolutePathInside = "don't-use-absolute-path-inside",
 	DontImportEntryFile = "don't-import-entry-file",
 }
 
-export enum ModuleInspectionRule {
+export enum ModuleLintRule {
 	DontLeaveUnusedModule = "don't-leave-unused-module",
 }
 
@@ -75,16 +75,16 @@ export type CorrectUnresolvedDynamicImports = (
 	// result - array of import locators
 ) => Promise<string[]>;
 
-export type PreInspect = (context: Context) => MaybePromise<void>;
-export type PostInspect = (context: Context) => MaybePromise<void>;
+export type PreLint = (context: Context) => MaybePromise<void>;
+export type PostLint = (context: Context) => MaybePromise<void>;
 
 export type Settings = {
 	rootEntries: RootEntry[];
 	importRemaps?: Rec<string>;
 	frames?: Rec</* name: root path prefixes */ string[]>;
 	correctUnresolvedDynamicImports?: CorrectUnresolvedDynamicImports;
-	preInspect?: PreInspect;
-	postInspect?: PostInspect;
+	preLint?: PreLint;
+	postLint?: PostLint;
 	reports?: Report[];
 };
 

@@ -11,7 +11,7 @@ function extractLocatorFromDynamicImport({ source }: ImportExpression) {
 	}
 
 	/*
-	 * import(`source`) - without variables in the template literal
+	 * import(`source`) - without variables in template literal
 	 */
 	if (
 		source.type === "TemplateLiteral" && source.quasis.length === 1 &&
@@ -47,7 +47,7 @@ export function extractImportRecs({ program }: { program: Program }) {
 		ImportDeclaration(node) {
 			recs.push(createImportRec({ node, locator: node.source.value }));
 		},
-		// named re-export if the source exists
+		// named re-export if source exists
 		ExportNamedDeclaration(node) {
 			if (!node.source) {
 				return;

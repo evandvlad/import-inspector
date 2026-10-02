@@ -1,14 +1,14 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { ImportInspectionRule } from "~/api.ts";
+import { ImportLintRule } from "~/api.ts";
 
-import { createContext } from "../../testing/context-maker.ts";
+import { createContext } from "../testing/context-maker.ts";
 
 import { dontUseAbsolutePathInside } from "./dont-use-absolute-path-inside.ts";
 
-describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", () => {
-	it("not ok for absolute import from the same package", async () => {
+describe("dont-use-absolute-path-inside", () => {
+	it("not ok for absolute import from same package", async () => {
 		const context = await createContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -22,12 +22,12 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 		dontUseAbsolutePathInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontUseAbsolutePathInside);
+			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual(["C:/foo/baz/index.tsx"]);
 	});
 
-	it("not ok for absolute import from the ancestor package", async () => {
+	it("not ok for absolute import from ancestor package", async () => {
 		const context = await createContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -42,7 +42,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 		dontUseAbsolutePathInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontUseAbsolutePathInside);
+			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual(["C:/foo/baz/qux/quux/quuux.ts"]);
 	});
@@ -60,7 +60,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 		dontUseAbsolutePathInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontUseAbsolutePathInside);
+			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual([]);
 	});
@@ -80,7 +80,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 		dontUseAbsolutePathInside(context);
 
 		const paths = context.importDefects
-			.getModulePathsByRule(ImportInspectionRule.DontUseAbsolutePathInside);
+			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual([]);
 	});

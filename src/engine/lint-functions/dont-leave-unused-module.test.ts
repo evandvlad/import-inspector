@@ -1,13 +1,13 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { ModuleInspectionRule } from "~/api.ts";
+import { ModuleLintRule } from "~/api.ts";
 
-import { createContext } from "../../testing/context-maker.ts";
+import { createContext } from "../testing/context-maker.ts";
 
 import { dontLeaveUnusedModule } from "./dont-leave-unused-module.ts";
 
-describe("inspection-handlers/module-handlers/dont-leave-unused-module", () => {
+describe("dont-leave-unused-module", () => {
 	it("ignores test and entry files", async () => {
 		const context = await createContext({
 			files: {
@@ -21,7 +21,7 @@ describe("inspection-handlers/module-handlers/dont-leave-unused-module", () => {
 		dontLeaveUnusedModule(context);
 
 		const paths = context.moduleDefects
-			.getByRule(ModuleInspectionRule.DontLeaveUnusedModule)
+			.getByRule(ModuleLintRule.DontLeaveUnusedModule)
 			.map(({ sourcePath }) => sourcePath);
 
 		expect(paths).toEqual([]);
@@ -39,7 +39,7 @@ describe("inspection-handlers/module-handlers/dont-leave-unused-module", () => {
 		dontLeaveUnusedModule(context);
 
 		const paths = context.moduleDefects
-			.getByRule(ModuleInspectionRule.DontLeaveUnusedModule)
+			.getByRule(ModuleLintRule.DontLeaveUnusedModule)
 			.map(({ sourcePath }) => sourcePath);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);

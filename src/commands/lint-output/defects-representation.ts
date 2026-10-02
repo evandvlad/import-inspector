@@ -8,7 +8,7 @@ import type { LineRange } from "~/api.ts";
 import type { ImportDefectDetails, ModuleDefectDetails } from "./values.ts";
 import type { Result } from "./result.ts";
 
-function createPathLink(
+function createLink(
 	{ shortPath, path, lineRange }: { shortPath: string; path: string; lineRange?: LineRange },
 ) {
 	const pathLink = link({
@@ -23,7 +23,7 @@ function createPathLink(
 function createImportDefectBlock(
 	{ shortPath, path, info, code, lineRange, mod }: ImportDefectDetails,
 ) {
-	const title = createPathLink({ shortPath, path, lineRange });
+	const title = createLink({ shortPath, path, lineRange });
 	const moduleLink = mod ? link({ text: mod.shortPath, path: mod.path }) : " ? ";
 
 	const ruleInfo = [dim("rule (import):"), info].join(" ");
@@ -34,7 +34,7 @@ function createImportDefectBlock(
 }
 
 function createModuleDefectBlock({ path, shortPath, info }: ModuleDefectDetails) {
-	const title = createPathLink({ shortPath, path });
+	const title = createLink({ shortPath, path });
 	const ruleInfo = [dim("rule (module):"), info].join(" ");
 
 	return fromLines([title, ruleInfo]);

@@ -16,14 +16,14 @@ export const writeApiFile: Command = async ({ args }: { args: string[] }) => {
 
 	const doesSourceFileExist = await fileExists(typesFile);
 
-	assert(doesSourceFileExist, `Can't find the source file '${typesFile}'.`);
+	assert(doesSourceFileExist, `Can't find source file '${typesFile}'.`);
 
 	const absPath = isAbsolute(path) ? path : join(cwd, path);
 	const targetFilePath = join(absPath, fileName);
 	const doesTargetFileExist = await fileExists(targetFilePath);
 
 	const confirmationMessage = dedent(`
-		The file '${fileName}' will be written into the '${absPath}' directory.
+		File '${fileName}' will be written into '${absPath}' directory.
 		${doesTargetFileExist ? "This file already exists and will be overridden." : ""} Do you want to continue?
 	`);
 

@@ -1,8 +1,8 @@
-import { ImportInspectionRule } from "~/api.ts";
+import { ImportLintRule } from "~/api.ts";
 
-import type { InspectionHandler } from "../../values.ts";
+import type { LintFunction } from "../values.ts";
 
-export const dontUseAbsolutePathInside: InspectionHandler = ({ imports, modules, packages }) => {
+export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, packages }) => {
 	Iterator.from(imports.getFullResolved())
 		.filter(({ resolution }) => !resolution!.isRelative)
 		.filter((imp) => {
@@ -25,6 +25,6 @@ export const dontUseAbsolutePathInside: InspectionHandler = ({ imports, modules,
 			return false;
 		})
 		.forEach((imp) => {
-			imp.addDefect({ rule: ImportInspectionRule.DontUseAbsolutePathInside });
+			imp.addDefect({ rule: ImportLintRule.DontUseAbsolutePathInside });
 		});
 };

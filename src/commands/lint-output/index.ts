@@ -6,7 +6,7 @@ import { Result } from "./result.ts";
 import { createDefectsRepresentation } from "./defects-representation.ts";
 import { createSummaryRepresentation } from "./summary-representation.ts";
 
-export class InspectionOutput {
+export class LintOutput {
 	#timestamp;
 	#spinner;
 

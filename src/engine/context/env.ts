@@ -34,7 +34,7 @@ export class Env implements ContextEnv {
 
 		assert(
 			pathRec,
-			`Can't get the short path for '${path}'. It might be outside the scope '${this.basePath}'.`,
+			`Can't get short path for '${path}'. It might be outside scope '${this.basePath}'.`,
 		);
 
 		return shorten(stripEnd(path), this.basePath);

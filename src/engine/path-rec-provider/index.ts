@@ -33,7 +33,7 @@ export class PathRecProvider {
 
 	getFilePathRec(path: string) {
 		const filePathRec = this.findFilePathRec(path);
-		assert(filePathRec, `Can't find the file path rec by the path '${path}'.`);
+		assert(filePathRec, `Can't find file path rec by path '${path}'.`);
 		return filePathRec!;
 	}
 
@@ -44,7 +44,7 @@ export class PathRecProvider {
 
 	getDirPathRec(path: string) {
 		const dirPathRec = this.findDirPathRec(path);
-		assert(dirPathRec, `Can't find the dir path rec by the path '${path}'.`);
+		assert(dirPathRec, `Can't find dir path rec by path '${path}'.`);
 		return dirPathRec!;
 	}
 
@@ -53,7 +53,7 @@ export class PathRecProvider {
 
 		assert(
 			normalizedPath.length > this.basePath.length,
-			`The path '${path}' is out of scope. The scope is restricted to the base path which is '${this.basePath}'.`,
+			`Path '${path}' is out of scope. Scope is restricted to base path which is '${this.basePath}'.`,
 		);
 
 		const shortPath = shorten(normalizedPath, this.basePath);
@@ -65,7 +65,7 @@ export class PathRecProvider {
 
 	getPathRec(path: string) {
 		const pathRec = this.findPathRec(path);
-		assert(pathRec, `Can't find the path rec by the path '${path}'.`);
+		assert(pathRec, `Can't find path rec by path '${path}'.`);
 		return pathRec!;
 	}
 
