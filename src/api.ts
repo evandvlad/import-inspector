@@ -42,7 +42,7 @@ export type RootEntry = {
 };
 
 export type Report = {
-	format: "text" | "json" | "yaml" | "html";
+	format: "text" | "json" | "html";
 	// absolute path
 	path: string;
 	provide: (context: Context) => MaybePromise<unknown>;

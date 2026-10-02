@@ -1,5 +1,3 @@
-import { stringify } from "@std/yaml";
-
 import { remapErr } from "~/lib/err.ts";
 import { writeFile } from "~/lib/fs.ts";
 import { tab } from "~/lib/text.ts";
@@ -29,9 +27,6 @@ export class Reporter {
 			const { format } = report;
 
 			switch (format) {
-				case "yaml":
-					return stringify(data, { indent: 4, lineWidth: 120 });
-
 				case "json":
 					return JSON.stringify(data, null, tab);
 
