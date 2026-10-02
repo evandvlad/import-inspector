@@ -10,7 +10,7 @@ import { dontUseAbsolutePathInside } from "./dont-use-absolute-path-inside.ts";
 describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", () => {
 	it("not ok for absolute import from the same package", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": "",
 				"C:/foo/baz/index.tsx": 'import "@foo/baz/qux";',
@@ -29,7 +29,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 
 	it("not ok for absolute import from the ancestor package", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": "",
 				"C:/foo/baz/index.tsx": "",
@@ -49,7 +49,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 
 	it("ok for relative", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": "",
 				"C:/foo/baz/index.tsx": 'import "./qux";',
@@ -67,7 +67,7 @@ describe("inspection-handlers/import-handlers/dont-use-absolute-path-inside", ()
 
 	it("ok for absolute", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": "",
 				"C:/foo/baz/index.tsx": "",

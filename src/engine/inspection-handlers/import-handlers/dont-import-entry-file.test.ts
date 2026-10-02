@@ -10,7 +10,7 @@ import { dontImportEntryFile } from "./dont-import-entry-file.ts";
 describe("inspection-handlers/import-handlers/dont-import-entry-file", () => {
 	it("not ok", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/baz.entry.ts": "",
 				"C:/foo/bar/other.tsx": 'import "./baz.entry";',

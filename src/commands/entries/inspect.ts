@@ -1,7 +1,7 @@
 import { parseArgs } from "@std/cli";
 
 import { assert } from "~/lib/err.ts";
-import { run } from "~/core/index.ts";
+import { runEngine } from "~/engine/index.ts";
 import { Config } from "~/config/index.ts";
 import { Reporter } from "~/reporter.ts";
 import { type Command, CommandName, defaultConfigPresetName } from "~/values.ts";
@@ -17,7 +17,7 @@ export const inspect: Command = async ({ args }: { args: string[] }) => {
 	assert(config, `Workflow is not configured yet. Use '${CommandName.Configure}' command to do that easily.`);
 
 	const settings = await config.createSettings(preset);
-	const context = await run({ settings });
+	const context = await runEngine({ settings });
 
 	const reporter = new Reporter({ reports: settings.reports });
 	await reporter.write({ context });

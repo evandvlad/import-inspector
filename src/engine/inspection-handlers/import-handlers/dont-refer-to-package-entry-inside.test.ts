@@ -10,7 +10,7 @@ import { dontReferToPackageEntryInside } from "./dont-refer-to-package-entry-ins
 describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside", () => {
 	it("via import '.'", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
 				"C:/foo/bar/other.tsx": 'import ".";',
@@ -27,7 +27,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 
 	it("via import './index'", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
 				"C:/foo/bar/other.tsx": 'import "./index";',
@@ -44,7 +44,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 
 	it("via import '..'", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
 				"C:/foo/bar/baz/other.tsx": 'import "..";',
@@ -61,7 +61,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 
 	it("via import '../index'", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
 				"C:/foo/bar/baz/other.tsx": 'import "../index";',
@@ -78,7 +78,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 
 	it("via alias to entry point", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
 				"C:/foo/bar/baz/other.tsx": 'import "@foo/bar";',
@@ -96,7 +96,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 
 	it("in deep nested structure", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
 				"C:/foo/bar/baz/qux/index.ts": "",
@@ -116,7 +116,7 @@ describe("inspection-handlers/import-handlers/dont-refer-to-package-entry-inside
 
 	it("ok", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.ts": 'import "./other";',
 				"C:/tmp/other/index.ts": "",
 				"C:/foo/bar/index.ts": "",

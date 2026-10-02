@@ -10,7 +10,7 @@ import { dontLeaveUnusedModule } from "./dont-leave-unused-module.ts";
 describe("inspection-handlers/module-handlers/dont-leave-unused-module", () => {
 	it("ignores test and entry files", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.entry.ts": "",
 				"C:/qux/quux.test.ts": "",
 				"C:/foo/bar/baz.entry.ts": 'import "./other";',
@@ -29,7 +29,7 @@ describe("inspection-handlers/module-handlers/dont-leave-unused-module", () => {
 
 	it("orphan files", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/tmp/main.entry.ts": "",
 				"C:/foo/bar/baz.entry.ts": "",
 				"C:/foo/bar/other.tsx": 'import "./baz.entry";',

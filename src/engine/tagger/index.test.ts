@@ -8,7 +8,7 @@ import { setTags } from "./index.ts";
 describe("tagger", () => {
 	it("entry point tag", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/foo/bar/index.entry.ts": "",
 				"C:/foo/baz/index.ts": "",
 				"C:/foo/baz/main.ts": "",
@@ -25,7 +25,7 @@ describe("tagger", () => {
 
 	it("test tag", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/foo/bar/index.test.js": "",
 				"C:/foo/bar/__tests__/index.js": "",
 				"C:/foo/baz/index.test.ts": "",
@@ -43,7 +43,7 @@ describe("tagger", () => {
 
 	it("independent tag", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/foo/bar/index.test.js": "",
 				"C:/foo/bar/index.entry.ts": "",
 				"C:/foo/baz/index.test.ts": "",
@@ -62,7 +62,7 @@ describe("tagger", () => {
 
 	it("declaration tag", async () => {
 		const context = await createContext({
-			localFs: {
+			files: {
 				"C:/foo/bar/index.d.js": "",
 				"C:/foo/bar/index.d.tsx": "",
 				"C:/foo/baz/index.d.ts": "",
