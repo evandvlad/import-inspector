@@ -81,7 +81,6 @@ export type PostLint = (appContext: AppContext) => MaybePromise<void>;
 export type Settings = {
 	rootEntries: RootEntry[];
 	importRemaps?: Rec<string>;
-	frames?: Rec</* name: root path prefixes */ string[]>;
 	correctUnresolvedDynamicImports?: CorrectUnresolvedDynamicImports;
 	preLint?: PreLint;
 	postLint?: PostLint;
@@ -173,6 +172,8 @@ export type Module = {
 	setTag: (tag: string) => void;
 	removeTag: (tag: string) => void;
 	hasFrame: (frame: string) => boolean;
+	setFrame: (frame: string) => void;
+	removeFrame: (frame: string) => void;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
@@ -224,17 +225,16 @@ export type HtmlxComponents = {
 	json: HtmlxComponent<{ data: unknown }>;
 };
 
-export type FramesModuleDependencyItem = {
+export type ModuleDependencyItem = {
 	source: Module;
 	imported: Module;
 };
 
 export type Frames = {
 	getAll: () => string[];
-	getPathPrefixes: (name: string) => string[];
 	getModulePathsByFrame: (name: string) => string[];
 	isModuleInFrame: (params: { path: string; name: string }) => boolean;
-	getImportedFramesMap: (name: string) => Map</* name */ string, FramesModuleDependencyItem[]>;
+	getImportedFramesMap: (name: string) => Map</* name */ string, ModuleDependencyItem[]>;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 

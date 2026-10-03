@@ -13,20 +13,19 @@ export class Module implements IModule {
 	lang;
 	links;
 	imports;
-	frames;
 	fileContent;
 	packagePath;
 	parentDirPath;
 	isPackageEntryPoint;
+	frames: string[];
 	tags: string[];
 	defects: ModuleDefect[];
 
 	isInPackage;
 
 	constructor(
-		{ filePathRec, packagePath, frames, imports, links, fileContent, isPackageEntryPoint }: {
+		{ filePathRec, packagePath, imports, links, fileContent, isPackageEntryPoint }: {
 			filePathRec: FilePathRec;
-			frames: string[];
 			imports: Import[];
 			links: string[];
 			fileContent: FileContent;
@@ -42,7 +41,7 @@ export class Module implements IModule {
 		this.lang = getFileLang(filePathRec.path);
 		this.parentDirPath = filePathRec.parentPath;
 		this.isPackageEntryPoint = isPackageEntryPoint;
-		this.frames = frames;
+		this.frames = [];
 		this.tags = [];
 		this.defects = [];
 		this.imports = imports;
@@ -65,6 +64,16 @@ export class Module implements IModule {
 
 	hasFrame(frame: string) {
 		return this.frames.includes(frame);
+	}
+
+	setFrame(frame: string) {
+		if (!this.hasFrame(frame)) {
+			this.frames.push(frame);
+		}
+	}
+
+	removeFrame(frame: string) {
+		this.frames = this.frames.filter((value) => value !== frame);
 	}
 
 	hasDefect(rule: string) {

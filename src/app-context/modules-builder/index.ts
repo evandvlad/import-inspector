@@ -4,7 +4,6 @@ import type { FileParsingResult } from "~/values.ts";
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
 import type { PackageFinder } from "../package-finder/index.ts";
 import type { PackageEntryPointDetector } from "../package-entry-point-detector/index.ts";
-import type { FrameRegistry } from "../frame-registry.ts";
 import { Module } from "../module.ts";
 import { Import } from "../import.ts";
 
@@ -12,9 +11,8 @@ import { ImportResolver } from "./import-resolver.ts";
 import { InterconnectionBuilder } from "./interconnection-builder.ts";
 
 export function buildModules(
-	{ settings, parsingResult, pathRecProvider, packageFinder, frameRegistry, packageEntryPointDetector }: {
+	{ settings, parsingResult, pathRecProvider, packageFinder, packageEntryPointDetector }: {
 		settings: Settings;
-		frameRegistry: FrameRegistry;
 		packageFinder: PackageFinder;
 		parsingResult: FileParsingResult[];
 		pathRecProvider: PathRecProvider;
@@ -48,7 +46,6 @@ export function buildModules(
 			filePathRec: pathRecProvider.getFilePathRec(path),
 			imports: interconnectionReader.getImports(path),
 			links: interconnectionReader.getLinks(path),
-			frames: frameRegistry.getNamesByPath(path),
 		});
 	});
 }

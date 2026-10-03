@@ -1,29 +1,26 @@
 import { assertNever } from "~/lib/ts.ts";
 import type { Frames as IFrames, Json, ViewDataMode } from "~/api.ts";
 
-import type { FrameRegistry } from "./frame-registry.ts";
 import type { Module } from "./module.ts";
 import type { Modules } from "./modules.ts";
 
 export class Frames implements IFrames {
 	#modules;
-	#frameRegistry;
 
-	constructor({ frameRegistry, modules }: { frameRegistry: FrameRegistry; modules: Modules }) {
-		this.#frameRegistry = frameRegistry;
+	constructor({ modules }: { modules: Modules }) {
 		this.#modules = modules;
 	}
 
 	getAll() {
-		return this.#frameRegistry.names;
+		const all = this.#modules.getAll().flatMap(({ frames }) => frames);
+		return Array.from(new Set(all));
 	}
 
-	getPathPrefixes(name: string) {
-		return this.#frameRegistry.getPathPrefixes(name);
-	}
-
-	getModulePathsByFrame(name: string) {
-		return this.#frameRegistry.get(name);
+	getModulePathsByFrame(frame: string) {
+		return Iterator.from(this.#modules.getAll())
+			.filter((mod) => mod.hasFrame(frame))
+			.map(({ path }) => path)
+			.toArray();
 	}
 
 	isModuleInFrame({ path, name }: { path: string; name: string }) {
@@ -63,7 +60,7 @@ export class Frames implements IFrames {
 
 			case "verbose":
 				return Object.fromEntries(
-					this.#frameRegistry.names.map((name) => [name, this.getModulePathsByFrame(name)]),
+					this.getAll().map((frame) => [frame, this.getModulePathsByFrame(frame)]),
 				);
 
 			default:

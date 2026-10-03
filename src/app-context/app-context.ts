@@ -2,7 +2,6 @@ import type { AppContext as IAppContext, Json, ViewDataMode } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
-import type { FrameRegistry } from "./frame-registry.ts";
 import type { Module } from "./module.ts";
 import type { Package } from "./package.ts";
 import { Modules } from "./modules.ts";
@@ -25,12 +24,11 @@ export class AppContext implements IAppContext {
 	moduleDefects;
 
 	constructor(
-		{ settings, modules, packages, pathRecProvider, frameRegistry }: {
+		{ settings, modules, packages, pathRecProvider }: {
 			settings: Settings;
 			modules: Module[];
 			packages: Package[];
 			pathRecProvider: PathRecProvider;
-			frameRegistry: FrameRegistry;
 		},
 	) {
 		this.modules = new Modules({ modules });
@@ -38,7 +36,7 @@ export class AppContext implements IAppContext {
 		this.env = new Env({ settings, pathRecProvider });
 		this.imports = new Imports({ modules: this.modules });
 		this.tags = new Tags({ modules: this.modules });
-		this.frames = new Frames({ frameRegistry, modules: this.modules });
+		this.frames = new Frames({ modules: this.modules });
 		this.importDefects = new ImportDefects({ imports: this.imports });
 		this.moduleDefects = new ModuleDefects({ modules: this.modules });
 	}

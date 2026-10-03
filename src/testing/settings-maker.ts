@@ -6,7 +6,6 @@ export const minSettings: Settings = {
 	correctUnresolvedDynamicImports: () => Promise.resolve([]),
 	reports: [],
 	reportPaths: [],
-	frames: {},
 	importRemaps: {},
 	preLint() {},
 	postLint() {},

@@ -3,7 +3,6 @@ import type { ConfigPreset, Settings as ISettings } from "~/api.ts";
 
 export class Settings {
 	preset;
-	frames;
 	reports;
 	preLint;
 	postLint;
@@ -19,7 +18,6 @@ export class Settings {
 		const {
 			rootEntries,
 			reports = [],
-			frames = {},
 			importRemaps = {},
 			preLint = () => {},
 			postLint = () => {},
@@ -30,11 +28,6 @@ export class Settings {
 
 		this.importRemaps = Object.fromEntries(
 			Object.entries(importRemaps).map(([name, path]) => [name, unify(path)]),
-		);
-
-		this.frames = Object.fromEntries(
-			Object.entries(frames)
-				.map(([name, paths]) => [name, paths.map((path) => unify(path))]),
 		);
 
 		this.reports = reports;
