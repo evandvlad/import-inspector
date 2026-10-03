@@ -1,5 +1,5 @@
 import { assertNever } from "~/lib/ts.ts";
-import type { ContextFrames, Json, ViewDataMode } from "~/api.ts";
+import type { Frames as IFrames, Json, ViewDataMode } from "~/api.ts";
 
 import type { FrameRegistry } from "../frame-registry.ts";
 
@@ -7,7 +7,7 @@ import type { Module } from "../module.ts";
 
 import type { Modules } from "./modules.ts";
 
-export class Frames implements ContextFrames {
+export class Frames implements IFrames {
 	#modules;
 	#frameRegistry;
 

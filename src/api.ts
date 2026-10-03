@@ -224,7 +224,7 @@ export type HtmlxComponents = {
 	json: HtmlxComponent<{ data: unknown }>;
 };
 
-export type ContextFramesModuleDependencyItem = {
+export type FramesModuleDependencyItem = {
 	source: Module;
 	imported: Module;
 };
@@ -239,23 +239,23 @@ export type AppContextEnv = {
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
-export type ContextFrames = {
+export type Frames = {
 	getAll: () => string[];
 	getPathPrefixes: (name: string) => string[];
 	getModulePathsByFrame: (name: string) => string[];
 	isModuleInFrame: (params: { path: string; name: string }) => boolean;
-	getImportedFramesMap: (name: string) => Map</* name */ string, ContextFramesModuleDependencyItem[]>;
+	getImportedFramesMap: (name: string) => Map</* name */ string, FramesModuleDependencyItem[]>;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
-export type ContextModules = {
+export type Modules = {
 	getAll: () => Module[];
 	find: (path: string) => Nullable<Module>;
 	get: (path: string) => Module;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
-export type ContextPackages = {
+export type Packages = {
 	getAll: () => Package[];
 	getRoots: () => Package[];
 	find: (path: string) => Nullable<Package>;
@@ -268,13 +268,13 @@ export type ContextPackages = {
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
-export type ContextTags = {
+export type Tags = {
 	getAll: () => string[];
 	getModulePathsByTag: (tag: string) => string[];
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
-export type ContextImports = {
+export type Imports = {
 	getAll: () => Import[];
 	find: (id: string) => Nullable<Import>;
 	get: (id: string) => Import;
@@ -289,7 +289,7 @@ export type ContextImports = {
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
-export type ContextImportDefects = {
+export type ImportDefects = {
 	getAll: () => ImportDefect[];
 	getAllAsRuleMap: () => Map</* rule */ string, ImportDefect[]>;
 	getAllAsModulePathMap: () => Map</* module path */ string, ImportDefect[]>;
@@ -302,7 +302,7 @@ export type ContextImportDefects = {
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
-export type ContextModuleDefects = {
+export type ModuleDefects = {
 	getAll: () => ModuleDefect[];
 	getAllRules: () => string[];
 	getAllAsPathMap: () => Map</* path */ string, ModuleDefect[]>;
@@ -316,12 +316,12 @@ export type ContextModuleDefects = {
 
 export type AppContext = {
 	env: AppContextEnv;
-	modules: ContextModules;
-	packages: ContextPackages;
-	imports: ContextImports;
-	tags: ContextTags;
-	frames: ContextFrames;
-	importDefects: ContextImportDefects;
-	moduleDefects: ContextModuleDefects;
+	modules: Modules;
+	packages: Packages;
+	imports: Imports;
+	tags: Tags;
+	frames: Frames;
+	importDefects: ImportDefects;
+	moduleDefects: ModuleDefects;
 	toViewData: (mode?: ViewDataMode) => Json;
 };

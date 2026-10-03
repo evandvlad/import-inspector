@@ -1,10 +1,10 @@
 import { assertNever } from "~/lib/ts.ts";
-import type { ContextImportDefects, Json, ViewDataMode } from "~/api.ts";
+import type { ImportDefects as IImportDefects, Json, ViewDataMode } from "~/api.ts";
 
 import type { ImportDefect } from "../import-defect.ts";
 import type { Imports } from "./imports.ts";
 
-export class ImportDefects implements ContextImportDefects {
+export class ImportDefects implements IImportDefects {
 	#imports;
 
 	constructor({ imports }: { imports: Imports }) {

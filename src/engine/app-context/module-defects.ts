@@ -1,11 +1,11 @@
 import { assertNever } from "~/lib/ts.ts";
-import type { ContextModuleDefects, Json, ViewDataMode } from "~/api.ts";
+import type { Json, ModuleDefects as IModuleDefects, ViewDataMode } from "~/api.ts";
 
 import type { ModuleDefect } from "../module-defect.ts";
 
 import type { Modules } from "./modules.ts";
 
-export class ModuleDefects implements ContextModuleDefects {
+export class ModuleDefects implements IModuleDefects {
 	#modules;
 
 	constructor({ modules }: { modules: Modules }) {

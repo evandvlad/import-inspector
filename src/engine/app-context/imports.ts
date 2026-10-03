@@ -1,12 +1,12 @@
 import { assert } from "~/lib/err.ts";
 import { assertNever } from "~/lib/ts.ts";
-import type { ContextImports, Json, ViewDataMode } from "~/api.ts";
+import type { Imports as IImports, Json, ViewDataMode } from "~/api.ts";
 
 import type { Import } from "../import.ts";
 
 import type { Modules } from "./modules.ts";
 
-export class Imports implements ContextImports {
+export class Imports implements IImports {
 	#all;
 	#importMap;
 

@@ -1,9 +1,9 @@
 import { assertNever } from "~/lib/ts.ts";
-import type { ContextTags, Json, ViewDataMode } from "~/api.ts";
+import type { Json, Tags as ITags, ViewDataMode } from "~/api.ts";
 
 import type { Modules } from "./modules.ts";
 
-export class Tags implements ContextTags {
+export class Tags implements ITags {
 	#modules;
 
 	constructor({ modules }: { modules: Modules }) {
