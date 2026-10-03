@@ -1,11 +1,11 @@
 import { type Command, CommandName } from "~/values.ts";
 
-import { help } from "./entries/help.ts";
-import { lint } from "./entries/lint.ts";
-import { unknown } from "./entries/unknown.ts";
-import { version } from "./entries/version.ts";
-import { writeApiFile } from "./entries/write-api-file.ts";
-import { configure } from "./entries/configure/index.ts";
+import { help } from "./help.ts";
+import { lint } from "./lint/index.ts";
+import { unknown } from "./unknown.ts";
+import { version } from "./version.ts";
+import { writeApiFile } from "./write-api-file.ts";
+import { configure } from "./configure/index.ts";
 
 export const commands: Record<CommandName, Command> = {
 	[CommandName.Lint]: lint,

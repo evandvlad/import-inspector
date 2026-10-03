@@ -2,35 +2,35 @@ import { assert } from "~/lib/err.ts";
 import { Settings } from "~/settings.ts";
 import type { Config as IConfig, ConfigPreset } from "~/api.ts";
 
-import { ConfigService } from "./config-service.ts";
+import { loadConfig, loadSettings, saveConfig } from "./config-service.ts";
+
+const emptyConfigData: IConfig = { presets: {} };
 
 export class Config {
 	data;
 
-	#service;
-
 	static async load() {
-		const service = new ConfigService();
-		const data = await service.loadConfig();
-		return data ? new this({ data, service }) : null;
+		const data = await loadConfig();
+		return data ? new this(data) : null;
 	}
 
 	static async create() {
-		const service = new ConfigService();
-
-		const data = { presets: {} };
-		await service.saveConfig(data);
-
-		return new this({ data, service });
+		await saveConfig(emptyConfigData);
+		return new this(emptyConfigData);
 	}
 
-	private constructor({ data, service }: { data: IConfig; service: ConfigService }) {
+	private constructor(data: IConfig) {
 		this.data = data;
-		this.#service = service;
 	}
 
 	get presetNames() {
 		return Object.keys(this.data.presets);
+	}
+
+	async loadSettings(presetName: string) {
+		const preset = this.getPreset(presetName);
+		const data = await loadSettings(preset);
+		return new Settings({ data, preset });
 	}
 
 	getPreset(name: string) {
@@ -39,20 +39,14 @@ export class Config {
 		return preset;
 	}
 
-	async createSettings(presetName: string) {
-		const preset = this.getPreset(presetName);
-		const data = await this.#service.loadSettings(preset);
-		return new Settings({ data, preset });
-	}
-
 	async setPreset(preset: ConfigPreset) {
 		this.data.presets[preset.name] = preset;
-		await this.#service.saveConfig(this.data);
+		await saveConfig(this.data);
 	}
 
 	async removePreset(name: string) {
 		delete this.data.presets[name];
-		await this.#service.saveConfig(this.data);
+		await saveConfig(this.data);
 	}
 
 	#findPreset(name: string) {

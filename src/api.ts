@@ -229,16 +229,6 @@ export type FramesModuleDependencyItem = {
 	imported: Module;
 };
 
-export type AppContextEnv = {
-	htmlx: Htmlx;
-	version: string;
-	basePath: string;
-	preset: ConfigPreset;
-	getShortPath: (path: string) => string;
-	getEditorUrl: (path: string, line?: number) => string;
-	toViewData: (mode?: ViewDataMode) => Json;
-};
-
 export type Frames = {
 	getAll: () => string[];
 	getPathPrefixes: (name: string) => string[];
@@ -314,6 +304,27 @@ export type ModuleDefects = {
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
+export type AppContextEnv = {
+	htmlx: Htmlx;
+	version: string;
+	basePath: string;
+	preset: ConfigPreset;
+	getShortPath: (path: string) => string;
+	getEditorUrl: (path: string, line?: number) => string;
+	toViewData: (mode?: ViewDataMode) => Json;
+};
+
+export type AppContextSummary = {
+	tags: number;
+	frames: number;
+	packages: number;
+	modules: number;
+	imports: number;
+	importDefects: number;
+	moduleDefects: number;
+	totalDefects: number;
+};
+
 export type AppContext = {
 	env: AppContextEnv;
 	modules: Modules;
@@ -324,4 +335,5 @@ export type AppContext = {
 	importDefects: ImportDefects;
 	moduleDefects: ModuleDefects;
 	toViewData: (mode?: ViewDataMode) => Json;
+	getSummary: () => AppContextSummary;
 };

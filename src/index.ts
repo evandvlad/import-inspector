@@ -1,35 +1,3 @@
-import { magenta } from "@std/fmt/colors";
+import { runLaunchWorkflow } from "~/workflows/launch-workflow.ts";
 
-import { fromLines } from "~/lib/text.ts";
-import { link } from "~/lib/cli-view.ts";
-import { CommandName, errorLogFilePath } from "~/values.ts";
-import { ErrorLogger } from "~/error-logger.ts";
-
-import { commands } from "~/commands/index.ts";
-
-async function run() {
-	const errorLogger = await ErrorLogger.create();
-
-	try {
-		const [commandName, ...args] = Deno.args;
-
-		if (Object.hasOwn(commands, commandName)) {
-			await commands[commandName as CommandName]({ args });
-			return;
-		}
-
-		await commands[CommandName.Unknown]({ args });
-	} catch (e) {
-		await errorLogger.log(e);
-
-		const message = fromLines([
-			magenta(Error.isError(e) ? e.message : (e?.toString() ?? "Unknown error")),
-			`See ${link({ path: errorLogFilePath })} for details.`,
-		]);
-
-		console.error(message);
-		Deno.exit(1);
-	}
-}
-
-await run();
+await runLaunchWorkflow({ args: Deno.args });

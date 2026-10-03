@@ -29,43 +29,41 @@ function assertConfigData(data: unknown): asserts data is Config {
 	}
 }
 
-export class ConfigService {
-	async loadConfig() {
-		const doesConfigExist = await fileExists(configFilePath);
+export async function loadConfig() {
+	const doesConfigExist = await fileExists(configFilePath);
 
-		if (!doesConfigExist) {
-			return null;
-		}
-
-		try {
-			const content = await readFile(configFilePath);
-			const data = JSON.parse(content);
-			assertConfigData(data);
-			return data;
-		} catch (e) {
-			const messages = [`Can't process config file. Check file: ${configFilePath}.`];
-
-			if (isErr(e)) {
-				messages.push(e.message);
-			}
-
-			throw remapErr(e, messages.join(" "));
-		}
+	if (!doesConfigExist) {
+		return null;
 	}
 
-	async loadSettings(preset: ConfigPreset) {
-		const { name, settingsPath } = preset;
+	try {
+		const content = await readFile(configFilePath);
+		const data = JSON.parse(content);
+		assertConfigData(data);
+		return data;
+	} catch (e) {
+		const messages = [`Can't process config file. Check file: ${configFilePath}.`];
 
-		try {
-			const settingsModule: SettingsModule = await import(settingsPath);
-			return settingsModule.default(preset);
-		} catch (e) {
-			throw remapErr(e, `Can't dynamically import settings file '${settingsPath}'. Preset name is '${name}.'`);
+		if (isErr(e)) {
+			messages.push(e.message);
 		}
-	}
 
-	async saveConfig(data: Config) {
-		const content = JSON.stringify(data, null, tab);
-		await writeFile(configFilePath, content);
+		throw remapErr(e, messages.join(" "));
 	}
+}
+
+export async function loadSettings(preset: ConfigPreset) {
+	const { name, settingsPath } = preset;
+
+	try {
+		const settingsModule: SettingsModule = await import(settingsPath);
+		return settingsModule.default(preset);
+	} catch (e) {
+		throw remapErr(e, `Can't dynamically import settings file '${settingsPath}'. Preset name is '${name}.'`);
+	}
+}
+
+export async function saveConfig(data: Config) {
+	const content = JSON.stringify(data, null, tab);
+	await writeFile(configFilePath, content);
 }

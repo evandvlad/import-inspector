@@ -1,5 +1,7 @@
 import { join } from "@std/path";
 
+import type { AppContext, FileContent, Span } from "~/api.ts";
+
 import denoJson from "../deno.json" with { type: "json" };
 
 const dirname = import.meta.dirname!;
@@ -22,3 +24,24 @@ export enum CommandName {
 }
 
 export type Command = (params: { args: string[] }) => Promise<void> | void;
+
+export type ImportRec = {
+	// Can be null for dynamic imports
+	locator: string | null;
+	isDynamic: boolean;
+	posSpan: Span;
+};
+
+export type FileParsingResult = {
+	path: string;
+	fileContent: FileContent;
+	importRecs: ImportRec[];
+};
+
+export type ImportResolution = {
+	path: string | null;
+	isExternal: boolean;
+	isRelative: boolean;
+};
+
+export type LintFunction = (appContext: AppContext) => Promise<void> | void;

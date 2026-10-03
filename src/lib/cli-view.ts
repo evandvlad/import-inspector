@@ -23,11 +23,18 @@ export function code({ value, startLine = 1 }: { value: string; startLine?: numb
 
 export function spin({ message }: { message: string }) {
 	const spinner = new Spinner({ message });
+	let isStopped = false;
 
 	spinner.start();
 
 	return {
 		stop() {
+			if (isStopped) {
+				return;
+			}
+
+			isStopped = true;
+
 			spinner.stop();
 		},
 	};
