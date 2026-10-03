@@ -54,20 +54,20 @@ export class ImportDefects implements IImportDefects {
 			.toArray();
 	}
 
-	remove({ importId, rule }: { importId: string; rule: string }) {
+	remove(importId: string, rule: string) {
 		const imp = this.#imports.get(importId);
 		imp.removeDefect(rule);
 	}
 
 	removeByRule(rule: string) {
 		this.getByRule(rule).forEach(({ importId }) => {
-			this.remove({ importId, rule });
+			this.remove(importId, rule);
 		});
 	}
 
 	removeAll() {
 		this.getAll().forEach(({ importId, rule }) => {
-			this.remove({ importId, rule });
+			this.remove(importId, rule);
 		});
 	}
 

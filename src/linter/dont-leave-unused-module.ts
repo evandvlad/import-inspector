@@ -6,6 +6,6 @@ export const dontLeaveUnusedModule: LintFunction = ({ modules }) => {
 		.filter((mod) => !mod.hasTag(Tag.Independent))
 		.filter(({ links }) => links.length === 0)
 		.forEach((mod) => {
-			mod.addDefect({ rule: ModuleLintRule.DontLeaveUnusedModule });
+			mod.addDefect(ModuleLintRule.DontLeaveUnusedModule);
 		});
 };

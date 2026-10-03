@@ -17,10 +17,7 @@ export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, pa
 
 			const isImportedFromSameOrAncestorPackage = sourceModule.isInPackage &&
 				(sourceModule.packagePath === importedPackage.path ||
-					packages.isInAncestryBranch({
-						sourcePath: sourceModule.packagePath!,
-						testablePath: importedPackage.path,
-					}));
+					packages.isInAncestryBranch(sourceModule.packagePath!, importedPackage.path));
 
 			if (isImportedFromSameOrAncestorPackage) {
 				return false;
@@ -42,6 +39,6 @@ export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, pa
 			return !(allowedPackageSet.has(importedPackage) && importedModule.isPackageEntryPoint);
 		})
 		.forEach((imp) => {
-			imp.addDefect({ rule: ImportLintRule.DontJumpThroughPackageEntry });
+			imp.addDefect(ImportLintRule.DontJumpThroughPackageEntry);
 		});
 };

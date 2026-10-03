@@ -45,20 +45,20 @@ export class ModuleDefects implements IModuleDefects {
 			.toArray();
 	}
 
-	remove({ path, rule }: { path: string; rule: string }) {
+	remove(path: string, rule: string) {
 		const mod = this.#modules.get(path);
 		mod.removeDefect(rule);
 	}
 
 	removeByRule(rule: string) {
 		this.getByRule(rule).forEach(({ sourcePath }) => {
-			this.remove({ path: sourcePath, rule });
+			this.remove(sourcePath, rule);
 		});
 	}
 
 	removeAll() {
 		this.getAll().forEach(({ sourcePath, rule }) => {
-			this.remove({ path: sourcePath, rule });
+			this.remove(sourcePath, rule);
 		});
 	}
 

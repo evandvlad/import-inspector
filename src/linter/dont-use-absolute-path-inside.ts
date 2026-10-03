@@ -11,10 +11,8 @@ export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, pack
 			if (sourceModule.isInPackage && importedModule.isInPackage) {
 				const isSamePackage = sourceModule.packagePath === importedModule.packagePath;
 
-				const isImportedFromSameOrAncestorPackage = isSamePackage || packages.isInAncestryBranch({
-					sourcePath: sourceModule.packagePath!,
-					testablePath: importedModule.packagePath!,
-				});
+				const isImportedFromSameOrAncestorPackage = isSamePackage ||
+					packages.isInAncestryBranch(sourceModule.packagePath!, importedModule.packagePath!);
 
 				if (isImportedFromSameOrAncestorPackage) {
 					return true;
@@ -24,6 +22,6 @@ export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, pack
 			return false;
 		})
 		.forEach((imp) => {
-			imp.addDefect({ rule: ImportLintRule.DontUseAbsolutePathInside });
+			imp.addDefect(ImportLintRule.DontUseAbsolutePathInside);
 		});
 };

@@ -58,9 +58,8 @@ function getContent(data: unknown) {
 	}
 }
 
-export const json: HtmlxComponents["json"] = (props) => {
-	const { data } = props;
+export const json: HtmlxComponents["json"] = (data, options = {}) => {
 	const content = getContent(data);
 
-	return `<div ${stringifyCompAttrs({ classes: ["json"], props })}>${content}</div>`;
+	return `<div ${stringifyCompAttrs({ classes: ["json"], options })}>${content}</div>`;
 };

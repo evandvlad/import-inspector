@@ -46,7 +46,7 @@ export class Import implements IImport {
 		return defect;
 	}
 
-	addDefect({ rule, description }: { rule: string; description?: string }) {
+	addDefect(rule: string, description?: string) {
 		if (this.hasDefect(rule)) {
 			return;
 		}

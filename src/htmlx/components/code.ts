@@ -3,14 +3,14 @@ import { sanitizeForHtml } from "~/lib/text.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 
-export const code: HtmlxComponents["code"] = (props) => {
-	const content = props.entries.map(({ line, value }) => `
+export const code: HtmlxComponents["code"] = (entries, options = {}) => {
+	const content = entries.map(({ line, value }) => `
 		<div class="code__gutter">${line}</div>
 		<div>${sanitizeForHtml(value)}</div>
 	`).join("");
 
 	return `
-		<div ${stringifyCompAttrs({ classes: ["code"], props })}>
+		<div ${stringifyCompAttrs({ classes: ["code"], options })}>
 			${content}
 		</div>
 	`;

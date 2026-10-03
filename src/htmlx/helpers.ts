@@ -1,25 +1,25 @@
-import type { HtmlxComponentBaseProps } from "~/api.ts";
+import type { HtmlxComponentBaseOptions } from "~/api.ts";
 
 export const incId = (() => {
 	let id = 0;
 	return () => ++id;
 })();
 
-export function stringifyCompAttrs<T extends HtmlxComponentBaseProps>(
-	{ props, attrs, styles, classes = [] }: {
-		props: T;
+export function stringifyCompAttrs<T extends HtmlxComponentBaseOptions>(
+	{ options, attrs, styles, classes = [] }: {
+		options: T;
 		classes?: string[];
 		attrs?: Record<string, string>;
 		styles?: Record<string, string>;
 	},
 ) {
 	const preparedAttrs: Record<string, string> = {
-		...props.attrs,
-		class: classes.concat(props.classes ?? []).join(" "),
+		...options.attrs,
+		class: classes.concat(options.classes ?? []).join(" "),
 		...attrs,
 	};
 
-	const styleEntries = Object.entries({ ...styles, ...props.styles });
+	const styleEntries = Object.entries({ ...styles, ...options.styles });
 
 	if (styleEntries.length) {
 		preparedAttrs.style = styleEntries.map(([key, value]) => `${key}: ${value}`).join("; ");

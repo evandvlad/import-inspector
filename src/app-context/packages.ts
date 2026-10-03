@@ -48,7 +48,7 @@ export class Packages implements IPackages {
 		return this.get(parentPackagePath);
 	}
 
-	isInAncestryBranch({ sourcePath, testablePath }: { sourcePath: string; testablePath: string }) {
+	isInAncestryBranch(sourcePath: string, testablePath: string) {
 		return this.#getAncestryBranch(sourcePath).some(({ path }) => path === testablePath);
 	}
 

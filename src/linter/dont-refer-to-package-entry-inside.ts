@@ -17,11 +17,9 @@ export const dontReferToPackageEntryInside: LintFunction = ({ imports, modules, 
 				return false;
 			}
 
-			return sourceModule.packagePath === importedModule.packagePath || packages.isInAncestryBranch({
-				sourcePath: sourceModule.packagePath!,
-				testablePath: importedModule.packagePath!,
-			});
+			return sourceModule.packagePath === importedModule.packagePath ||
+				packages.isInAncestryBranch(sourceModule.packagePath!, importedModule.packagePath!);
 		}).forEach((imp) => {
-			imp.addDefect({ rule: ImportLintRule.DontReferToPackageEntryInside });
+			imp.addDefect(ImportLintRule.DontReferToPackageEntryInside);
 		});
 };

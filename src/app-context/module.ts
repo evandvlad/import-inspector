@@ -90,7 +90,7 @@ export class Module implements IModule {
 		return defect;
 	}
 
-	addDefect({ rule, description }: { rule: string; description?: string }) {
+	addDefect(rule: string, description?: string) {
 		if (this.hasDefect(rule)) {
 			return;
 		}

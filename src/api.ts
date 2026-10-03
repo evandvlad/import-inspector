@@ -33,6 +33,67 @@ export enum ModuleLintRule {
 	DontLeaveUnusedModule = "don't-leave-unused-module",
 }
 
+export type Htmlx = {
+	components: HtmlxComponents;
+	createHtml: (value: string) => Promise<string>;
+};
+
+export type HtmlxComponentBaseOptions = {
+	classes?: string[];
+	attrs?: Rec<string>;
+	styles?: Rec<string>;
+};
+
+export type HtmlxComponentTreeItem = {
+	value: string;
+	children?: HtmlxComponentTreeItem[];
+};
+
+export type HtmlxComponents = {
+	h: (value: string, options?: { level?: 1 | 2 | 3 } & HtmlxComponentBaseOptions) => string;
+	elem: (value: string, options?: HtmlxComponentBaseOptions) => string;
+	flex: (items: string[], options?: { dir?: "v" | "h" } & HtmlxComponentBaseOptions) => string;
+	cols: (items: string[], options?: HtmlxComponentBaseOptions) => string;
+	link: (params: { url: string; value: string }, options?: HtmlxComponentBaseOptions) => string;
+	flist: (items: Array<{ value: string; content: string }>, options?: HtmlxComponentBaseOptions) => string;
+	mark: (value: string, options?: HtmlxComponentBaseOptions) => string;
+	details: (
+		params: { label: string; value: string },
+		options?: { theme?: "standard" | "light" | "dark" } & HtmlxComponentBaseOptions,
+	) => string;
+	table: (rows: string[][], options?: { columns?: string[] } & HtmlxComponentBaseOptions) => string;
+	expander: (params: { label: string; value: string }, options?: HtmlxComponentBaseOptions) => string;
+	tabs: (items: Array<{ label: string; value: string }>, options?: HtmlxComponentBaseOptions) => string;
+	tree: (items: HtmlxComponentTreeItem[], options?: HtmlxComponentBaseOptions) => string;
+	code: (entries: FileContentEntry[], options?: HtmlxComponentBaseOptions) => string;
+	json: (data: unknown, options?: HtmlxComponentBaseOptions) => string;
+};
+
+export type Clix = {
+	components: ClixComponents;
+	widgets: ClixWidgets;
+};
+
+export type ClixComponents = {
+	text: (
+		value: string,
+		options?: { bold?: boolean; dim?: boolean; color?: "red" | "blue" | "gray" | "white" },
+	) => string;
+	lines: (items: string[]) => string;
+	link: (path: string, options?: { text?: string; line?: number }) => string;
+	code: (value: string, options?: { startLine?: number }) => string;
+};
+
+export type ClixWidgets = {
+	spin: (message: string) => { stop: () => void };
+	prompt: (options?: { label?: string; value?: string }) => string;
+	confirm: (message: string) => boolean;
+	select: <T extends string = string>(
+		items: Array<{ label: string; value: T }>,
+		options?: { label?: string },
+	) => { label: string; value: T };
+};
+
 export type ViewDataMode = "verbose" | "brief" | "minimal";
 
 export type RootEntry = {
@@ -110,6 +171,11 @@ export type FileContent = {
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
+export type ModuleDependencyItem = {
+	source: Module;
+	imported: Module;
+};
+
 export type Import = {
 	id: string;
 	sourcePath: string;
@@ -123,7 +189,7 @@ export type Import = {
 	hasDefect: (rule: string) => boolean;
 	findDefect: (rule: string) => Nullable<ImportDefect>;
 	getDefect: (rule: string) => ImportDefect;
-	addDefect: (params: { rule: string; description?: string }) => void;
+	addDefect: (rule: string, description?: string) => void;
 	removeDefect: (rule: string) => void;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
@@ -166,7 +232,7 @@ export type Module = {
 	hasDefect: (rule: string) => boolean;
 	findDefect: (rule: string) => Nullable<ModuleDefect>;
 	getDefect: (rule: string) => ModuleDefect;
-	addDefect: (params: { rule: string; description?: string }) => void;
+	addDefect: (rule: string, description?: string) => void;
 	removeDefect: (rule: string) => void;
 	hasTag: (tag: string) => boolean;
 	setTag: (tag: string) => void;
@@ -186,73 +252,6 @@ export type Package = {
 	subPackagePaths: string[];
 	modulePaths: string[];
 	toViewData: (mode?: ViewDataMode) => Json;
-};
-
-export type Htmlx = {
-	components: HtmlxComponents;
-	createHtml: (value: string) => Promise<string>;
-};
-
-export type HtmlxComponentBaseProps = {
-	classes?: string[];
-	attrs?: Rec<string>;
-	styles?: Rec<string>;
-};
-
-export type HtmlxComponent<P extends Rec<unknown> = Rec<unknown>> = (
-	params: P & HtmlxComponentBaseProps,
-) => string;
-
-export type HtmlxComponentTreeItem = {
-	value: string;
-	children?: HtmlxComponentTreeItem[];
-};
-
-export type HtmlxComponents = {
-	h: HtmlxComponent<{ value: string; level: 1 | 2 | 3 }>;
-	elem: HtmlxComponent<{ value: string }>;
-	flex: HtmlxComponent<{ items: string[]; dir?: "v" | "h" }>;
-	cols: HtmlxComponent<{ items: string[] }>;
-	link: HtmlxComponent<{ url: string; value: string }>;
-	flist: HtmlxComponent<{ items: Array<{ value: string; content: string }> }>;
-	mark: HtmlxComponent<{ value: string }>;
-	details: HtmlxComponent<{ label: string; value: string; theme?: "standard" | "light" | "dark" }>;
-	table: HtmlxComponent<{ rows: string[][]; columns?: string[] }>;
-	expander: HtmlxComponent<{ label: string; value: string }>;
-	tabs: HtmlxComponent<{ items: Array<{ label: string; value: string }> }>;
-	tree: HtmlxComponent<{ items: HtmlxComponentTreeItem[] }>;
-	code: HtmlxComponent<{ entries: FileContentEntry[] }>;
-	json: HtmlxComponent<{ data: unknown }>;
-};
-
-export type Clix = {
-	components: ClixComponents;
-	widgets: ClixWidgets;
-};
-
-export type ClixComponents = {
-	text: (
-		value: string,
-		options?: { bold?: boolean; dim?: boolean; color?: "red" | "blue" | "gray" | "white" },
-	) => string;
-	lines: (items: string[]) => string;
-	link: (path: string, options?: { text?: string; line?: number }) => string;
-	code: (value: string, options?: { startLine?: number }) => string;
-};
-
-export type ClixWidgets = {
-	spin: (message: string) => { stop: () => void };
-	prompt: (options?: { label?: string; value?: string }) => string;
-	confirm: (message: string) => boolean;
-	select: <T extends string = string>(
-		items: Array<{ label: string; value: T }>,
-		options?: { label?: string },
-	) => { label: string; value: T };
-};
-
-export type ModuleDependencyItem = {
-	source: Module;
-	imported: Module;
 };
 
 export type Frames = {
@@ -278,7 +277,7 @@ export type Packages = {
 	findParent: (path: string) => Nullable<Package>;
 	getParent: (path: string) => Package;
 	getSubs: (path: string) => Package[];
-	isInAncestryBranch: (params: { sourcePath: string; testablePath: string }) => boolean;
+	isInAncestryBranch: (sourcePath: string, testablePath: string) => boolean;
 	getAncestryBranch: (path: string) => Package[];
 	toViewData: (mode?: ViewDataMode) => Json;
 };
@@ -311,7 +310,7 @@ export type ImportDefects = {
 	getAllRules: () => string[];
 	getByRule: (rule: string) => ImportDefect[];
 	getModulePathsByRule: (rule: string) => string[];
-	remove: (params: { importId: string; rule: string }) => void;
+	remove: (importId: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
 	toViewData: (mode?: ViewDataMode) => Json;
@@ -323,7 +322,7 @@ export type ModuleDefects = {
 	getAllAsPathMap: () => Map</* path */ string, ModuleDefect[]>;
 	getAllAsRuleMap: () => Map</* rule */ string, ModuleDefect[]>;
 	getByRule: (rule: string) => ModuleDefect[];
-	remove: (params: { path: string; rule: string }) => void;
+	remove: (path: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
 	toViewData: (mode?: ViewDataMode) => Json;

@@ -25,15 +25,13 @@ function renderTree(items: HtmlxComponentTreeItem[]): string {
 	`;
 }
 
-export const tree: HtmlxComponents["tree"] = (props) => {
-	const { items } = props;
-
+export const tree: HtmlxComponents["tree"] = (items, options = {}) => {
 	if (items.length === 0) {
 		return "";
 	}
 
 	return `
-		<div ${stringifyCompAttrs({ classes: ["tree"], props })}>
+		<div ${stringifyCompAttrs({ classes: ["tree"], options })}>
 			${renderTree(items)}
 		</div>
 	`;

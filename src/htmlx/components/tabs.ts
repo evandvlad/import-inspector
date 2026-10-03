@@ -2,9 +2,7 @@ import type { HtmlxComponents } from "~/api.ts";
 
 import { incId, stringifyCompAttrs } from "../helpers.ts";
 
-export const tabs: HtmlxComponents["tabs"] = (props) => {
-	const { items } = props;
-
+export const tabs: HtmlxComponents["tabs"] = (items, options = {}) => {
 	if (items.length === 0) {
 		return "";
 	}
@@ -25,7 +23,7 @@ export const tabs: HtmlxComponents["tabs"] = (props) => {
 	`).join("");
 
 	return `
-		<div ${stringifyCompAttrs({ classes: ["tabs"], attrs, props })}>
+		<div ${stringifyCompAttrs({ classes: ["tabs"], attrs, options })}>
 			${links}
 			${contents}
 		</div>
