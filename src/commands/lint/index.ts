@@ -1,6 +1,6 @@
 import { parseArgs } from "@std/cli";
 
-import { spin } from "~/lib/cli-view.ts";
+import { widgets } from "~/clix/index.ts";
 import { Reporter } from "~/reporter.ts";
 import type { Command } from "~/values.ts";
 import { runProgramWorkflow } from "~/workflows/program-workflow.ts";
@@ -9,10 +9,12 @@ import { runAppWorkflow } from "~/workflows/app-workflow.ts";
 import { createLintResult } from "./lint-result.ts";
 import { createAppSummary } from "./app-summary.ts";
 
+const { spin } = widgets;
+
 export const lint: Command = async ({ args }: { args: string[] }) => {
 	const { preset } = parseArgs(args);
 
-	const spinner = spin({ message: "Processing..." });
+	const spinner = spin("Processing...");
 
 	try {
 		await runProgramWorkflow({

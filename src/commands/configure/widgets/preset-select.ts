@@ -1,12 +1,15 @@
-import { blue, bold } from "@std/fmt/colors";
+import { components, widgets } from "~/clix/index.ts";
 
-import { select } from "~/lib/cli-view.ts";
+const { text } = components;
+const { select } = widgets;
 
 export function selectPreset({ presetNames }: { presetNames: string[] }) {
-	const { value } = select({
-		label: blue(bold("Select preset")),
-		items: presetNames.map((name) => ({ label: name, value: name })),
-	});
+	const { value } = select(
+		presetNames.map((name) => ({ label: name, value: name })),
+		{
+			label: text("Select preset", { bold: true, color: "blue" }),
+		},
+	);
 
 	return value;
 }

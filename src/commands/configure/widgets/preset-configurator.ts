@@ -1,9 +1,11 @@
-import { magenta } from "@std/fmt/colors";
 import { isAbsolute } from "@std/path";
 
 import { dirExists, fileExists } from "~/lib/fs.ts";
-import { prompt } from "~/lib/cli-view.ts";
+import { components, widgets } from "~/clix/index.ts";
 import type { ConfigPreset } from "~/api.ts";
+
+const { text } = components;
+const { prompt } = widgets;
 
 type InspectionResult = {
 	isValid: boolean;
@@ -64,7 +66,7 @@ export class PresetConfigurator {
 		}
 
 		if (message) {
-			console.log(magenta(message));
+			console.log(text(message, { color: "red" }));
 		}
 
 		const value = prompt({ label: params.label, value: params.value ?? "" });

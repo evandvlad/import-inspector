@@ -1,14 +1,14 @@
-import { bold } from "@std/fmt/colors";
 import { format } from "@std/fmt/duration";
 
-import { fromLines } from "~/lib/text.ts";
+import { components } from "~/clix/index.ts";
 import { version } from "~/values.ts";
-import { link } from "~/lib/cli-view.ts";
 import type { Settings } from "~/settings.ts";
 import type { AppContext } from "~/api.ts";
 
-function ln(caption: string, text: string | number) {
-	return `${bold(caption)}: ${text}`;
+const { text, link, lines } = components;
+
+function ln(caption: string, content: string | number) {
+	return `${text(caption, { bold: true })}: ${content}`;
 }
 
 export function createAppSummary(
@@ -27,12 +27,12 @@ export function createAppSummary(
 	const duration = format(Date.now() - startedAt, { ignoreZero: true });
 	const hrWidth = 75;
 
-	const lines = [
+	const items = [
 		"=".repeat(hrWidth),
 		ln("Program version", version),
 		ln("Duration", duration),
 		ln("Preset", settings.preset.name),
-		ln("Settings", link({ path: settings.preset.settingsPath })),
+		ln("Settings", link(settings.preset.settingsPath)),
 		ln("Project path", settings.preset.projectPath),
 		"-".repeat(hrWidth),
 		ln("Tags", summary.tags),
@@ -45,12 +45,12 @@ export function createAppSummary(
 	];
 
 	if (settings.reportPaths.length > 0) {
-		lines.push(
+		items.push(
 			"-".repeat(hrWidth),
 			ln("Reports", ""),
-			...settings.reportPaths.map((path) => `  ${link({ path })}`),
+			...settings.reportPaths.map((path) => `  ${link(path)}`),
 		);
 	}
 
-	return fromLines(lines);
+	return lines(items);
 }

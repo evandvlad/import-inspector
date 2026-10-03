@@ -1,6 +1,7 @@
 import { assertNever } from "~/lib/ts.ts";
 import type { Command } from "~/values.ts";
 import { Config } from "~/config/index.ts";
+import { widgets } from "~/clix/index.ts";
 
 import { createConfig } from "./subcommands/create-config.ts";
 import { showConfigData } from "./subcommands/show-config-data.ts";
@@ -8,6 +9,8 @@ import { addPreset } from "./subcommands/add-preset.ts";
 import { updatePreset } from "./subcommands/update-preset.ts";
 import { removePreset } from "./subcommands/remove-preset.ts";
 import { selectAction } from "./widgets/action-select.ts";
+
+const { confirm } = widgets;
 
 async function loopUntilQuit(handler: () => Promise<void>) {
 	await handler();

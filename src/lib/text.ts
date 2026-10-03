@@ -22,10 +22,6 @@ export function toLines(value: string) {
 	return value.split(br);
 }
 
-export function withBr(value: string, num = 1) {
-	return [value, br.repeat(num)].join("");
-}
-
 export function normalizeBr(value: string) {
 	return value.replaceAll(CRLF, br);
 }

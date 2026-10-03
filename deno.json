@@ -1,6 +1,6 @@
 {
 	"name": "import-inspector",
-	"version": "2.8.0",
+	"version": "2.8.1",
 	"fmt": {
 		"indentWidth": 4,
 		"lineWidth": 120,

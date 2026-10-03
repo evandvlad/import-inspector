@@ -1,13 +1,14 @@
-import { blue, bold } from "@std/fmt/colors";
-
-import { select, type SelectItem } from "~/lib/cli-view.ts";
+import { components, widgets } from "~/clix/index.ts";
 
 import type { Action } from "../values.ts";
+
+const { text } = components;
+const { select } = widgets;
 
 export function selectAction({ presetNames }: { presetNames: string[] }) {
 	const hasPresets = presetNames.length > 0;
 
-	const items: Array<SelectItem<Action>> = [
+	const items: Array<{ label: string; value: Action }> = [
 		{ label: "Show config", value: "show-config" },
 		{ label: "Add preset", value: "add-preset" },
 	];
@@ -19,10 +20,10 @@ export function selectAction({ presetNames }: { presetNames: string[] }) {
 		);
 	}
 
-	const { value } = select<Action>({
+	const { value } = select<Action>(
 		items,
-		label: blue(bold("Select action")),
-	});
+		{ label: text("Select action", { bold: true, color: "blue" }) },
+	);
 
 	return value;
 }

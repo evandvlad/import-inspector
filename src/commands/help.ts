@@ -1,20 +1,19 @@
-import { blue, bold } from "@std/fmt/colors";
-
-import { fromLines } from "~/lib/text.ts";
-import { link } from "~/lib/cli-view.ts";
+import { components } from "~/clix/index.ts";
 import { type Command, CommandName, configDir, configFilePath } from "~/values.ts";
 
+const { text, link, lines } = components;
+
 export const help: Command = () => {
-	const message = fromLines([
-		blue(bold("Help")),
-		`Config directory for this program is located here - ${link({ path: configDir })}`,
-		`Config file is ${link({ text: configFilePath, path: configFilePath })}`,
+	const message = lines([
+		text("Help", { bold: true, color: "blue" }),
+		`Config directory for this program is located here - ${link(configDir)}`,
+		`Config file is ${link(configFilePath)}`,
 		"",
-		blue(bold("Commands:")),
-		`${bold(CommandName.Lint)} [--preset] - lint files.`,
-		`${bold(CommandName.Configure)} - configure your config interactively.`,
-		`${bold(CommandName.Version)} - show current program version.`,
-		`${bold(CommandName.WriteApiFile)} [dir = cwd] - write types file into directory.`,
+		text("Commands:", { bold: true, color: "blue" }),
+		`${text(CommandName.Lint, { bold: true })} [--preset] - lint files.`,
+		`${text(CommandName.Configure, { bold: true })} - configure your config interactively.`,
+		`${text(CommandName.Version, { bold: true })} - show current program version.`,
+		`${text(CommandName.WriteApiFile, { bold: true })} [dir = cwd] - write types file into directory.`,
 	]);
 
 	console.log(message);

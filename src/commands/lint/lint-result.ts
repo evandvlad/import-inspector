@@ -1,9 +1,8 @@
-import { blue, bold, dim, gray } from "@std/fmt/colors";
-
 import { assertNever } from "~/lib/ts.ts";
-import { fromLines, withBr } from "~/lib/text.ts";
-import { code as formatCode, link } from "~/lib/cli-view.ts";
+import { components } from "~/clix/index.ts";
 import type { AppContext, LineRange } from "~/api.ts";
+
+const { text, code: formatCode, link, lines } = components;
 
 type ImportDefectDetails = {
 	kind: "import";
@@ -60,39 +59,38 @@ function createDefectDetailsMap({ appContext }: { appContext: AppContext }) {
 function createLink(
 	{ shortPath, path, lineRange }: { shortPath: string; path: string; lineRange?: LineRange },
 ) {
-	const pathLink = link({
-		path,
+	const pathLink = link(path, {
 		line: lineRange ? lineRange[0] : undefined,
 		text: shortPath,
 	});
 
-	return bold(blue(pathLink));
+	return text(pathLink, { bold: true, color: "blue" });
 }
 
 function createImportDefectBlock(
 	{ shortPath, path, info, code, lineRange, mod }: ImportDefectDetails,
 ) {
 	const title = createLink({ shortPath, path, lineRange });
-	const moduleLink = mod ? link({ text: mod.shortPath, path: mod.path }) : " ? ";
+	const moduleLink = mod ? link(mod.path, { text: mod.shortPath }) : " ? ";
 
-	const ruleInfo = [dim("rule (import):"), info].join(" ");
-	const importedModule = [dim("imported module:"), moduleLink].join(" ");
-	const codeLine = gray(formatCode({ value: code, startLine: lineRange[0] }));
+	const ruleInfo = [text("rule (import):", { dim: true }), info].join(" ");
+	const importedModule = [text("imported module:", { dim: true }), moduleLink].join(" ");
+	const codeLine = text(formatCode(code, { startLine: lineRange[0] }), { color: "gray" });
 
-	return fromLines([title, ruleInfo, importedModule, "", codeLine]);
+	return lines([title, ruleInfo, importedModule, "", codeLine]);
 }
 
 function createModuleDefectBlock({ path, shortPath, info }: ModuleDefectDetails) {
 	const title = createLink({ shortPath, path });
-	const ruleInfo = [dim("rule (module):"), info].join(" ");
+	const ruleInfo = [text("rule (module):", { dim: true }), info].join(" ");
 
-	return fromLines([title, ruleInfo]);
+	return lines([title, ruleInfo]);
 }
 
 export function createLintResult({ appContext }: { appContext: AppContext }) {
 	const defectDetailsMap = createDefectDetailsMap({ appContext });
 
-	return fromLines(
+	return lines(
 		defectDetailsMap
 			.values()
 			.map((detailsList) =>
@@ -111,10 +109,10 @@ export function createLintResult({ appContext }: { appContext: AppContext }) {
 								assertNever(kind);
 						}
 					})
-					.map((block) => withBr(block, 2))
+					.map((block) => lines([block, "", ""]))
 					.toArray()
 			)
-			.map((items) => fromLines(items))
+			.map((items) => lines(items))
 			.toArray(),
 	);
 }

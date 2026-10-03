@@ -225,6 +225,31 @@ export type HtmlxComponents = {
 	json: HtmlxComponent<{ data: unknown }>;
 };
 
+export type Clix = {
+	components: ClixComponents;
+	widgets: ClixWidgets;
+};
+
+export type ClixComponents = {
+	text: (
+		value: string,
+		options?: { bold?: boolean; dim?: boolean; color?: "red" | "blue" | "gray" | "white" },
+	) => string;
+	lines: (items: string[]) => string;
+	link: (path: string, options?: { text?: string; line?: number }) => string;
+	code: (value: string, options?: { startLine?: number }) => string;
+};
+
+export type ClixWidgets = {
+	spin: (message: string) => { stop: () => void };
+	prompt: (options?: { label?: string; value?: string }) => string;
+	confirm: (message: string) => boolean;
+	select: <T extends string = string>(
+		items: Array<{ label: string; value: T }>,
+		options?: { label?: string },
+	) => { label: string; value: T };
+};
+
 export type ModuleDependencyItem = {
 	source: Module;
 	imported: Module;

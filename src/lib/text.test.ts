@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { dedent, fromLines, normalizeBr, sanitizeForHtml, toLines, withBr } from "./text.ts";
+import { dedent, fromLines, normalizeBr, sanitizeForHtml, toLines } from "./text.ts";
 
 describe("lib/text", () => {
 	it("dedent", () => {
@@ -37,10 +37,5 @@ describe("lib/text", () => {
 
 	it("toLines", () => {
 		expect(toLines("\nfoo\nbar\nbaz\n")).toEqual(["", "foo", "bar", "baz", ""]);
-	});
-
-	it("withBr", () => {
-		expect(withBr("foo")).toBe("foo\n");
-		expect(withBr("foo", 3)).toBe("foo\n\n\n");
 	});
 });

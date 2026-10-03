@@ -4,7 +4,10 @@ import { parseArgs } from "@std/cli";
 import { assert } from "~/lib/err.ts";
 import { copyFile, fileExists } from "~/lib/fs.ts";
 import { dedent } from "~/lib/text.ts";
+import { widgets } from "~/clix/index.ts";
 import { type Command, typesFile } from "~/values.ts";
+
+const { confirm } = widgets;
 
 const fileName = "api.ts";
 

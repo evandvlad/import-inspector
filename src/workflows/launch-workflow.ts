@@ -1,11 +1,10 @@
-import { magenta } from "@std/fmt/colors";
-
 import { fromLines } from "~/lib/text.ts";
-import { link } from "~/lib/cli-view.ts";
+import { components } from "~/clix/index.ts";
 import { CommandName, errorLogFilePath } from "~/values.ts";
 import { ErrorLogger } from "~/error-logger.ts";
-
 import { commands } from "~/commands/index.ts";
+
+const { text, link } = components;
 
 export async function runLaunchWorkflow(params: { args: string[] }) {
 	const errorLogger = await ErrorLogger.create();
@@ -23,8 +22,8 @@ export async function runLaunchWorkflow(params: { args: string[] }) {
 		await errorLogger.log(e);
 
 		const message = fromLines([
-			magenta(Error.isError(e) ? e.message : (e?.toString() ?? "Unknown error")),
-			`See ${link({ path: errorLogFilePath })} for details.`,
+			text(Error.isError(e) ? e.message : (e?.toString() ?? "Unknown error"), { color: "red" }),
+			`See ${link(errorLogFilePath)} for details.`,
 		]);
 
 		console.error(message);
