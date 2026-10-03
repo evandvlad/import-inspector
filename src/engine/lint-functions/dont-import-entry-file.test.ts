@@ -3,13 +3,13 @@ import { expect } from "@std/expect";
 
 import { ImportLintRule } from "~/api.ts";
 
-import { createContext } from "../testing/context-maker.ts";
+import { createAppContext } from "../testing/app-context-maker.ts";
 
 import { dontImportEntryFile } from "./dont-import-entry-file.ts";
 
 describe("dont-import-entry-file", () => {
 	it("not ok", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/baz.entry.ts": "",
@@ -17,9 +17,9 @@ describe("dont-import-entry-file", () => {
 			},
 		});
 
-		dontImportEntryFile(context);
+		dontImportEntryFile(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontImportEntryFile);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);

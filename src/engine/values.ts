@@ -1,4 +1,4 @@
-import type { Context, FileContent, Span } from "~/api.ts";
+import type { AppContext, FileContent, Span } from "~/api.ts";
 
 export type ImportRec = {
 	// Can be null for dynamic imports
@@ -19,4 +19,4 @@ export type ImportResolution = {
 	isRelative: boolean;
 };
 
-export type LintFunction = (context: Context) => Promise<void> | void;
+export type LintFunction = (appContext: AppContext) => Promise<void> | void;

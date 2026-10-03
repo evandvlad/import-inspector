@@ -3,13 +3,13 @@ import { expect } from "@std/expect";
 
 import { ImportLintRule } from "~/api.ts";
 
-import { createContext } from "../testing/context-maker.ts";
+import { createAppContext } from "../testing/app-context-maker.ts";
 
 import { dontUseAbsolutePathInside } from "./dont-use-absolute-path-inside.ts";
 
 describe("dont-use-absolute-path-inside", () => {
 	it("not ok for absolute import from same package", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": "",
@@ -19,16 +19,16 @@ describe("dont-use-absolute-path-inside", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontUseAbsolutePathInside(context);
+		dontUseAbsolutePathInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual(["C:/foo/baz/index.tsx"]);
 	});
 
 	it("not ok for absolute import from ancestor package", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": "",
@@ -39,16 +39,16 @@ describe("dont-use-absolute-path-inside", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontUseAbsolutePathInside(context);
+		dontUseAbsolutePathInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual(["C:/foo/baz/qux/quux/quuux.ts"]);
 	});
 
 	it("ok for relative", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": "",
@@ -57,16 +57,16 @@ describe("dont-use-absolute-path-inside", () => {
 			},
 		});
 
-		dontUseAbsolutePathInside(context);
+		dontUseAbsolutePathInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual([]);
 	});
 
 	it("ok for absolute", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": "",
@@ -77,9 +77,9 @@ describe("dont-use-absolute-path-inside", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontUseAbsolutePathInside(context);
+		dontUseAbsolutePathInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
 
 		expect(paths).toEqual([]);

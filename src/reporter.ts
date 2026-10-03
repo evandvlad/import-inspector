@@ -2,7 +2,7 @@ import { remapErr } from "~/lib/err.ts";
 import { writeFile } from "~/lib/fs.ts";
 import { tab } from "~/lib/text.ts";
 import { assertNever } from "~/lib/ts.ts";
-import type { Context, Report } from "~/api.ts";
+import type { AppContext, Report } from "~/api.ts";
 import { createHtml } from "~/htmlx/index.ts";
 
 export class Reporter {
@@ -12,18 +12,18 @@ export class Reporter {
 		this.#reports = reports;
 	}
 
-	async write({ context }: { context: Context }) {
-		await Promise.all(this.#reports.map((report) => this.#writeReport({ report, context })));
+	async write({ appContext }: { appContext: AppContext }) {
+		await Promise.all(this.#reports.map((report) => this.#writeReport({ report, appContext })));
 	}
 
-	async #writeReport({ report, context }: { report: Report; context: Context }) {
-		const content = await this.#getContent({ report, context });
+	async #writeReport({ report, appContext }: { report: Report; appContext: AppContext }) {
+		const content = await this.#getContent({ report, appContext });
 		await writeFile(report.path, content);
 	}
 
-	async #getContent({ report, context }: { report: Report; context: Context }) {
+	async #getContent({ report, appContext }: { report: Report; appContext: AppContext }) {
 		try {
-			const data = await report.provide(context);
+			const data = await report.provide(appContext);
 			const { format } = report;
 
 			switch (format) {

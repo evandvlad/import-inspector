@@ -45,7 +45,7 @@ export type Report = {
 	format: "text" | "json" | "html";
 	// absolute path
 	path: string;
-	provide: (context: Context) => MaybePromise<unknown>;
+	provide: (appContext: AppContext) => MaybePromise<unknown>;
 };
 
 export type ConfigPreset = {
@@ -75,8 +75,8 @@ export type CorrectUnresolvedDynamicImports = (
 	// result - array of import locators
 ) => Promise<string[]>;
 
-export type PreLint = (context: Context) => MaybePromise<void>;
-export type PostLint = (context: Context) => MaybePromise<void>;
+export type PreLint = (appContext: AppContext) => MaybePromise<void>;
+export type PostLint = (appContext: AppContext) => MaybePromise<void>;
 
 export type Settings = {
 	rootEntries: RootEntry[];
@@ -229,7 +229,7 @@ export type ContextFramesModuleDependencyItem = {
 	imported: Module;
 };
 
-export type ContextEnv = {
+export type AppContextEnv = {
 	htmlx: Htmlx;
 	version: string;
 	basePath: string;
@@ -314,8 +314,8 @@ export type ContextModuleDefects = {
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
-export type Context = {
-	env: ContextEnv;
+export type AppContext = {
+	env: AppContextEnv;
 	modules: ContextModules;
 	packages: ContextPackages;
 	imports: ContextImports;

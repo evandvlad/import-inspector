@@ -17,12 +17,12 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 	assert(config, `Workflow is not configured yet. Use '${CommandName.Configure}' command to do that easily.`);
 
 	const settings = await config.createSettings(preset);
-	const context = await runEngine({ settings });
+	const appContext = await runEngine({ settings });
 
 	const reporter = new Reporter({ reports: settings.reports });
-	await reporter.write({ context });
+	await reporter.write({ appContext });
 
-	const hasDefects = lintOutput.summarize({ context, settings });
+	const hasDefects = lintOutput.summarize({ appContext, settings });
 
 	Deno.exit(hasDefects ? 1 : 0);
 };

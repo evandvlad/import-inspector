@@ -3,13 +3,13 @@ import { expect } from "@std/expect";
 
 import { ImportLintRule } from "~/api.ts";
 
-import { createContext } from "../testing/context-maker.ts";
+import { createAppContext } from "../testing/app-context-maker.ts";
 
 import { dontReferToPackageEntryInside } from "./dont-refer-to-package-entry-inside.ts";
 
 describe("dont-refer-to-package-entry-inside", () => {
 	it("via import '.'", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
@@ -17,16 +17,16 @@ describe("dont-refer-to-package-entry-inside", () => {
 			},
 		});
 
-		dontReferToPackageEntryInside(context);
+		dontReferToPackageEntryInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
 
 	it("via import './index'", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
@@ -34,16 +34,16 @@ describe("dont-refer-to-package-entry-inside", () => {
 			},
 		});
 
-		dontReferToPackageEntryInside(context);
+		dontReferToPackageEntryInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
 
 	it("via import '..'", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
@@ -51,16 +51,16 @@ describe("dont-refer-to-package-entry-inside", () => {
 			},
 		});
 
-		dontReferToPackageEntryInside(context);
+		dontReferToPackageEntryInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
 
 	it("via import '../index'", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
@@ -68,16 +68,16 @@ describe("dont-refer-to-package-entry-inside", () => {
 			},
 		});
 
-		dontReferToPackageEntryInside(context);
+		dontReferToPackageEntryInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
 
 	it("via alias to entry point", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
@@ -86,16 +86,16 @@ describe("dont-refer-to-package-entry-inside", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontReferToPackageEntryInside(context);
+		dontReferToPackageEntryInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
 
 	it("in deep nested structure", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar/index.ts": "",
@@ -106,16 +106,16 @@ describe("dont-refer-to-package-entry-inside", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontReferToPackageEntryInside(context);
+		dontReferToPackageEntryInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/qux/quux/other.tsx"]);
 	});
 
 	it("ok", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": 'import "./other";',
 				"C:/tmp/other/index.ts": "",
@@ -129,9 +129,9 @@ describe("dont-refer-to-package-entry-inside", () => {
 			},
 		});
 
-		dontReferToPackageEntryInside(context);
+		dontReferToPackageEntryInside(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontReferToPackageEntryInside);
 
 		expect(paths).toEqual([]);

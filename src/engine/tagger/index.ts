@@ -1,9 +1,9 @@
-import { type Context, Tag } from "~/api.ts";
+import { type AppContext, Tag } from "~/api.ts";
 
 import { isDeclarationFile, isEntryPointFile, isIndependentFile, isTestFile } from "../project-specifics.ts";
 
-export function setTags({ context }: { context: Context }) {
-	const { modules } = context;
+export function setTags({ appContext }: { appContext: AppContext }) {
+	const { modules } = appContext;
 
 	modules.getAll().forEach((mod) => {
 		const { path } = mod;

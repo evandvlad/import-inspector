@@ -1,5 +1,5 @@
 import { spin } from "~/lib/cli-view.ts";
-import type { Context } from "~/api.ts";
+import type { AppContext } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
 import { Result } from "./result.ts";
@@ -15,8 +15,8 @@ export class LintOutput {
 		this.#spinner = spin({ message: "Processing..." });
 	}
 
-	summarize({ context, settings }: { context: Context; settings: Settings }) {
-		const result = new Result({ context, settings });
+	summarize({ appContext, settings }: { appContext: AppContext; settings: Settings }) {
+		const result = new Result({ appContext, settings });
 
 		this.#spinner.stop();
 

@@ -3,13 +3,13 @@ import { expect } from "@std/expect";
 
 import { ImportLintRule } from "~/api.ts";
 
-import { createContext } from "../testing/context-maker.ts";
+import { createAppContext } from "../testing/app-context-maker.ts";
 
 import { dontJumpThroughPackageEntry } from "./dont-jump-through-package-entry.ts";
 
 describe("dont-jump-through-package-entry", () => {
 	it("not ok for module imported from child package not via entry point", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": 'import "@foo/baz/qux";',
@@ -19,16 +19,16 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
 	it("not ok for module imported from child package not via entry point #2 (source is in package)", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/index.ts": "",
@@ -39,16 +39,16 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
 	it("not ok for module imported from descendant package", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": 'import "@foo/baz/quux";',
@@ -59,16 +59,16 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
 	it("not ok for module imported from descendant package #2 (source is in package)", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/index.ts": "",
@@ -80,16 +80,16 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
 	it("ok to import from child module via entry point", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": 'import "@foo/baz/qux";',
@@ -99,16 +99,16 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
 
 	it("ok to import from parent module", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/index.ts": "",
@@ -119,16 +119,16 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
 
 	it("ok to import from ancestor module", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/index.ts": "",
@@ -140,16 +140,16 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
 
 	it("ok if both modules are not in packages", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/bar.ts": 'import "@foo/baz/qux";',
@@ -158,16 +158,16 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);
 	});
 
 	it("ok if both modules are in same package", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
 				"C:/foo/index.ts": "",
@@ -177,9 +177,9 @@ describe("dont-jump-through-package-entry", () => {
 			aliases: { "@foo/": "C:/foo" },
 		});
 
-		dontJumpThroughPackageEntry(context);
+		dontJumpThroughPackageEntry(appContext);
 
-		const paths = context.importDefects
+		const paths = appContext.importDefects
 			.getModulePathsByRule(ImportLintRule.DontJumpThroughPackageEntry);
 
 		expect(paths).toEqual([]);

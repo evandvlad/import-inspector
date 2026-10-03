@@ -1,4 +1,4 @@
-import { type Context, type ImportDefect, type Lang, langs, type ModuleDefect } from "~/api.ts";
+import { type AppContext, type ImportDefect, type Lang, langs, type ModuleDefect } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
 import type { DefectDetails } from "./values.ts";
@@ -16,10 +16,10 @@ export class Result {
 	unresolvedImportCounter;
 	defectDetailsMap;
 
-	#context;
+	#appContext;
 
-	constructor({ context, settings }: { context: Context; settings: Settings }) {
-		this.#context = context;
+	constructor({ appContext, settings }: { appContext: AppContext; settings: Settings }) {
+		this.#appContext = appContext;
 
 		const { counter, defectDetailsMap } = this.#getDefects();
 
@@ -40,7 +40,7 @@ export class Result {
 	}
 
 	#getDefects() {
-		const { importDefects, moduleDefects } = this.#context;
+		const { importDefects, moduleDefects } = this.#appContext;
 
 		const allImportDefects = importDefects.getAll();
 		const allModuleDefects = moduleDefects.getAll();
@@ -60,30 +60,30 @@ export class Result {
 
 	#getPackageCounter() {
 		return {
-			total: this.#context.packages.getAll().length,
+			total: this.#appContext.packages.getAll().length,
 		};
 	}
 
 	#getTagCounter() {
 		return {
-			total: this.#context.tags.getAll().length,
+			total: this.#appContext.tags.getAll().length,
 		};
 	}
 
 	#getFrameCounter() {
 		return {
-			total: this.#context.frames.getAll().length,
+			total: this.#appContext.frames.getAll().length,
 		};
 	}
 
 	#getUnresolvedImportCounter() {
 		return {
-			total: this.#context.imports.getFullUnresolved().length,
+			total: this.#appContext.imports.getFullUnresolved().length,
 		};
 	}
 
 	#getModuleCounter() {
-		const { modules } = this.#context;
+		const { modules } = this.#appContext;
 		const langRec = Object.fromEntries(langs.map((lang) => [lang, 0])) as Record<Lang, number>;
 		const allModules = modules.getAll();
 
@@ -99,7 +99,7 @@ export class Result {
 	}
 
 	#getImportCounter() {
-		const { imports } = this.#context;
+		const { imports } = this.#appContext;
 
 		return {
 			static: imports.getStatic().length,
@@ -114,7 +114,7 @@ export class Result {
 			moduleDefects: ModuleDefect[];
 		},
 	) {
-		const { env, modules } = this.#context;
+		const { env, modules } = this.#appContext;
 		const map: Map<string, DefectDetails[]> = new Map();
 
 		moduleDefects.forEach(({ sourcePath, info }) => {

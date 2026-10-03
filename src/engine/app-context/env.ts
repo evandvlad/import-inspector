@@ -1,14 +1,14 @@
 import { assert } from "~/lib/err.ts";
 import { assertNever } from "~/lib/ts.ts";
 import { shorten, stripEnd } from "~/lib/upath.ts";
-import type { ContextEnv, Json, ViewDataMode } from "~/api.ts";
+import type { AppContextEnv, Json, ViewDataMode } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
 import { components, createHtml } from "~/htmlx/index.ts";
 
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
 
-export class Env implements ContextEnv {
+export class Env implements AppContextEnv {
 	htmlx;
 	preset;
 	version;

@@ -3,13 +3,13 @@ import { expect } from "@std/expect";
 
 import { ModuleLintRule } from "~/api.ts";
 
-import { createContext } from "../testing/context-maker.ts";
+import { createAppContext } from "../testing/app-context-maker.ts";
 
 import { dontLeaveUnusedModule } from "./dont-leave-unused-module.ts";
 
 describe("dont-leave-unused-module", () => {
 	it("ignores test and entry files", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.entry.ts": "",
 				"C:/qux/quux.test.ts": "",
@@ -18,9 +18,9 @@ describe("dont-leave-unused-module", () => {
 			},
 		});
 
-		dontLeaveUnusedModule(context);
+		dontLeaveUnusedModule(appContext);
 
-		const paths = context.moduleDefects
+		const paths = appContext.moduleDefects
 			.getByRule(ModuleLintRule.DontLeaveUnusedModule)
 			.map(({ sourcePath }) => sourcePath);
 
@@ -28,7 +28,7 @@ describe("dont-leave-unused-module", () => {
 	});
 
 	it("orphan files", async () => {
-		const context = await createContext({
+		const appContext = await createAppContext({
 			files: {
 				"C:/tmp/main.entry.ts": "",
 				"C:/foo/bar/baz.entry.ts": "",
@@ -36,9 +36,9 @@ describe("dont-leave-unused-module", () => {
 			},
 		});
 
-		dontLeaveUnusedModule(context);
+		dontLeaveUnusedModule(appContext);
 
-		const paths = context.moduleDefects
+		const paths = appContext.moduleDefects
 			.getByRule(ModuleLintRule.DontLeaveUnusedModule)
 			.map(({ sourcePath }) => sourcePath);
 

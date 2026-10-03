@@ -6,7 +6,7 @@ import { FrameRegistry } from "../frame-registry.ts";
 import { buildModules } from "../modules-builder/index.ts";
 import { buildPackages } from "../packages-builder.ts";
 import { setTags } from "../tagger/index.ts";
-import { Context } from "../context/index.ts";
+import { AppContext } from "../app-context/index.ts";
 
 import { createSettings } from "./settings-maker.ts";
 
@@ -18,7 +18,7 @@ function createRootEntries(aliases?: Record<string, string>) {
 	return Object.entries(aliases).map(([alias, path]) => ({ path, alias }));
 }
 
-export async function createContext({ files, aliases }: {
+export async function createAppContext({ files, aliases }: {
 	files: Record<string, string>;
 	aliases?: Record<string, string>;
 }) {
@@ -40,9 +40,9 @@ export async function createContext({ files, aliases }: {
 
 	const packages = buildPackages({ pathRecProvider, packageFinder, modules });
 
-	const context = new Context({ settings, modules, packages, pathRecProvider, frameRegistry });
+	const appContext = new AppContext({ settings, modules, packages, pathRecProvider, frameRegistry });
 
-	setTags({ context });
+	setTags({ appContext });
 
-	return context;
+	return appContext;
 }

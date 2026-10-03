@@ -8,7 +8,7 @@ import { buildModules } from "./modules-builder/index.ts";
 import { buildPackages } from "./packages-builder.ts";
 import { PackageFinder } from "./package-finder/index.ts";
 import { PackageEntryPointDetector } from "./package-entry-point-detector/index.ts";
-import { Context } from "./context/index.ts";
+import { AppContext } from "./app-context/index.ts";
 import { setTags } from "./tagger/index.ts";
 import { lintFunctions } from "./lint-functions/index.ts";
 import { lint } from "./linter.ts";
@@ -31,10 +31,10 @@ export async function runEngine({ settings }: { settings: Settings }) {
 	});
 
 	const packages = buildPackages({ pathRecProvider, packageFinder, modules });
-	const context = new Context({ settings, modules, packages, pathRecProvider, frameRegistry });
+	const appContext = new AppContext({ settings, modules, packages, pathRecProvider, frameRegistry });
 
-	setTags({ context });
-	await lint({ context, lintFunctions, settings });
+	setTags({ appContext });
+	await lint({ appContext, lintFunctions, settings });
 
-	return context;
+	return appContext;
 }

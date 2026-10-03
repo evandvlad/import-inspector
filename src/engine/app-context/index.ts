@@ -1,4 +1,4 @@
-import type { Context as IContext, Json, ViewDataMode } from "~/api.ts";
+import type { AppContext as IAppContext, Json, ViewDataMode } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
 import type { PathRecProvider } from "../path-rec-provider/index.ts";
@@ -15,7 +15,7 @@ import { ImportDefects } from "./import-defects.ts";
 import { ModuleDefects } from "./module-defects.ts";
 import { Env } from "./env.ts";
 
-export class Context implements IContext {
+export class AppContext implements IAppContext {
 	tags;
 	frames;
 	modules;
