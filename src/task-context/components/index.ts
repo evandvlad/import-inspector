@@ -1,7 +1,8 @@
 import type { AppContext, LineRange, TaskContextComponents } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
-import { createCode } from "./code.ts";
+import { createModuleLink } from "./module-link.ts";
+import { createModuleCode } from "./module-code.ts";
 import { createLintResult } from "./lint-result.ts";
 import { createSummary } from "./summary.ts";
 
@@ -18,8 +19,12 @@ export class Components implements TaskContextComponents {
 		this.#startedAt = startedAt;
 	}
 
-	code(path: string, lineRange?: LineRange) {
-		return createCode({ appContext: this.#appContext, path, lineRange });
+	moduleLink(path: string, lineRange?: LineRange) {
+		return createModuleLink({ appContext: this.#appContext, path, lineRange });
+	}
+
+	moduleCode(path: string, lineRange?: LineRange) {
+		return createModuleCode({ appContext: this.#appContext, path, lineRange });
 	}
 
 	lintResult() {

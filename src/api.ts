@@ -367,7 +367,8 @@ export type AppContext = {
 };
 
 export type TaskContextComponents = {
-	code: (path: string, lineRange?: LineRange) => string;
+	moduleCode: (path: string, lineRange?: LineRange) => string;
+	moduleLink: (path: string, lineRange?: LineRange) => string;
 	lintResult: () => string;
 	summary: () => string;
 };

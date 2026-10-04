@@ -1,7 +1,7 @@
 import { components } from "~/clix/index.ts";
 import type { AppContext, LineRange } from "~/api.ts";
 
-export function createCode(
+export function createModuleCode(
 	{ appContext, path, lineRange }: { appContext: AppContext; path: string; lineRange?: LineRange },
 ) {
 	const { env, modules } = appContext;

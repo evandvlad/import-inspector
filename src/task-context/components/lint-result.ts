@@ -1,117 +1,41 @@
-import { assertNever } from "~/lib/ts.ts";
 import { components } from "~/clix/index.ts";
-import type { AppContext, LineRange } from "~/api.ts";
+import type { AppContext } from "~/api.ts";
 
-const { text, code: formatCode, link, lines } = components;
+import { createModuleLink } from "./module-link.ts";
+import { createModuleCode } from "./module-code.ts";
 
-type ImportDefectDetails = {
-	kind: "import";
-	code: string;
-	info: string;
-	path: string;
-	shortPath: string;
-	lineRange: LineRange;
-	mod: {
-		path: string;
-		shortPath: string;
-	} | null;
-};
+const { text, lines } = components;
 
-type ModuleDefectDetails = {
-	kind: "module";
-	info: string;
-	path: string;
-	shortPath: string;
-};
-
-function createDefectDetailsMap({ appContext }: { appContext: AppContext }) {
-	const { env, modules, importDefects, moduleDefects } = appContext;
-	const map: Map<string, Array<ImportDefectDetails | ModuleDefectDetails>> = new Map();
+export function createLintResult({ appContext }: { appContext: AppContext }) {
+	const { modules, importDefects, moduleDefects } = appContext;
+	const map: Map<string, string[]> = new Map();
 
 	moduleDefects.getAll().forEach(({ sourcePath, info }) => {
-		map.getOrInsert(sourcePath, []).push({
-			kind: "module",
-			info,
-			path: sourcePath,
-			shortPath: env.getShortPath(sourcePath),
-		});
+		const link = text(createModuleLink({ appContext, path: sourcePath }), { bold: true, color: "blue" });
+		const ruleInfo = [text("rule (module):", { dim: true }), info].join(" ");
+		const content = lines([link, ruleInfo, ""]);
+
+		map.getOrInsert(sourcePath, []).push(content);
 	});
 
 	importDefects.getAll().forEach(({ sourcePath, importedPath, posSpan, info }) => {
 		const { fileContent } = modules.get(sourcePath);
-		const mod = importedPath ? { path: importedPath, shortPath: env.getShortPath(importedPath) } : null;
 		const lineRange = fileContent.getLineRange(posSpan);
 
-		map.getOrInsert(sourcePath, []).push({
-			kind: "import",
-			mod,
-			info,
-			lineRange,
-			path: sourcePath,
-			shortPath: env.getShortPath(sourcePath),
-			code: fileContent.getContentByLineRange(lineRange),
-		});
+		const link = text(createModuleLink({ appContext, path: sourcePath, lineRange }), { bold: true, color: "blue" });
+		const moduleLink = importedPath ? createModuleLink({ appContext, path: importedPath }) : " ? ";
+
+		const ruleInfo = [text("rule (import):", { dim: true }), info].join(" ");
+		const importedModule = [text("imported module:", { dim: true }), moduleLink].join(" ");
+		const codeLine = text(createModuleCode({ appContext, path: sourcePath, lineRange }), { color: "gray" });
+
+		const content = lines([link, ruleInfo, importedModule, "", codeLine, ""]);
+
+		map.getOrInsert(sourcePath, []).push(content);
 	});
-
-	return map;
-}
-
-function createLink(
-	{ shortPath, path, lineRange }: { shortPath: string; path: string; lineRange?: LineRange },
-) {
-	const pathLink = link(path, {
-		line: lineRange ? lineRange[0] : undefined,
-		text: shortPath,
-	});
-
-	return text(pathLink, { bold: true, color: "blue" });
-}
-
-function createImportDefectBlock(
-	{ shortPath, path, info, code, lineRange, mod }: ImportDefectDetails,
-) {
-	const title = createLink({ shortPath, path, lineRange });
-	const moduleLink = mod ? link(mod.path, { text: mod.shortPath }) : " ? ";
-
-	const ruleInfo = [text("rule (import):", { dim: true }), info].join(" ");
-	const importedModule = [text("imported module:", { dim: true }), moduleLink].join(" ");
-	const codeLine = text(formatCode(code, { startLine: lineRange[0] }), { color: "gray" });
-
-	return lines([title, ruleInfo, importedModule, "", codeLine]);
-}
-
-function createModuleDefectBlock({ path, shortPath, info }: ModuleDefectDetails) {
-	const title = createLink({ shortPath, path });
-	const ruleInfo = [text("rule (module):", { dim: true }), info].join(" ");
-
-	return lines([title, ruleInfo]);
-}
-
-export function createLintResult({ appContext }: { appContext: AppContext }) {
-	const defectDetailsMap = createDefectDetailsMap({ appContext });
 
 	return lines(
-		defectDetailsMap
-			.values()
-			.map((detailsList) =>
-				Iterator.from(detailsList)
-					.map((details) => {
-						const { kind } = details;
-
-						switch (kind) {
-							case "import":
-								return createImportDefectBlock(details);
-
-							case "module":
-								return createModuleDefectBlock(details);
-
-							default:
-								assertNever(kind);
-						}
-					})
-					.map((block) => lines([block, "", ""]))
-					.toArray()
-			)
+		map.values()
 			.map((items) => lines(items))
 			.toArray(),
 	);
