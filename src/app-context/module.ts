@@ -1,148 +1,71 @@
-import { assertNever } from "~/lib/ts.ts";
-import { assert } from "~/lib/err.ts";
 import { isNull } from "~/lib/vtype.ts";
-import type { FileContent, Json, Module as IModule, ViewDataMode } from "~/api.ts";
+import type { Dict, File, Imports, Module as IModule, Package } from "~/api.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
-import type { FilePathRec } from "./path-rec-provider/index.ts";
-import type { Import } from "./import.ts";
-import { ModuleDefect } from "./module-defect.ts";
+import { Tags } from "./tags.ts";
+import { Frames } from "./frames.ts";
+import { ModuleDefects } from "./defects/index.ts";
+
+import { cache } from "./tag-based-cache.ts";
 
 export class Module implements IModule {
 	name;
 	path;
 	lang;
-	links;
-	imports;
-	fileContent;
-	packagePath;
-	parentDirPath;
-	isPackageEntryPoint;
-	frames: string[];
-	tags: string[];
-	defects: ModuleDefect[];
+	tags;
+	file;
+	imps;
+	frames;
+	shortPath;
+	isPackEntry;
+	defects: ModuleDefects;
 
-	isInPackage;
+	#packPath;
+	#linkPaths;
+	#modDict;
+	#packDict;
 
 	constructor(
-		{ filePathRec, packagePath, imports, links, fileContent, isPackageEntryPoint }: {
-			filePathRec: FilePathRec;
-			imports: Import[];
-			links: string[];
-			fileContent: FileContent;
-			packagePath: string | null;
-			isPackageEntryPoint: boolean;
+		{ name, path, shortPath, packPath, imps, linkPaths, file, isPackEntry, modDict, packDict }: {
+			name: string;
+			path: string;
+			shortPath: string;
+			imps: Imports;
+			linkPaths: string[];
+			file: File;
+			packPath: string | null;
+			isPackEntry: boolean;
+			modDict: Dict<IModule>;
+			packDict: Dict<Package>;
 		},
 	) {
-		this.links = links;
-		this.path = filePathRec.path;
-		this.fileContent = fileContent;
-		this.packagePath = packagePath;
-		this.name = filePathRec.baseName;
-		this.lang = getFileLang(filePathRec.path);
-		this.parentDirPath = filePathRec.parentPath;
-		this.isPackageEntryPoint = isPackageEntryPoint;
-		this.frames = [];
-		this.tags = [];
-		this.defects = [];
-		this.imports = imports;
-		this.isInPackage = !isNull(this.packagePath);
+		this.name = name;
+		this.path = path;
+		this.file = file;
+		this.tags = new Tags();
+		this.frames = new Frames();
+		this.shortPath = shortPath;
+		this.lang = getFileLang(this.path);
+		this.isPackEntry = isPackEntry;
+		this.defects = new ModuleDefects({ mod: this });
+		this.imps = imps;
+
+		this.#packPath = packPath;
+		this.#linkPaths = linkPaths;
+		this.#modDict = modDict;
+		this.#packDict = packDict;
 	}
 
-	hasTag(tag: string) {
-		return this.tags.includes(tag);
+	get pack() {
+		return this.#packPath ? this.#packDict.get(this.#packPath) : null;
 	}
 
-	setTag(tag: string) {
-		if (!this.hasTag(tag)) {
-			this.tags.push(tag);
-		}
+	get isInPack() {
+		return !isNull(this.pack);
 	}
 
-	removeTag(tag: string) {
-		this.tags = this.tags.filter((value) => value !== tag);
-	}
-
-	hasFrame(frame: string) {
-		return this.frames.includes(frame);
-	}
-
-	setFrame(frame: string) {
-		if (!this.hasFrame(frame)) {
-			this.frames.push(frame);
-		}
-	}
-
-	removeFrame(frame: string) {
-		this.frames = this.frames.filter((value) => value !== frame);
-	}
-
-	hasDefect(rule: string) {
-		return this.defects.some((defect) => defect.rule === rule);
-	}
-
-	findDefect(rule: string) {
-		return this.defects.find((defect) => defect.rule === rule) ?? null;
-	}
-
-	getDefect(rule: string) {
-		const defect = this.findDefect(rule);
-		assert(defect, `Can't find module defect for rule '${rule}'.`);
-		return defect;
-	}
-
-	addDefect(rule: string, description?: string) {
-		if (this.hasDefect(rule)) {
-			return;
-		}
-
-		this.defects.push(
-			new ModuleDefect({
-				rule,
-				description,
-				sourcePath: this.path,
-			}),
-		);
-	}
-
-	removeDefect(rule: string) {
-		this.defects = this.defects.filter((defect) => defect.rule !== rule);
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.path;
-
-			case "brief":
-				return this.#toBriefViewData();
-
-			case "verbose": {
-				return {
-					...this.#toBriefViewData(),
-					links: this.links,
-					tags: this.tags,
-					frames: this.frames,
-					imports: this.imports.map((imp) => imp.toViewData("verbose")),
-					defects: this.defects.map((defect) => defect.toViewData("verbose")),
-					content: this.fileContent.toViewData("verbose"),
-				};
-			}
-
-			default:
-				assertNever(mode);
-		}
-	}
-
-	#toBriefViewData() {
-		return {
-			path: this.path,
-			packagePath: this.packagePath,
-			imports: this.imports.length,
-			links: this.links.length,
-			tags: this.tags.length,
-			frames: this.frames.length,
-			defects: this.defects.length,
-		};
+	@cache()
+	get links() {
+		return this.#modDict.pick(this.#linkPaths);
 	}
 }

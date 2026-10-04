@@ -1,11 +1,9 @@
 import { ModuleLintRule, Tag } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontLeaveUnusedModule: LintFunction = ({ modules }) => {
-	Iterator.from(modules.getAll())
-		.filter((mod) => !mod.hasTag(Tag.Independent))
-		.filter(({ links }) => links.length === 0)
+export const dontLeaveUnusedModule: LintFunction = ({ mods }) => {
+	mods.filter((mod) => !mod.tags.has(Tag.Independent) && mod.links.size === 0)
 		.forEach((mod) => {
-			mod.addDefect(ModuleLintRule.DontLeaveUnusedModule);
+			mod.defects.add(ModuleLintRule.DontLeaveUnusedModule);
 		});
 };

@@ -1,8 +1,8 @@
-import type { HtmlxComponents } from "~/api.ts";
+import type { Htmlxc } from "~/api.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 
-export const flex: HtmlxComponents["flex"] = (items, options = {}) => {
+export const flex: Htmlxc["flex"] = (items, options = {}) => {
 	const classes = ["flex"];
 
 	if (options.dir === "h") {

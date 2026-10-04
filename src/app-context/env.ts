@@ -1,70 +1,43 @@
-import { assert } from "~/lib/err.ts";
-import { assertNever } from "~/lib/ts.ts";
-import { shorten, stripEnd } from "~/lib/upath.ts";
-import type { AppContextEnv, Json, ViewDataMode } from "~/api.ts";
+import { concat, isAbsolute, shorten, unify } from "~/lib/upath.ts";
+import type { AppContextEnv } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
-import { components, createHtml } from "~/htmlx/index.ts";
-
-import type { PathRecProvider } from "./path-rec-provider/index.ts";
+import { components } from "~/htmlx/index.ts";
 
 export class Env implements AppContextEnv {
-	htmlx;
 	preset;
 	version;
 	basePath;
+	htmlxc;
 
-	#pathRecProvider;
-
-	constructor({ settings, pathRecProvider }: { settings: Settings; pathRecProvider: PathRecProvider }) {
-		this.#pathRecProvider = pathRecProvider;
-
+	constructor({ basePath, settings }: { basePath: string; settings: Settings }) {
+		this.basePath = basePath;
 		this.version = version;
+		this.htmlxc = components;
 		this.preset = settings.preset;
-		this.basePath = this.#pathRecProvider.basePath;
-
-		this.htmlx = {
-			createHtml,
-			components,
-		};
 	}
 
-	getShortPath(path: string) {
-		const pathRec = this.#pathRecProvider.findPathRec(path);
+	toShortPath(pathOrShortPath: string) {
+		const path = unify(pathOrShortPath);
 
-		assert(
-			pathRec,
-			`Can't get short path for '${path}'. It might be outside scope '${this.basePath}'.`,
-		);
-
-		return shorten(stripEnd(path), this.basePath);
-	}
-
-	getEditorUrl(path: string, line?: number) {
-		return `vscode://file/${path}${line ? `:${line}` : ""}`;
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-			case "brief":
-				return this.#toMinimalViewData();
-
-			case "verbose":
-				return {
-					...this.#toMinimalViewData(),
-					version: this.version,
-					preset: this.preset,
-				};
-
-			default:
-				assertNever(mode);
+		if (!isAbsolute(path)) {
+			return path;
 		}
+
+		return shorten(path, this.basePath);
 	}
 
-	#toMinimalViewData() {
-		return {
-			basePath: this.basePath,
-		};
+	toFullPath(pathOrShortPath: string) {
+		const path = unify(pathOrShortPath);
+
+		if (isAbsolute(path)) {
+			return path;
+		}
+
+		return concat([this.basePath, path]);
+	}
+
+	editorUrl(path: string, line?: number) {
+		return `vscode://file/${path}${line ? `:${line}` : ""}`;
 	}
 }

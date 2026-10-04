@@ -16,7 +16,7 @@ describe("tagger", () => {
 		});
 
 		setTags({ appContext });
-		const paths = appContext.tags.getModulePathsByTag("entry-point");
+		const paths = appContext.tags.mods.get("entry-point").toKeys();
 
 		expect(paths).toEqual([
 			"C:/foo/bar/index.entry.ts",
@@ -33,7 +33,7 @@ describe("tagger", () => {
 		});
 
 		setTags({ appContext });
-		const paths = appContext.tags.getModulePathsByTag("test");
+		const paths = appContext.tags.mods.get("test").toKeys();
 
 		expect(paths).toEqual([
 			"C:/foo/bar/index.test.js",
@@ -51,7 +51,7 @@ describe("tagger", () => {
 		});
 
 		setTags({ appContext });
-		const paths = appContext.tags.getModulePathsByTag("independent");
+		const paths = appContext.tags.mods.get("independent").toKeys();
 
 		expect(paths).toEqual([
 			"C:/foo/bar/index.test.js",
@@ -70,7 +70,7 @@ describe("tagger", () => {
 		});
 
 		setTags({ appContext });
-		const paths = appContext.tags.getModulePathsByTag("declaration");
+		const paths = appContext.tags.mods.get("declaration").toKeys();
 
 		expect(paths).toEqual([
 			"C:/foo/baz/index.d.ts",

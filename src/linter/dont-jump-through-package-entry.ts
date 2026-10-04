@@ -1,44 +1,36 @@
+import { Dict } from "~/lib/dict.ts";
 import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, packages }) => {
-	const roots = packages.getRoots();
+export const dontJumpThroughPackageEntry: LintFunction = ({ imps, packs }) => {
+	imps.fullResolvedById.filter(({ sourceMod, resolution }) => {
+		const roots = packs.roots.slice();
+		const importedMod = resolution!.mod!;
 
-	Iterator.from(imports.getFullResolved())
-		.filter((imp) => {
-			const sourceModule = modules.get(imp.sourcePath);
-			const importedModule = modules.get(imp.resolutionPath!);
+		if (!importedMod.pack) {
+			return false;
+		}
 
-			if (!importedModule.isInPackage) {
-				return false;
-			}
+		const sourcePackAncestryWithSelf = sourceMod.pack?.ancestry.slice().set(sourceMod.pack.path, sourceMod.pack) ??
+			Dict.empty();
 
-			const importedPackage = packages.get(importedModule.packagePath!);
+		if (sourcePackAncestryWithSelf.has(importedMod.pack.path)) {
+			return false;
+		}
 
-			const isImportedFromSameOrAncestorPackage = sourceModule.isInPackage &&
-				(sourceModule.packagePath === importedPackage.path ||
-					packages.isInAncestryBranch(sourceModule.packagePath!, importedPackage.path));
+		if (!sourceMod.pack) {
+			return !(roots.has(importedMod.pack.path) && importedMod.isPackEntry);
+		}
 
-			if (isImportedFromSameOrAncestorPackage) {
-				return false;
-			}
+		const surroundingPacks = sourcePackAncestryWithSelf
+			.reduce((acc, pack) => acc.merge(pack.children), roots);
 
-			if (!sourceModule.isInPackage) {
-				return !(roots.includes(importedPackage) && importedModule.isPackageEntryPoint);
-			}
+		const allowedPackageSet = (new Set(surroundingPacks.toKeys())).difference(
+			new Set(sourcePackAncestryWithSelf.toKeys()),
+		);
 
-			const sourcePackage = packages.get(sourceModule.packagePath!);
-			const ancestryBranchWithSelf = [sourcePackage].concat(packages.getAncestryBranch(sourcePackage.path));
-
-			const surroundingPackageSet = new Set(
-				ancestryBranchWithSelf.flatMap(({ path }) => packages.getSubs(path)).concat(roots),
-			);
-
-			const allowedPackageSet = surroundingPackageSet.difference(new Set(ancestryBranchWithSelf));
-
-			return !(allowedPackageSet.has(importedPackage) && importedModule.isPackageEntryPoint);
-		})
-		.forEach((imp) => {
-			imp.addDefect(ImportLintRule.DontJumpThroughPackageEntry);
-		});
+		return !(allowedPackageSet.has(importedMod.pack.path) && importedMod.isPackEntry);
+	}).forEach((imp) => {
+		imp.defects.add(ImportLintRule.DontJumpThroughPackageEntry);
+	});
 };

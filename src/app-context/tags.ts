@@ -1,42 +1,35 @@
-import { assertNever } from "~/lib/ts.ts";
-import type { Json, Tags as ITags, ViewDataMode } from "~/api.ts";
+import type { ModuleTrait } from "~/api.ts";
 
-import type { Modules } from "./modules.ts";
+import { clear } from "./tag-based-cache.ts";
 
-export class Tags implements ITags {
-	#modules;
+export class Tags implements ModuleTrait {
+	#nameSet;
 
-	constructor({ modules }: { modules: Modules }) {
-		this.#modules = modules;
+	constructor() {
+		this.#nameSet = new Set<string>();
 	}
 
-	getAll() {
-		const all = this.#modules.getAll().flatMap(({ tags }) => tags);
-		return Array.from(new Set(all));
+	get size() {
+		return this.#nameSet.size;
 	}
 
-	getModulePathsByTag(tag: string) {
-		return Iterator.from(this.#modules.getAll())
-			.filter((mod) => mod.hasTag(tag))
-			.map(({ path }) => path)
-			.toArray();
+	get names() {
+		return Array.from(this.#nameSet);
 	}
 
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.getAll().length;
+	has(name: string) {
+		return this.#nameSet.has(name);
+	}
 
-			case "brief":
-				return this.getAll();
+	@clear("tags")
+	add(name: string) {
+		this.#nameSet.add(name);
+		return this;
+	}
 
-			case "verbose":
-				return Object.fromEntries(
-					this.getAll().map((tag) => [tag, this.getModulePathsByTag(tag)]),
-				);
-
-			default:
-				assertNever(mode);
-		}
+	@clear("tags")
+	remove(name: string) {
+		this.#nameSet.delete(name);
+		return this;
 	}
 }

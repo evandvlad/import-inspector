@@ -1,6 +1,6 @@
 import { join } from "@std/path";
 
-import type { AppContext, FileContent, Span } from "~/api.ts";
+import type { AppContext, File, Span } from "~/api.ts";
 
 import denoJson from "../deno.json" with { type: "json" };
 
@@ -16,6 +16,7 @@ export const defaultConfigPresetName = "default";
 
 export enum CommandName {
 	Lint = "lint",
+	Task = "task",
 	Help = "help",
 	Version = "version",
 	Configure = "configure",
@@ -34,14 +35,8 @@ export type ImportRec = {
 
 export type FileParsingResult = {
 	path: string;
-	fileContent: FileContent;
+	file: File;
 	importRecs: ImportRec[];
-};
-
-export type ImportResolution = {
-	path: string | null;
-	isExternal: boolean;
-	isRelative: boolean;
 };
 
 export type LintFunction = (appContext: AppContext) => Promise<void> | void;

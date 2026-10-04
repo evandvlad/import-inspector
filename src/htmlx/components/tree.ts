@@ -1,16 +1,16 @@
-import type { HtmlxComponents, HtmlxComponentTreeItem } from "~/api.ts";
+import type { Htmlxc, HtmlxcTreeItem } from "~/api.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 
-function renderTree(items: HtmlxComponentTreeItem[]): string {
+function renderTree(items: HtmlxcTreeItem[]): string {
 	const content = items
-		.map(({ value, children }) => {
+		.map(({ value, children, opened = false }) => {
 			if (!children || children.length === 0) {
 				return `<div>${value}</div>`;
 			}
 
 			return `
-				<details class="tree__branch">
+				<details class="tree__branch" ${opened ? "open" : ""}>
 					<summary class="tree__branch-handle">${value}</summary>
 					${renderTree(children)}
 				</details>
@@ -25,13 +25,19 @@ function renderTree(items: HtmlxComponentTreeItem[]): string {
 	`;
 }
 
-export const tree: HtmlxComponents["tree"] = (items, options = {}) => {
+export const tree: Htmlxc["tree"] = (items, options = {}) => {
 	if (items.length === 0) {
 		return "";
 	}
 
+	const classes = ["tree"];
+
+	if (options.subtree) {
+		classes.push("tree--subtree");
+	}
+
 	return `
-		<div ${stringifyCompAttrs({ classes: ["tree"], options })}>
+		<div ${stringifyCompAttrs({ classes, options })}>
 			${renderTree(items)}
 		</div>
 	`;

@@ -1,90 +1,100 @@
 import { assert } from "~/lib/err.ts";
-import { assertNever } from "~/lib/ts.ts";
-import type { Imports as IImports, Json, ViewDataMode } from "~/api.ts";
+import type { Dict as IDict, Import, Imports as IImports, Module } from "~/api.ts";
+import { Dict } from "~/lib/dict.ts";
 
-import type { Import } from "./import.ts";
-import type { Modules } from "./modules.ts";
+import { cache } from "./tag-based-cache.ts";
 
 export class Imports implements IImports {
-	#all;
-	#importMap;
+	size;
+	ids;
+	byId;
 
-	constructor({ modules }: { modules: Modules }) {
-		this.#importMap = new Map(
-			modules.getAll().flatMap(({ imports }) => imports.map((imp) => [imp.id, imp])),
-		);
-
-		this.#all = Array.from(this.#importMap.values());
+	constructor({ dict }: { dict: IDict<Import> }) {
+		this.size = dict.size;
+		this.ids = dict.toKeys();
+		this.byId = dict;
 	}
 
-	getAll() {
-		return this.#all;
+	@cache()
+	get localById() {
+		return this.byId.filter(({ resolution }) => resolution && !resolution.isExternal);
 	}
 
-	getLocal() {
-		return this.#all.filter(({ resolution }) => resolution && !resolution.isExternal);
+	@cache()
+	get fullResolvedById() {
+		return this.byId.filter(({ importedMod }) => importedMod);
 	}
 
-	getExternal() {
-		return this.#all.filter(({ resolution }) => resolution && resolution.isExternal);
-	}
-
-	getFullResolved() {
-		return this.#all.filter(({ resolutionPath }) => Boolean(resolutionPath));
-	}
-
-	getFullUnresolved() {
-		return this.#all.filter(({ locator, isDynamic, resolution }) => {
+	@cache()
+	get fullUnresolvedById() {
+		return this.byId.filter(({ locator, isDynamic, resolution }) => {
 			if (!locator) {
 				return true;
 			}
 
-			return isDynamic && resolution && !resolution.isExternal && !resolution.path;
+			return isDynamic && resolution && !resolution.isExternal && !resolution.mod;
 		});
 	}
 
-	getLocalUnresolved() {
-		return this.getLocal().filter(({ resolutionPath }) => !resolutionPath);
+	@cache()
+	get localUnresolvedById() {
+		return this.localById.filter(({ resolution }) => !resolution!.mod);
 	}
 
-	getDynamic() {
-		return this.#all.filter(({ isDynamic }) => isDynamic);
+	@cache()
+	get localUnresolvedByLocator() {
+		return this.#mapByLocator(this.localUnresolvedById);
 	}
 
-	getStatic() {
-		return this.#all.filter(({ isDynamic }) => !isDynamic);
+	@cache()
+	get dynamicById() {
+		return this.byId.filter(({ isDynamic }) => isDynamic);
 	}
 
-	getExternalMap() {
-		return this.getExternal().reduce((acc, imp) => {
-			acc.getOrInsert(String(imp.locator), []).push(imp);
-			return acc;
-		}, new Map<string, Import[]>());
+	@cache()
+	get staticById() {
+		return this.byId.filter(({ isDynamic }) => !isDynamic);
 	}
 
-	find(id: string) {
-		return this.#importMap.get(id) ?? null;
+	@cache()
+	get externalById() {
+		return this.byId.filter(({ resolution }) => resolution && resolution.isExternal);
+	}
+
+	@cache()
+	get externalByLocator() {
+		return this.#mapByLocator(this.externalById);
+	}
+
+	has(id: string) {
+		return this.byId.has(id);
 	}
 
 	get(id: string) {
 		const imp = this.find(id);
-		assert(imp, `Can't find import entry with id '${id}'.`);
+		assert(imp, `Can't get import by id '${id}'.`);
 		return imp;
 	}
 
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.getAll().length;
+	find(id: string) {
+		return this.byId.getOrDefault(id, null);
+	}
 
-			case "brief":
-				return this.getAll().map((imp) => imp.toViewData("minimal"));
+	hasForMod(mod: Module) {
+		return this.fullResolvedById.some(({ importedMod }) => importedMod === mod);
+	}
 
-			case "verbose":
-				return this.getAll().map((imp) => imp.toViewData("verbose"));
+	getForMod(mod: Module) {
+		return this.fullResolvedById.filter(({ importedMod }) => importedMod === mod);
+	}
 
-			default:
-				assertNever(mode);
-		}
+	findForMod(mod: Module) {
+		return this.fullResolvedById.find(({ importedMod }) => importedMod === mod) ?? null;
+	}
+
+	#mapByLocator(dict: IDict<Import>) {
+		return dict.group(({ locator }) => String(locator))
+			.sortK((a, b) => a.localeCompare(b))
+			.map<IDict<Import>>((arr) => Dict.fromArray(arr, ({ id }) => id));
 	}
 }

@@ -1,60 +1,65 @@
-import { assertNever } from "~/lib/ts.ts";
 import { isNull } from "~/lib/vtype.ts";
-import type { Json, Package as IPackage, ViewDataMode } from "~/api.ts";
+import { Dict } from "~/lib/dict.ts";
+import type { Dict as IDict, Module, Package as IPackage } from "~/api.ts";
+
+import { cache } from "./tag-based-cache.ts";
 
 export class Package implements IPackage {
 	name;
 	path;
-	modulePaths;
-	parentDirPath;
-	subPackagePaths;
-	parentPackagePath;
+	mods;
+	shortPath;
 
-	hasParentPackage;
+	#packDict;
+	#parentPath;
+	#childPaths;
 
 	constructor(
-		{ name, path, parentDirPath, modulePaths, subPackagePaths, parentPackagePath }: {
+		{ name, path, shortPath, modDict, parentPath, childPaths, packDict }: {
 			name: string;
 			path: string;
-			modulePaths: string[];
-			subPackagePaths: string[];
-			parentDirPath: string | null;
-			parentPackagePath: string | null;
+			shortPath: string;
+			modDict: IDict<Module>;
+			parentPath: string | null;
+			childPaths: string[];
+			packDict: IDict<IPackage>;
 		},
 	) {
 		this.name = name;
 		this.path = path;
-		this.modulePaths = modulePaths;
-		this.parentDirPath = parentDirPath;
-		this.subPackagePaths = subPackagePaths;
-		this.parentPackagePath = parentPackagePath;
-		this.hasParentPackage = !isNull(parentPackagePath);
+		this.shortPath = shortPath;
+		this.mods = modDict;
+
+		this.#packDict = packDict;
+		this.#parentPath = parentPath;
+		this.#childPaths = childPaths;
 	}
 
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.path;
+	get parent() {
+		return this.#parentPath ? this.#packDict.get(this.#parentPath) : null;
+	}
 
-			case "brief":
-				return this.#toBriefViewData();
+	get hasParent() {
+		return !isNull(this.parent);
+	}
 
-			case "verbose":
-				return {
-					...this.#toBriefViewData(),
-					modulePaths: this.modulePaths,
-				};
+	@cache()
+	get children() {
+		return this.#packDict.pick(this.#childPaths);
+	}
 
-			default:
-				assertNever(mode);
+	@cache()
+	get ancestry() {
+		const dict = Dict.empty<IPackage>();
+
+		let parPath = this.#parentPath;
+
+		while (!isNull(parPath)) {
+			const pack = this.#packDict.get(parPath);
+			dict.set(parPath, pack);
+			parPath = pack.parent?.path ?? null;
 		}
-	}
 
-	#toBriefViewData() {
-		return {
-			path: this.path,
-			parentPackagePath: this.parentPackagePath,
-			subPackagePaths: this.subPackagePaths,
-		};
+		return dict;
 	}
 }

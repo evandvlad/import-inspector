@@ -1,8 +1,8 @@
-import type { HtmlxComponents } from "~/api.ts";
+import type { Htmlxc } from "~/api.ts";
 
 import { incId, stringifyCompAttrs } from "../helpers.ts";
 
-export const flist: HtmlxComponents["flist"] = (items, options = {}) => {
+export const flist: Htmlxc["flist"] = (items, options = {}) => {
 	if (items.length === 0) {
 		return "";
 	}

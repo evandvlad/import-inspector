@@ -20,8 +20,11 @@ describe("dont-use-absolute-path-inside", () => {
 
 		dontUseAbsolutePathInside(appContext);
 
-		const paths = appContext.importDefects
-			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
+		const paths = appContext.impDefects
+			.byRule
+			.get(ImportLintRule.DontUseAbsolutePathInside)
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/baz/index.tsx"]);
 	});
@@ -40,8 +43,11 @@ describe("dont-use-absolute-path-inside", () => {
 
 		dontUseAbsolutePathInside(appContext);
 
-		const paths = appContext.importDefects
-			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
+		const paths = appContext.impDefects
+			.byRule
+			.get(ImportLintRule.DontUseAbsolutePathInside)
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/baz/qux/quux/quuux.ts"]);
 	});
@@ -58,10 +64,13 @@ describe("dont-use-absolute-path-inside", () => {
 
 		dontUseAbsolutePathInside(appContext);
 
-		const paths = appContext.importDefects
-			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
+		const paths = appContext.impDefects
+			.byRule
+			.getOrDefault(ImportLintRule.DontUseAbsolutePathInside, undefined)
+			?.map(({ mod }) => mod.path)
+			.toArray();
 
-		expect(paths).toEqual([]);
+		expect(paths).toEqual(undefined);
 	});
 
 	it("ok for absolute", async () => {
@@ -78,9 +87,12 @@ describe("dont-use-absolute-path-inside", () => {
 
 		dontUseAbsolutePathInside(appContext);
 
-		const paths = appContext.importDefects
-			.getModulePathsByRule(ImportLintRule.DontUseAbsolutePathInside);
+		const paths = appContext.impDefects
+			.byRule
+			.getOrDefault(ImportLintRule.DontUseAbsolutePathInside, undefined)
+			?.map(({ mod }) => mod.path)
+			.toArray();
 
-		expect(paths).toEqual([]);
+		expect(paths).toEqual(undefined);
 	});
 });

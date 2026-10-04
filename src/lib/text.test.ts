@@ -3,7 +3,7 @@ import { expect } from "@std/expect";
 
 import { dedent, fromLines, normalizeBr, sanitizeForHtml, toLines } from "./text.ts";
 
-describe("lib/text", () => {
+describe("text", () => {
 	it("dedent", () => {
 		expect(dedent(`
 			foo

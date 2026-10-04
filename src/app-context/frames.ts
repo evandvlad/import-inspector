@@ -1,70 +1,35 @@
-import { assertNever } from "~/lib/ts.ts";
-import type { Frames as IFrames, Json, ViewDataMode } from "~/api.ts";
+import type { ModuleTrait } from "~/api.ts";
 
-import type { Module } from "./module.ts";
-import type { Modules } from "./modules.ts";
+import { clear } from "./tag-based-cache.ts";
 
-export class Frames implements IFrames {
-	#modules;
+export class Frames implements ModuleTrait {
+	#nameSet;
 
-	constructor({ modules }: { modules: Modules }) {
-		this.#modules = modules;
+	constructor() {
+		this.#nameSet = new Set<string>();
 	}
 
-	getAll() {
-		const all = this.#modules.getAll().flatMap(({ frames }) => frames);
-		return Array.from(new Set(all));
+	get size() {
+		return this.#nameSet.size;
 	}
 
-	getModulePathsByFrame(frame: string) {
-		return Iterator.from(this.#modules.getAll())
-			.filter((mod) => mod.hasFrame(frame))
-			.map(({ path }) => path)
-			.toArray();
+	get names() {
+		return Array.from(this.#nameSet);
 	}
 
-	isModuleInFrame({ path, name }: { path: string; name: string }) {
-		const paths = this.getModulePathsByFrame(name);
-		return paths.includes(path);
+	has(name: string) {
+		return this.#nameSet.has(name);
 	}
 
-	getImportedFramesMap(name: string) {
-		return this.getModulePathsByFrame(name).reduce((acc, path) => {
-			const mod = this.#modules.get(path);
-
-			mod.imports.forEach(({ resolutionPath }) => {
-				if (!resolutionPath) {
-					return;
-				}
-
-				const importedModule = this.#modules.get(resolutionPath);
-
-				importedModule.frames
-					.filter((frameName) => frameName !== name)
-					.forEach((frameName) => {
-						acc.getOrInsert(frameName, []).push({ source: mod, imported: importedModule });
-					});
-			});
-
-			return acc;
-		}, new Map<string, Array<{ source: Module; imported: Module }>>());
+	@clear("frames")
+	add(name: string) {
+		this.#nameSet.add(name);
+		return this;
 	}
 
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.getAll().length;
-
-			case "brief":
-				return this.getAll();
-
-			case "verbose":
-				return Object.fromEntries(
-					this.getAll().map((frame) => [frame, this.getModulePathsByFrame(frame)]),
-				);
-
-			default:
-				assertNever(mode);
-		}
+	@clear("frames")
+	remove(name: string) {
+		this.#nameSet.delete(name);
+		return this;
 	}
 }

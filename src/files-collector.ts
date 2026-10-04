@@ -2,22 +2,23 @@ import { expandGlob } from "@std/fs";
 
 import { joinGlobs } from "~/lib/upath.ts";
 import { readFile } from "~/lib/fs.ts";
+import { Dict } from "~/lib/dict.ts";
 import type { Settings } from "~/settings.ts";
 import { fileExtNames } from "~/project-specifics.ts";
 
 const extNamesGlob = fileExtNames.map((extName) => extName.slice(1)).join(",");
 
 export async function collectFiles({ settings }: { settings: Settings }) {
-	const files: Record<string, string> = {};
+	const files = Dict.empty<string>();
 
 	const globs = settings.rootEntries
 		.map(({ path }) => joinGlobs([path, "**", `*.{${extNamesGlob}}`], { globstar: true }));
 
 	for (const glob of globs) {
 		for await (const { path } of expandGlob(glob)) {
-			if (!Object.hasOwn(files, path)) {
+			if (!files.has(path)) {
 				const content = await readFile(path);
-				files[path] = content;
+				files.set(path, content);
 			}
 		}
 	}

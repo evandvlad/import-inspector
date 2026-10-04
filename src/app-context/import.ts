@@ -1,97 +1,80 @@
-import { assertNever } from "~/lib/ts.ts";
-import { assert } from "~/lib/err.ts";
-import type { Import as IImport, Json, ViewDataMode } from "~/api.ts";
-import type { ImportRec, ImportResolution } from "~/values.ts";
+import type { Dict as IDict, Import as IImport, Module } from "~/api.ts";
+import type { ImportRec } from "~/values.ts";
 
-import { ImportDefect } from "./import-defect.ts";
+import type { ImportResolution } from "./values.ts";
+import { ImportDefects } from "./defects/index.ts";
+import { cache } from "./tag-based-cache.ts";
 
 export class Import implements IImport {
 	id;
 	locator;
-	posSpan;
-	isDynamic;
-	sourcePath;
-	resolution;
-	defects: ImportDefect[];
-
-	resolutionPath;
 	location;
+	isDynamic;
+
+	#modPath;
+	#posSpan;
+	#resolution;
+	#modDict;
 
 	constructor(
-		{ path, importRec, resolution }: { path: string; importRec: ImportRec; resolution: ImportResolution | null },
+		{ modPath, importRec, resolution, modDict }: {
+			modPath: string;
+			importRec: ImportRec;
+			resolution: ImportResolution | null;
+			modDict: IDict<Module>;
+		},
 	) {
 		this.id = crypto.randomUUID() as string;
-		this.sourcePath = path;
-		this.resolution = resolution;
 		this.locator = importRec.locator;
-		this.posSpan = importRec.posSpan;
 		this.isDynamic = importRec.isDynamic;
-		this.defects = [];
+		this.location = resolution?.path ?? this.locator;
 
-		this.resolutionPath = resolution?.path ?? null;
-		this.location = this.resolutionPath ?? this.locator;
+		this.#posSpan = importRec.posSpan;
+		this.#modPath = modPath;
+		this.#resolution = resolution;
+		this.#modDict = modDict;
 	}
 
-	hasDefect(rule: string) {
-		return this.defects.some((defect) => defect.rule === rule);
+	@cache()
+	get defects() {
+		return new ImportDefects({
+			imp: this as IImport,
+			mod: this.sourceMod,
+		});
 	}
 
-	findDefect(rule: string) {
-		return this.defects.find((defect) => defect.rule === rule) ?? null;
+	get sourceMod() {
+		return this.#modDict.get(this.#modPath);
 	}
 
-	getDefect(rule: string) {
-		const defect = this.findDefect(rule);
-		assert(defect, `Can't find import defect for rule '${rule}'.`);
-		return defect;
+	get importedMod() {
+		return this.resolution?.mod ?? null;
 	}
 
-	addDefect(rule: string, description?: string) {
-		if (this.hasDefect(rule)) {
-			return;
+	@cache()
+	get resolution() {
+		if (!this.#resolution) {
+			return null;
 		}
 
-		this.defects.push(
-			new ImportDefect({
-				rule,
-				description,
-				importId: this.id,
-				posSpan: this.posSpan,
-				locator: this.locator,
-				sourcePath: this.sourcePath,
-				importedPath: this.resolutionPath,
-			}),
-		);
-	}
+		const { path, isExternal, isRelative } = this.#resolution;
 
-	removeDefect(rule: string) {
-		this.defects = this.defects.filter((defect) => defect.rule !== rule);
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.location;
-
-			case "brief":
-				return this.#toBriefViewData();
-
-			case "verbose":
-				return {
-					...this.#toBriefViewData(),
-					defects: this.defects.map((defect) => defect.toViewData("verbose")),
-				};
-
-			default:
-				assertNever(mode);
-		}
-	}
-
-	#toBriefViewData() {
 		return {
-			location: this.location,
-			sourcePath: this.sourcePath,
-			defects: this.defects.length,
+			isExternal,
+			isRelative,
+			mod: path ? this.#modDict.get(path) : null,
 		};
+	}
+
+	@cache()
+	get fileLineRange() {
+		const { file } = this.sourceMod;
+		return file.getLineRange(this.#posSpan);
+	}
+
+	@cache()
+	get fileEntries() {
+		const { file } = this.sourceMod;
+		return file.getEntriesBySpan(this.#posSpan);
 	}
 }

@@ -3,7 +3,7 @@ import { expect } from "@std/expect";
 
 import { concat, isAbsolute, shorten, split, stripEnd, stripStart, unify } from "./upath.ts";
 
-describe("lib/upath", () => {
+describe("upath", () => {
 	it("unify", () => {
 		expect(unify("C:\\foo\\bar")).toBe("C:/foo/bar");
 		expect(unify("C:\\foo\\bar\\")).toBe("C:/foo/bar/");

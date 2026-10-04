@@ -1,18 +1,17 @@
 import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, packages }) => {
-	Iterator.from(imports.getFullResolved())
+export const dontUseAbsolutePathInside: LintFunction = ({ imps }) => {
+	imps.fullResolvedById
 		.filter(({ resolution }) => !resolution!.isRelative)
-		.filter((imp) => {
-			const sourceModule = modules.get(imp.sourcePath);
-			const importedModule = modules.get(imp.resolutionPath!);
+		.filter(({ sourceMod, resolution }) => {
+			const importedMod = resolution!.mod!;
 
-			if (sourceModule.isInPackage && importedModule.isInPackage) {
-				const isSamePackage = sourceModule.packagePath === importedModule.packagePath;
+			if (sourceMod.pack && importedMod.pack) {
+				const isSamePackage = sourceMod.pack === importedMod.pack;
 
 				const isImportedFromSameOrAncestorPackage = isSamePackage ||
-					packages.isInAncestryBranch(sourceModule.packagePath!, importedModule.packagePath!);
+					sourceMod.pack.ancestry.has(importedMod.pack.path);
 
 				if (isImportedFromSameOrAncestorPackage) {
 					return true;
@@ -20,8 +19,7 @@ export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, pack
 			}
 
 			return false;
-		})
-		.forEach((imp) => {
-			imp.addDefect(ImportLintRule.DontUseAbsolutePathInside);
+		}).forEach((imp) => {
+			imp.defects.add(ImportLintRule.DontUseAbsolutePathInside);
 		});
 };
