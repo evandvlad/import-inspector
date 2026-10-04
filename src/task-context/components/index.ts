@@ -1,6 +1,7 @@
-import type { AppContext, TaskContextComponents } from "~/api.ts";
+import type { AppContext, LineRange, TaskContextComponents } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
+import { createCode } from "./code.ts";
 import { createLintResult } from "./lint-result.ts";
 import { createSummary } from "./summary.ts";
 
@@ -15,6 +16,10 @@ export class Components implements TaskContextComponents {
 		this.#appContext = appContext;
 		this.#settings = settings;
 		this.#startedAt = startedAt;
+	}
+
+	code(path: string, lineRange?: LineRange) {
+		return createCode({ appContext: this.#appContext, path, lineRange });
 	}
 
 	lintResult() {

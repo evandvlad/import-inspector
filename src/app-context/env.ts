@@ -1,6 +1,6 @@
 import { assert } from "~/lib/err.ts";
 import { assertNever } from "~/lib/ts.ts";
-import { shorten, stripEnd } from "~/lib/upath.ts";
+import { concat, shorten, stripEnd } from "~/lib/upath.ts";
 import type { AppContextEnv, Json, ViewDataMode } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
@@ -38,6 +38,19 @@ export class Env implements AppContextEnv {
 		);
 
 		return shorten(stripEnd(path), this.basePath);
+	}
+
+	getFullPath(path: string) {
+		if (path.startsWith(this.basePath)) {
+			return path;
+		}
+
+		const fullPath = concat([this.basePath, path]);
+		const pathRec = this.#pathRecProvider.findPathRec(fullPath);
+
+		assert(pathRec, `Can't get full path for '${path}.' It might be outside scope '${this.basePath}'.`);
+
+		return fullPath;
 	}
 
 	getEditorUrl(path: string, line?: number) {

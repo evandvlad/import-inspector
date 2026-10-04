@@ -337,6 +337,7 @@ export type AppContextEnv = {
 	basePath: string;
 	preset: ConfigPreset;
 	getShortPath: (path: string) => string;
+	getFullPath: (path: string) => string;
 	getEditorUrl: (path: string, line?: number) => string;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
@@ -366,6 +367,7 @@ export type AppContext = {
 };
 
 export type TaskContextComponents = {
+	code: (path: string, lineRange?: LineRange) => string;
 	lintResult: () => string;
 	summary: () => string;
 };
