@@ -17,9 +17,9 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 	try {
 		await runProgramWorkflow({
 			preset,
-			async worker({ settings, startedAt }) {
+			async worker({ settings }) {
 				const appContext = await runAppWorkflow({ settings });
-				const taskContext = new TaskContext({ settings, appContext, startedAt });
+				const taskContext = new TaskContext({ settings, appContext });
 
 				const reporter = new Reporter({ reports: settings.reports });
 				await reporter.write({ appContext });

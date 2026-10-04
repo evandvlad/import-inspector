@@ -5,10 +5,9 @@ import type { Settings } from "~/settings.ts";
 import { TaskContext } from "~/task-context/index.ts";
 
 export async function runTaskWorkflow(
-	{ appContext, settings, startedAt, taskName, taskArgs }: {
+	{ appContext, settings, taskName, taskArgs }: {
 		appContext: AppContext;
 		settings: Settings;
-		startedAt: number;
 		taskName: string;
 		taskArgs: string[];
 	},
@@ -20,7 +19,6 @@ export async function runTaskWorkflow(
 	const taskContext = new TaskContext({
 		appContext,
 		settings,
-		startedAt,
 		taskName,
 		taskArgs,
 	});

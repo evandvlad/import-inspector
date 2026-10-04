@@ -23,12 +23,12 @@ export const task: Command = async ({ args }: { args: string[] }) => {
 	try {
 		await runProgramWorkflow({
 			preset,
-			async worker({ settings, startedAt }) {
+			async worker({ settings }) {
 				const appContext = await runAppWorkflow({ settings });
 
 				spinner.stop();
 
-				return await runTaskWorkflow({ appContext, settings, startedAt, taskName, taskArgs });
+				return await runTaskWorkflow({ appContext, settings, taskName, taskArgs });
 			},
 		});
 	} catch (e) {

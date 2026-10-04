@@ -1,5 +1,3 @@
-import { format } from "@std/fmt/duration";
-
 import { components } from "~/clix/index.ts";
 import { version } from "~/values.ts";
 import type { Settings } from "~/settings.ts";
@@ -12,7 +10,7 @@ function ln(caption: string, content: string | number) {
 }
 
 export function createSummary(
-	{ settings, appContext, startedAt }: { settings: Settings; appContext: AppContext; startedAt: number },
+	{ settings, appContext }: { settings: Settings; appContext: AppContext },
 ) {
 	const summary = appContext.getSummary();
 	const dynamicImports = appContext.imports.getDynamic().length;
@@ -24,13 +22,11 @@ export function createSummary(
 		.toArray()
 		.join(", ");
 
-	const duration = format(Date.now() - startedAt, { ignoreZero: true });
 	const hrWidth = 75;
 
 	const items = [
 		"=".repeat(hrWidth),
 		ln("Program version", version),
-		ln("Duration", duration),
 		ln("Preset", settings.preset.name),
 		ln("Settings", link(settings.preset.settingsPath)),
 		ln("Project path", settings.preset.projectPath),

@@ -13,17 +13,16 @@ export class TaskContext implements ITaskContext {
 	taskArgs;
 
 	constructor(
-		{ appContext, settings, startedAt, taskName, taskArgs = [] }: {
+		{ appContext, settings, taskName, taskArgs = [] }: {
 			appContext: AppContext;
 			settings: Settings;
-			startedAt: number;
 			taskName?: string;
 			taskArgs?: string[];
 		},
 	) {
 		this.clix = clix;
 		this.appContext = appContext;
-		this.components = new Components({ appContext, settings, startedAt });
+		this.components = new Components({ appContext, settings });
 
 		this.taskName = taskName;
 		this.taskArgs = taskArgs;

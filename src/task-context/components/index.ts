@@ -9,14 +9,12 @@ import { createSummary } from "./summary.ts";
 export class Components implements TaskContextComponents {
 	#appContext;
 	#settings;
-	#startedAt;
 
 	constructor(
-		{ appContext, settings, startedAt }: { appContext: AppContext; settings: Settings; startedAt: number },
+		{ appContext, settings }: { appContext: AppContext; settings: Settings },
 	) {
 		this.#appContext = appContext;
 		this.#settings = settings;
-		this.#startedAt = startedAt;
 	}
 
 	moduleLink(path: string, lineRange?: LineRange) {
@@ -35,7 +33,6 @@ export class Components implements TaskContextComponents {
 		return createSummary({
 			appContext: this.#appContext,
 			settings: this.#settings,
-			startedAt: this.#startedAt,
 		});
 	}
 }
