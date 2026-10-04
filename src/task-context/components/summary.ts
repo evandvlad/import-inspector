@@ -11,7 +11,7 @@ function ln(caption: string, content: string | number) {
 	return `${text(caption, { bold: true })}: ${content}`;
 }
 
-export function createAppSummary(
+export function createSummary(
 	{ settings, appContext, startedAt }: { settings: Settings; appContext: AppContext; startedAt: number },
 ) {
 	const summary = appContext.getSummary();

@@ -139,6 +139,8 @@ export type CorrectUnresolvedDynamicImports = (
 export type PreLint = (appContext: AppContext) => MaybePromise<void>;
 export type PostLint = (appContext: AppContext) => MaybePromise<void>;
 
+export type Task = (taskContext: TaskContext) => MaybePromise</* isError */ boolean | void>;
+
 export type Settings = {
 	rootEntries: RootEntry[];
 	importRemaps?: Rec<string>;
@@ -146,6 +148,7 @@ export type Settings = {
 	preLint?: PreLint;
 	postLint?: PostLint;
 	reports?: Report[];
+	tasks?: Rec<Task>;
 };
 
 export type ImportResolution = {
@@ -360,4 +363,18 @@ export type AppContext = {
 	moduleDefects: ModuleDefects;
 	toViewData: (mode?: ViewDataMode) => Json;
 	getSummary: () => AppContextSummary;
+};
+
+export type TaskContextComponents = {
+	lintResult: () => string;
+	summary: () => string;
+};
+
+export type TaskContext = {
+	clix: Clix;
+	components: TaskContextComponents;
+	appContext: AppContext;
+
+	taskName?: string;
+	taskArgs: string[];
 };

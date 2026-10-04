@@ -5,9 +5,7 @@ import { Reporter } from "~/reporter.ts";
 import type { Command } from "~/values.ts";
 import { runProgramWorkflow } from "~/workflows/program-workflow.ts";
 import { runAppWorkflow } from "~/workflows/app-workflow.ts";
-
-import { createLintResult } from "./lint-result.ts";
-import { createAppSummary } from "./app-summary.ts";
+import { TaskContext } from "~/task-context/index.ts";
 
 const { spin } = widgets;
 
@@ -21,6 +19,7 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 			preset,
 			async worker({ settings, startedAt }) {
 				const appContext = await runAppWorkflow({ settings });
+				const taskContext = new TaskContext({ settings, appContext, startedAt });
 
 				const reporter = new Reporter({ reports: settings.reports });
 				await reporter.write({ appContext });
@@ -30,11 +29,11 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 				const hasDefects = appContext.getSummary().totalDefects > 0;
 
 				if (hasDefects) {
-					const lintResult = createLintResult({ appContext });
+					const lintResult = taskContext.components.lintResult();
 					console.error(lintResult);
 				}
 
-				const appSummary = createAppSummary({ settings, appContext, startedAt });
+				const appSummary = taskContext.components.summary();
 				console.log(appSummary);
 
 				return hasDefects;

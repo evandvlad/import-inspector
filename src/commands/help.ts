@@ -11,6 +11,7 @@ export const help: Command = () => {
 		"",
 		text("Commands:", { bold: true, color: "blue" }),
 		`${text(CommandName.Lint, { bold: true })} [--preset] - lint files.`,
+		`${text(CommandName.Task, { bold: true })} name [...args] [--preset] - run specific task.`,
 		`${text(CommandName.Configure, { bold: true })} - configure your config interactively.`,
 		`${text(CommandName.Version, { bold: true })} - show current program version.`,
 		`${text(CommandName.WriteApiFile, { bold: true })} [dir = cwd] - write types file into directory.`,

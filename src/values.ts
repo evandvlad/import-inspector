@@ -16,6 +16,7 @@ export const defaultConfigPresetName = "default";
 
 export enum CommandName {
 	Lint = "lint",
+	Task = "task",
 	Help = "help",
 	Version = "version",
 	Configure = "configure",
