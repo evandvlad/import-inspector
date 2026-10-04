@@ -6,24 +6,20 @@ import type { AppContext, Report } from "~/api.ts";
 import { createHtml } from "~/htmlx/index.ts";
 
 export class Reporter {
-	#reports;
+	#appContext;
 
-	constructor({ reports }: { reports: Report[] }) {
-		this.#reports = reports;
+	constructor({ appContext }: { appContext: AppContext }) {
+		this.#appContext = appContext;
 	}
 
-	async write({ appContext }: { appContext: AppContext }) {
-		await Promise.all(this.#reports.map((report) => this.#writeReport({ report, appContext })));
-	}
-
-	async #writeReport({ report, appContext }: { report: Report; appContext: AppContext }) {
-		const content = await this.#getContent({ report, appContext });
+	async write(report: Report) {
+		const content = await this.#getContent(report);
 		await writeFile(report.path, content);
 	}
 
-	async #getContent({ report, appContext }: { report: Report; appContext: AppContext }) {
+	async #getContent(report: Report) {
 		try {
-			const data = await report.provide(appContext);
+			const data = await report.provide(this.#appContext);
 			const { format } = report;
 
 			switch (format) {

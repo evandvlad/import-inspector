@@ -106,7 +106,7 @@ export type Report = {
 	format: "text" | "json" | "html";
 	// absolute path
 	path: string;
-	provide: (appContext: AppContext) => MaybePromise<unknown>;
+	provide: (appContext: AppContext) => MaybePromise<string>;
 };
 
 export type ConfigPreset = {
@@ -380,4 +380,6 @@ export type TaskContext = {
 
 	taskName?: string;
 	taskArgs: string[];
+
+	writeReport: (report: Report) => Promise<void>;
 };

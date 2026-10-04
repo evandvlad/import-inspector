@@ -21,8 +21,9 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 				const appContext = await runAppWorkflow({ settings });
 				const taskContext = new TaskContext({ settings, appContext });
 
-				const reporter = new Reporter({ reports: settings.reports });
-				await reporter.write({ appContext });
+				const reporter = new Reporter({ appContext });
+
+				await Promise.all(settings.reports.map((report) => reporter.write(report)));
 
 				spinner.stop();
 
