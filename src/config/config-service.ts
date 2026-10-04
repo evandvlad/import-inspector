@@ -1,13 +1,13 @@
 import { assert, isErr, remapErr } from "~/lib/err.ts";
 import { fileExists, readFile, writeFile } from "~/lib/fs.ts";
+import { hasProp, isObject, isString } from "~/lib/vtype.ts";
 import { tab } from "~/lib/text.ts";
 import type { Config, ConfigPreset, SettingsModule } from "~/api.ts";
 import { configFilePath } from "~/values.ts";
 
 function assertConfigData(data: unknown): asserts data is Config {
 	assert(
-		data && typeof data === "object" && "presets" in data && data.presets &&
-			typeof data.presets === "object",
+		isObject(data) && hasProp(data, "presets") && isObject(data.presets),
 		"Config data is in unpropriate format.",
 	);
 
@@ -18,12 +18,12 @@ function assertConfigData(data: unknown): asserts data is Config {
 		);
 
 		assert(
-			typeof preset.settingsPath === "string",
+			isString(preset.settingsPath),
 			`'settingsPath' property for preset '${preset.name}' must be string.`,
 		);
 
 		assert(
-			typeof preset.projectPath === "string",
+			isString(preset.projectPath),
 			`'projectPath' property for preset '${preset.name}' must be string.`,
 		);
 	}

@@ -1,5 +1,6 @@
 import { assertNever } from "~/lib/ts.ts";
 import { assert } from "~/lib/err.ts";
+import { isNull } from "~/lib/vtype.ts";
 import type { FileContent, Json, Module as IModule, ViewDataMode } from "~/api.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
@@ -45,7 +46,7 @@ export class Module implements IModule {
 		this.tags = [];
 		this.defects = [];
 		this.imports = imports;
-		this.isInPackage = this.packagePath !== null;
+		this.isInPackage = !isNull(this.packagePath);
 	}
 
 	hasTag(tag: string) {

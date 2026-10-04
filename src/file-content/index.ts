@@ -1,5 +1,6 @@
 import { assertNever } from "~/lib/ts.ts";
 import { fromLines, normalizeBr, toLines } from "~/lib/text.ts";
+import { isUndefined } from "~/lib/vtype.ts";
 import type { FileContent as IFileContent, FileContentEntry, Json, LineRange, Span, ViewDataMode } from "~/api.ts";
 
 function isInSpan({ start, end }: Span, value: number) {
@@ -59,7 +60,7 @@ export class FileContent implements IFileContent {
 		}
 
 		const startIndex = startLine - 1;
-		const endIndex = endLine === undefined ? (startIndex + 1) : endLine;
+		const endIndex = isUndefined(endLine) ? (startIndex + 1) : endLine;
 
 		return this.entries.slice(startIndex, endIndex);
 	}

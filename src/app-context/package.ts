@@ -1,4 +1,5 @@
 import { assertNever } from "~/lib/ts.ts";
+import { isNull } from "~/lib/vtype.ts";
 import type { Json, Package as IPackage, ViewDataMode } from "~/api.ts";
 
 export class Package implements IPackage {
@@ -27,7 +28,7 @@ export class Package implements IPackage {
 		this.parentDirPath = parentDirPath;
 		this.subPackagePaths = subPackagePaths;
 		this.parentPackagePath = parentPackagePath;
-		this.hasParentPackage = parentPackagePath !== null;
+		this.hasParentPackage = !isNull(parentPackagePath);
 	}
 
 	toViewData(mode: ViewDataMode = "brief"): Json {

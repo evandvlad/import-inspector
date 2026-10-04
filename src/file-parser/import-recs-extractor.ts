@@ -1,12 +1,13 @@
 import { type ImportExpression, type Program, type Span, Visitor } from "oxc-parser";
 
+import { isString } from "~/lib/vtype.ts";
 import type { ImportRec } from "~/values.ts";
 
 function extractLocatorFromDynamicImport({ source }: ImportExpression) {
 	/*
 	 * import("source")
 	 */
-	if (source.type === "Literal" && typeof source.value === "string") {
+	if (source.type === "Literal" && isString(source.value)) {
 		return source.value;
 	}
 
