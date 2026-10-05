@@ -103,7 +103,6 @@ export type RootEntry = {
 };
 
 export type Report = {
-	format: "text" | "json" | "html";
 	// absolute path
 	path: string;
 	provide: (appContext: AppContext) => MaybePromise<string>;
