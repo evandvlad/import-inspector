@@ -138,7 +138,7 @@ export type CorrectUnresolvedDynamicImports = (
 export type PreLint = (appContext: AppContext) => MaybePromise<void>;
 export type PostLint = (appContext: AppContext) => MaybePromise<void>;
 
-export type Task = (taskContext: TaskContext) => MaybePromise</* isError */ boolean | void>;
+export type Task = (taskContext: TaskContext) => MaybePromise</* exit code */ number | void>;
 
 export type Settings = {
 	rootEntries: RootEntry[];

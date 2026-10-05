@@ -37,7 +37,7 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 				const appSummary = taskContext.components.summary();
 				console.log(appSummary);
 
-				return hasDefects;
+				return hasDefects ? 1 : 0;
 			},
 		});
 	} catch (e) {
