@@ -113,7 +113,7 @@ body {
 }
 
 .flex {
-	--indents: var(--indents-medium);
+	--indents: var(--indents-small);
 	--out-indents: 0;
 
 	display: flex;
@@ -242,7 +242,7 @@ body {
 }
 
 .expander {
-	--indents: 0;
+	--indents: var(--indents-small);
 
 	margin-left: $details-marker-size-offset;
 

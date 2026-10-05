@@ -337,6 +337,7 @@ export type AppContextEnv = {
 	preset: ConfigPreset;
 	getShortPath: (path: string) => string;
 	getFullPath: (path: string) => string;
+	findFullPath: (path: string) => string | null;
 	getEditorUrl: (path: string, line?: number) => string;
 	toViewData: (mode?: ViewDataMode) => Json;
 };

@@ -41,16 +41,15 @@ export class Env implements AppContextEnv {
 	}
 
 	getFullPath(path: string) {
-		if (path.startsWith(this.basePath)) {
-			return path;
-		}
-
-		const fullPath = concat([this.basePath, path]);
-		const pathRec = this.#pathRecProvider.findPathRec(fullPath);
-
-		assert(pathRec, `Can't get full path for '${path}.' It might be outside scope '${this.basePath}'.`);
-
+		const fullPath = this.findFullPath(path);
+		assert(fullPath, `Can't get full path for '${path}.' It might be outside scope '${this.basePath}'.`);
 		return fullPath;
+	}
+
+	findFullPath(path: string) {
+		const fullPath = path.startsWith(this.basePath) ? path : concat([this.basePath, path]);
+		const pathRec = this.#pathRecProvider.findPathRec(fullPath);
+		return pathRec ? fullPath : null;
 	}
 
 	getEditorUrl(path: string, line?: number) {
