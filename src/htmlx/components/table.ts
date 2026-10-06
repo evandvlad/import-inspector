@@ -9,15 +9,11 @@ export const table: HtmlxComponents["table"] = (rows, options = {}) => {
 
 	const cols = rows[0].length;
 
-	const headerCells = options.columns
-		? options.columns.map((value) => `<div class="table__cell table__cell--header">${value}</div>`).join("")
-		: "";
-
-	const dataCells = rows.map((row, i) => {
+	const cells = rows.map((row, i) => {
 		const isOdd = i % 2 !== 0;
 
 		return row.map((value) => `
-			<div class="table__cell table__cell--data-cell-${isOdd ? "odd" : "even"}">
+			<div class="table__cell table__cell--cell-${isOdd ? "odd" : "even"}">
 				${value}
 			</div>
 		`).join("");
@@ -31,8 +27,7 @@ export const table: HtmlxComponents["table"] = (rows, options = {}) => {
 
 	return `
 		<div ${attrs}>
-			${headerCells}
-			${dataCells}
+			${cells}
 		</div>
 	`;
 };

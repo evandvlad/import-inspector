@@ -61,11 +61,11 @@ export type HtmlxComponents = {
 		params: { label: string; value: string },
 		options?: { theme?: "standard" | "light" | "dark" } & HtmlxComponentBaseOptions,
 	) => string;
-	table: (rows: string[][], options?: { columns?: string[] } & HtmlxComponentBaseOptions) => string;
+	table: (rows: string[][], options?: HtmlxComponentBaseOptions) => string;
 	expander: (params: { label: string; value: string }, options?: HtmlxComponentBaseOptions) => string;
 	tabs: (items: Array<{ label: string; value: string }>, options?: HtmlxComponentBaseOptions) => string;
 	tree: (items: HtmlxComponentTreeItem[], options?: HtmlxComponentBaseOptions) => string;
-	code: (entries: FileContentEntry[], options?: HtmlxComponentBaseOptions) => string;
+	code: (entries: Array<{ line: number; value: string }>, options?: HtmlxComponentBaseOptions) => string;
 	json: (data: unknown, options?: HtmlxComponentBaseOptions) => string;
 };
 
