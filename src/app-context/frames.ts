@@ -23,26 +23,35 @@ export class Frames implements IFrames {
 			.toArray();
 	}
 
-	isModuleInFrame({ path, name }: { path: string; name: string }) {
-		const paths = this.getModulePathsByFrame(name);
-		return paths.includes(path);
-	}
+	getModulePathInOtherFramesMap(path: string) {
+		const mod = this.#modules.get(path);
 
-	getImportedFramesMap(name: string) {
-		return this.getModulePathsByFrame(name).reduce((acc, path) => {
-			const mod = this.#modules.get(path);
+		return mod.links.reduce((acc, link) => {
+			const linkedMod = this.#modules.get(link);
 
-			mod.imports.forEach(({ resolutionPath }) => {
-				if (!resolutionPath) {
+			linkedMod.frames.forEach((frame) => {
+				if (mod.frames.includes(frame)) {
 					return;
 				}
 
-				const importedModule = this.#modules.get(resolutionPath);
+				acc.getOrInsert(frame, []).push(link);
+			});
 
-				importedModule.frames
+			return acc;
+		}, new Map<string, string[]>());
+	}
+
+	getFrameInFramesMap(name: string) {
+		return this.getModulePathsByFrame(name).reduce((acc, path) => {
+			const imported = this.#modules.get(path);
+
+			imported.links.forEach((link) => {
+				const source = this.#modules.get(link);
+
+				source.frames
 					.filter((frameName) => frameName !== name)
 					.forEach((frameName) => {
-						acc.getOrInsert(frameName, []).push({ source: mod, imported: importedModule });
+						acc.getOrInsert(frameName, []).push({ source, imported });
 					});
 			});
 

@@ -259,8 +259,8 @@ export type Package = {
 export type Frames = {
 	getAll: () => string[];
 	getModulePathsByFrame: (name: string) => string[];
-	isModuleInFrame: (params: { path: string; name: string }) => boolean;
-	getImportedFramesMap: (name: string) => Map</* name */ string, ModuleDependencyItem[]>;
+	getFrameInFramesMap: (name: string) => Map</* name */ string, ModuleDependencyItem[]>;
+	getModulePathInOtherFramesMap: (path: string) => Map</* name */ string, /* paths */ string[]>;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
