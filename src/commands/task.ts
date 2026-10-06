@@ -28,7 +28,7 @@ export const task: Command = async ({ args }: { args: string[] }) => {
 
 				spinner.stop();
 
-				return await runTaskWorkflow({ appContext, settings, taskName, taskArgs });
+				return await runTaskWorkflow({ appContext, settings, name: taskName, args: taskArgs });
 			},
 		});
 	} catch (e) {

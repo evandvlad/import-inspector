@@ -10,25 +10,22 @@ export class TaskContext implements ITaskContext {
 	appContext;
 	components;
 
-	taskName;
-	taskArgs;
+	args;
 
 	#reporter;
 
 	constructor(
-		{ appContext, settings, taskName, taskArgs = [] }: {
+		{ appContext, settings, args = [] }: {
 			appContext: AppContext;
 			settings: Settings;
-			taskName?: string;
-			taskArgs?: string[];
+			args?: string[];
 		},
 	) {
 		this.clix = clix;
 		this.appContext = appContext;
 		this.components = new Components({ appContext, settings });
 
-		this.taskName = taskName;
-		this.taskArgs = taskArgs;
+		this.args = args;
 
 		this.#reporter = new Reporter({ appContext });
 	}

@@ -378,8 +378,7 @@ export type TaskContext = {
 	components: TaskContextComponents;
 	appContext: AppContext;
 
-	taskName?: string;
-	taskArgs: string[];
+	args: string[];
 
 	writeReport: (report: Report) => Promise<void>;
 };
