@@ -30,8 +30,14 @@ export const tree: HtmlxComponents["tree"] = (items, options = {}) => {
 		return "";
 	}
 
+	const classes = ["tree"];
+
+	if (options.subtree) {
+		classes.push("tree--subtree");
+	}
+
 	return `
-		<div ${stringifyCompAttrs({ classes: ["tree"], options })}>
+		<div ${stringifyCompAttrs({ classes, options })}>
 			${renderTree(items)}
 		</div>
 	`;

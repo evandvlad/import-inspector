@@ -64,7 +64,7 @@ export type HtmlxComponents = {
 	table: (rows: string[][], options?: HtmlxComponentBaseOptions) => string;
 	expander: (params: { label: string; value: string }, options?: HtmlxComponentBaseOptions) => string;
 	tabs: (items: Array<{ label: string; value: string }>, options?: HtmlxComponentBaseOptions) => string;
-	tree: (items: HtmlxComponentTreeItem[], options?: HtmlxComponentBaseOptions) => string;
+	tree: (items: HtmlxComponentTreeItem[], options?: { subtree?: boolean } & HtmlxComponentBaseOptions) => string;
 	code: (entries: Array<{ line: number; value: string }>, options?: HtmlxComponentBaseOptions) => string;
 	json: (data: unknown, options?: HtmlxComponentBaseOptions) => string;
 };
