@@ -1,5 +1,6 @@
 import type { Config } from "~/config/index.ts";
 import { defaultConfigPresetName } from "~/values.ts";
+import { tuix } from "~/tuix.ts";
 
 import { PresetConfigurator } from "../widgets/preset-configurator.ts";
 
@@ -15,5 +16,5 @@ export async function addPreset(config: Config) {
 	const preset = await presetConfigurator.configure();
 	await config.setPreset(preset);
 
-	console.log(`Preset '${preset.name}' was added.`);
+	tuix.print(`Preset '${preset.name}' was added.`);
 }

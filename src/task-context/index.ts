@@ -1,12 +1,12 @@
 import type { AppContext, Report, TaskContext as ITaskContext } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
-import * as clix from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import { Reporter } from "~/reporter.ts";
 
 import { Components } from "./components/index.ts";
 
 export class TaskContext implements ITaskContext {
-	clix;
+	tuix;
 	appContext;
 	components;
 
@@ -21,7 +21,7 @@ export class TaskContext implements ITaskContext {
 			args?: string[];
 		},
 	) {
-		this.clix = clix;
+		this.tuix = tuix;
 		this.appContext = appContext;
 		this.components = new Components({ appContext, settings });
 

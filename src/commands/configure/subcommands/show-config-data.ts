@@ -1,14 +1,12 @@
-import { components } from "~/clix/index.ts";
 import { configFilePath } from "~/values.ts";
 import type { Config } from "~/config/index.ts";
-
-const { code, link, lines } = components;
+import { tuix } from "~/tuix.ts";
 
 export function showConfigData(config: Config) {
-	const message = lines([
-		`Config is located here: ${link(configFilePath)}`,
-		code(JSON.stringify(config.data, null, "  ")),
-	]);
+	const message = [
+		`Config is located here: ${tuix.link(configFilePath)}`,
+		tuix.code(JSON.stringify(config.data, null, "  ")),
+	];
 
-	console.log(message);
+	tuix.print(message);
 }

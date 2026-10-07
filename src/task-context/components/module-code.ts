@@ -1,4 +1,4 @@
-import { components } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import type { AppContext, LineRange } from "~/api.ts";
 
 export function createModuleCode(
@@ -12,5 +12,5 @@ export function createModuleCode(
 	const content = lineRange ? fileContent.getContentByLineRange(lineRange) : fileContent.value;
 	const startLine = lineRange ? lineRange[0] : 1;
 
-	return components.code(content, { startLine });
+	return tuix.code(content, { startLine });
 }

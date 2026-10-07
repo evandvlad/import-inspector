@@ -1,10 +1,7 @@
-import { fromLines } from "~/lib/text.ts";
-import { components } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import { CommandName, errorLogFilePath } from "~/values.ts";
 import { ErrorLogger } from "~/error-logger.ts";
 import { commands } from "~/commands/index.ts";
-
-const { text, link } = components;
 
 export async function runLaunchWorkflow(params: { args: string[] }) {
 	const errorLogger = await ErrorLogger.create();
@@ -21,12 +18,9 @@ export async function runLaunchWorkflow(params: { args: string[] }) {
 	} catch (e) {
 		await errorLogger.log(e);
 
-		const message = fromLines([
-			text(Error.isError(e) ? e.message : (e?.toString() ?? "Unknown error"), { color: "red" }),
-			`See ${link(errorLogFilePath)} for details.`,
-		]);
+		tuix.eprint(Error.isError(e) ? e.message : (e?.toString() ?? "Unknown error"));
+		tuix.eprint(`See ${tuix.link(errorLogFilePath)} for details.`, { noColor: true });
 
-		console.error(message);
 		Deno.exit(1);
 	}
 }

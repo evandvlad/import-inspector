@@ -65,12 +65,7 @@ export type HtmlxComponents = {
 	json: (data: unknown, options?: HtmlxComponentBaseOptions) => string;
 };
 
-export type Clix = {
-	components: ClixComponents;
-	widgets: ClixWidgets;
-};
-
-export type ClixComponents = {
+export type Tuix = {
 	text: (
 		value: string,
 		options?: { bold?: boolean; dim?: boolean; color?: "red" | "blue" | "gray" | "white" },
@@ -78,9 +73,6 @@ export type ClixComponents = {
 	lines: (items: string[]) => string;
 	link: (path: string, options?: { text?: string; line?: number }) => string;
 	code: (value: string, options?: { startLine?: number }) => string;
-};
-
-export type ClixWidgets = {
 	spin: (message: string) => { stop: () => void };
 	prompt: (options?: { label?: string; value?: string }) => string;
 	confirm: (message: string) => boolean;
@@ -88,6 +80,9 @@ export type ClixWidgets = {
 		items: Array<{ label: string; value: T }>,
 		options?: { label?: string },
 	) => { label: string; value: T };
+	clear: () => void;
+	print: (value: string | string[]) => void;
+	eprint: (value: string | string[], options?: { noColor?: boolean }) => void;
 };
 
 export type ViewDataMode = "verbose" | "brief" | "minimal";
@@ -370,7 +365,7 @@ export type TaskContextComponents = {
 };
 
 export type TaskContext = {
-	clix: Clix;
+	tuix: Tuix;
 	components: TaskContextComponents;
 	appContext: AppContext;
 

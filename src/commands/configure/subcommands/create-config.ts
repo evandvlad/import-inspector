@@ -1,18 +1,16 @@
 import { Config } from "~/config/index.ts";
-import { widgets } from "~/clix/index.ts";
-
-const { confirm } = widgets;
+import { tuix } from "~/tuix.ts";
 
 export async function createConfig() {
-	console.log("Workflow is not configured yet.");
+	tuix.print("Workflow is not configured yet.");
 
-	if (!confirm("Create config?")) {
+	if (!tuix.confirm("Create config?")) {
 		return null;
 	}
 
 	const config = await Config.create();
 
-	console.log(`Config was created.`);
+	tuix.print(`Config was created.`);
 
 	return config;
 }

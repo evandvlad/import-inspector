@@ -1,9 +1,6 @@
-import { components, widgets } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 
 import type { Action } from "../values.ts";
-
-const { text } = components;
-const { select } = widgets;
 
 export function selectAction({ presetNames }: { presetNames: string[] }) {
 	const hasPresets = presetNames.length > 0;
@@ -20,9 +17,9 @@ export function selectAction({ presetNames }: { presetNames: string[] }) {
 		);
 	}
 
-	const { value } = select<Action>(
+	const { value } = tuix.select<Action>(
 		items,
-		{ label: text("Select action", { bold: true, color: "blue" }) },
+		{ label: tuix.text("Select action", { bold: true, color: "blue" }) },
 	);
 
 	return value;

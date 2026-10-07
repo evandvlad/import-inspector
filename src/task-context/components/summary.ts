@@ -1,12 +1,10 @@
-import { components } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import { version } from "~/values.ts";
 import type { Settings } from "~/settings.ts";
 import type { AppContext } from "~/api.ts";
 
-const { text, link, lines } = components;
-
 function ln(caption: string, content: string | number) {
-	return `${text(caption, { bold: true })}: ${content}`;
+	return `${tuix.text(caption, { bold: true })}: ${content}`;
 }
 
 export function createSummary(
@@ -28,7 +26,7 @@ export function createSummary(
 		"=".repeat(hrWidth),
 		ln("Program version", version),
 		ln("Preset", settings.preset.name),
-		ln("Settings", link(settings.preset.settingsPath)),
+		ln("Settings", tuix.link(settings.preset.settingsPath)),
 		ln("Project path", settings.preset.projectPath),
 		"-".repeat(hrWidth),
 		ln("Tags", summary.tags),
@@ -44,9 +42,9 @@ export function createSummary(
 		items.push(
 			"-".repeat(hrWidth),
 			ln("Reports", ""),
-			...settings.reportPaths.map((path) => `  ${link(path)}`),
+			...settings.reportPaths.map((path) => `  ${tuix.link(path)}`),
 		);
 	}
 
-	return lines(items);
+	return tuix.lines(items);
 }

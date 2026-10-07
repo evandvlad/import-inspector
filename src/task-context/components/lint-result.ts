@@ -1,19 +1,17 @@
-import { components } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import type { AppContext } from "~/api.ts";
 
 import { createModuleLink } from "./module-link.ts";
 import { createModuleCode } from "./module-code.ts";
-
-const { text, lines } = components;
 
 export function createLintResult({ appContext }: { appContext: AppContext }) {
 	const { modules, importDefects, moduleDefects } = appContext;
 	const map: Map<string, string[]> = new Map();
 
 	moduleDefects.getAll().forEach(({ sourcePath, info }) => {
-		const link = text(createModuleLink({ appContext, path: sourcePath }), { bold: true, color: "blue" });
-		const ruleInfo = [text("rule (module):", { dim: true }), info].join(" ");
-		const content = lines([link, ruleInfo, ""]);
+		const link = tuix.text(createModuleLink({ appContext, path: sourcePath }), { bold: true, color: "blue" });
+		const ruleInfo = [tuix.text("rule (module):", { dim: true }), info].join(" ");
+		const content = tuix.lines([link, ruleInfo, ""]);
 
 		map.getOrInsert(sourcePath, []).push(content);
 	});
@@ -22,21 +20,25 @@ export function createLintResult({ appContext }: { appContext: AppContext }) {
 		const { fileContent } = modules.get(sourcePath);
 		const lineRange = fileContent.getLineRange(posSpan);
 
-		const link = text(createModuleLink({ appContext, path: sourcePath, lineRange }), { bold: true, color: "blue" });
+		const link = tuix.text(createModuleLink({ appContext, path: sourcePath, lineRange }), {
+			bold: true,
+			color: "blue",
+		});
+
 		const moduleLink = importedPath ? createModuleLink({ appContext, path: importedPath }) : " ? ";
 
-		const ruleInfo = [text("rule (import):", { dim: true }), info].join(" ");
-		const importedModule = [text("imported module:", { dim: true }), moduleLink].join(" ");
-		const codeLine = text(createModuleCode({ appContext, path: sourcePath, lineRange }), { color: "gray" });
+		const ruleInfo = [tuix.text("rule (import):", { dim: true }), info].join(" ");
+		const importedModule = [tuix.text("imported module:", { dim: true }), moduleLink].join(" ");
+		const codeLine = tuix.text(createModuleCode({ appContext, path: sourcePath, lineRange }), { color: "gray" });
 
-		const content = lines([link, ruleInfo, importedModule, "", codeLine, ""]);
+		const content = tuix.lines([link, ruleInfo, importedModule, "", codeLine, ""]);
 
 		map.getOrInsert(sourcePath, []).push(content);
 	});
 
-	return lines(
+	return tuix.lines(
 		map.values()
-			.map((items) => lines(items))
+			.map((items) => tuix.lines(items))
 			.toArray(),
 	);
 }

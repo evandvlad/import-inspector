@@ -1,4 +1,4 @@
-import { components } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import type { AppContext, LineRange } from "~/api.ts";
 
 export function createModuleLink(
@@ -9,5 +9,5 @@ export function createModuleLink(
 	const fullPath = env.getFullPath(path);
 	const shortPath = env.getShortPath(fullPath);
 
-	return components.link(fullPath, { text: shortPath, line: lineRange ? lineRange[0] : undefined });
+	return tuix.link(fullPath, { text: shortPath, line: lineRange ? lineRange[0] : undefined });
 }

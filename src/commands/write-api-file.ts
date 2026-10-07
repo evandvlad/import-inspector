@@ -4,10 +4,8 @@ import { parseArgs } from "@std/cli";
 import { assert } from "~/lib/err.ts";
 import { copyFile, fileExists } from "~/lib/fs.ts";
 import { dedent } from "~/lib/text.ts";
-import { widgets } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import { type Command, typesFile } from "~/values.ts";
-
-const { confirm } = widgets;
 
 const fileName = "api.ts";
 
@@ -30,10 +28,10 @@ export const writeApiFile: Command = async ({ args }: { args: string[] }) => {
 		${doesTargetFileExist ? "This file already exists and will be overridden." : ""} Do you want to continue?
 	`);
 
-	const isConfirmed = confirm(confirmationMessage);
+	const isConfirmed = tuix.confirm(confirmationMessage);
 
 	if (isConfirmed) {
 		await copyFile(typesFile, targetFilePath);
-		console.log("Done.");
+		tuix.print("Done.");
 	}
 };

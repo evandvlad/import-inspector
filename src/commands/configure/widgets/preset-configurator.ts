@@ -1,11 +1,8 @@
 import { isAbsolute } from "@std/path";
 
 import { dirExists, fileExists } from "~/lib/fs.ts";
-import { components, widgets } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import type { ConfigPreset } from "~/api.ts";
-
-const { text } = components;
-const { prompt } = widgets;
 
 type InspectionResult = {
 	isValid: boolean;
@@ -62,14 +59,14 @@ export class PresetConfigurator {
 		message = "",
 	): Promise<string> {
 		if (attempt > 1) {
-			console.clear();
+			tuix.clear();
 		}
 
 		if (message) {
-			console.log(text(message, { color: "red" }));
+			tuix.eprint(message);
 		}
 
-		const value = prompt({ label: params.label, value: params.value ?? "" });
+		const value = tuix.prompt({ label: params.label, value: params.value ?? "" });
 		const result = await params.inspectValue(value);
 
 		if (!result.isValid) {

@@ -1,18 +1,16 @@
 import { parseArgs } from "@std/cli";
 
-import { widgets } from "~/clix/index.ts";
+import { tuix } from "~/tuix.ts";
 import { Reporter } from "~/reporter.ts";
 import type { Command } from "~/values.ts";
 import { runProgramWorkflow } from "~/workflows/program-workflow.ts";
 import { runAppWorkflow } from "~/workflows/app-workflow.ts";
 import { TaskContext } from "~/task-context/index.ts";
 
-const { spin } = widgets;
-
 export const lint: Command = async ({ args }: { args: string[] }) => {
 	const { preset } = parseArgs(args);
 
-	const spinner = spin("Processing...");
+	const spinner = tuix.spin("Processing...");
 
 	try {
 		await runProgramWorkflow({
@@ -31,11 +29,11 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 
 				if (hasDefects) {
 					const lintResult = taskContext.components.lintResult();
-					console.error(lintResult);
+					tuix.eprint(lintResult, { noColor: true });
 				}
 
 				const appSummary = taskContext.components.summary();
-				console.log(appSummary);
+				tuix.print(appSummary);
 
 				return hasDefects ? 1 : 0;
 			},

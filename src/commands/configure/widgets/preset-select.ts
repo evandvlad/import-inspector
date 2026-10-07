@@ -1,13 +1,10 @@
-import { components, widgets } from "~/clix/index.ts";
-
-const { text } = components;
-const { select } = widgets;
+import { tuix } from "~/tuix.ts";
 
 export function selectPreset({ presetNames }: { presetNames: string[] }) {
-	const { value } = select(
+	const { value } = tuix.select(
 		presetNames.map((name) => ({ label: name, value: name })),
 		{
-			label: text("Select preset", { bold: true, color: "blue" }),
+			label: tuix.text("Select preset", { bold: true, color: "blue" }),
 		},
 	);
 
