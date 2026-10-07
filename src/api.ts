@@ -33,11 +33,6 @@ export enum ModuleLintRule {
 	DontLeaveUnusedModule = "don't-leave-unused-module",
 }
 
-export type Htmlx = {
-	components: HtmlxComponents;
-	createHtml: (value: string) => Promise<string>;
-};
-
 export type HtmlxComponentBaseOptions = {
 	classes?: string[];
 	attrs?: Rec<string>;
@@ -332,10 +327,10 @@ export type ModuleDefects = {
 };
 
 export type AppContextEnv = {
-	htmlx: Htmlx;
 	version: string;
 	basePath: string;
 	preset: ConfigPreset;
+	htmlxComponents: HtmlxComponents;
 	getShortPath: (path: string) => string;
 	getFullPath: (path: string) => string;
 	findFullPath: (path: string) => string | null;

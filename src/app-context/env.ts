@@ -4,15 +4,15 @@ import { concat, shorten, stripEnd } from "~/lib/upath.ts";
 import type { AppContextEnv, Json, ViewDataMode } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
-import { components, createHtml } from "~/htmlx/index.ts";
+import { components } from "~/htmlx/index.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 
 export class Env implements AppContextEnv {
-	htmlx;
 	preset;
 	version;
 	basePath;
+	htmlxComponents;
 
 	#pathRecProvider;
 
@@ -22,11 +22,7 @@ export class Env implements AppContextEnv {
 		this.version = version;
 		this.preset = settings.preset;
 		this.basePath = this.#pathRecProvider.basePath;
-
-		this.htmlx = {
-			createHtml,
-			components,
-		};
+		this.htmlxComponents = components;
 	}
 
 	getShortPath(path: string) {
