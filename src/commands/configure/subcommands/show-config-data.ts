@@ -1,6 +1,6 @@
 import { configFilePath } from "~/values.ts";
 import type { Config } from "~/config/index.ts";
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 
 export function showConfigData(config: Config) {
 	const message = [

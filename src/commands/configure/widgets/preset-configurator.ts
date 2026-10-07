@@ -1,7 +1,7 @@
 import { isAbsolute } from "@std/path";
 
 import { dirExists, fileExists } from "~/lib/fs.ts";
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import type { ConfigPreset } from "~/api.ts";
 
 type InspectionResult = {

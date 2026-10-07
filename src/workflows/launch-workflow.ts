@@ -1,4 +1,4 @@
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import { CommandName, errorLogFilePath } from "~/values.ts";
 import { ErrorLogger } from "~/error-logger.ts";
 import { commands } from "~/commands/index.ts";

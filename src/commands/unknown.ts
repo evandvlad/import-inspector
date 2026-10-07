@@ -1,4 +1,4 @@
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import { type Command, CommandName } from "~/values.ts";
 
 export const unknown: Command = () => {

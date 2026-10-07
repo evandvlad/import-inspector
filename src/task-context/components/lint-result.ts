@@ -1,4 +1,4 @@
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import type { AppContext } from "~/api.ts";
 
 import { createModuleLink } from "./module-link.ts";

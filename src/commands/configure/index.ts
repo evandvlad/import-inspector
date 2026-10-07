@@ -1,7 +1,7 @@
 import { assertNever } from "~/lib/ts.ts";
 import type { Command } from "~/values.ts";
 import { Config } from "~/config/index.ts";
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 
 import { createConfig } from "./subcommands/create-config.ts";
 import { showConfigData } from "./subcommands/show-config-data.ts";

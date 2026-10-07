@@ -1,4 +1,3 @@
-import { blue, bold as makeBold, dim as makeDim, gray, magenta, white } from "@std/fmt/colors";
 import { Spinner } from "@std/cli/unstable-spinner";
 import { type PromptEntry, promptSelect } from "@std/cli/unstable-prompt-select";
 import { toFileUrl } from "@std/path";
@@ -7,35 +6,11 @@ import { fromLines, tab, toLines } from "~/lib/text.ts";
 import { isNull, isString } from "~/lib/vtype.ts";
 import type { Tuix as ITuix } from "~/api.ts";
 
-const colors = {
-	gray,
-	blue,
-	white,
-	red: magenta,
-};
-
-type Color = keyof typeof colors;
+import { text } from "./text.ts";
+import { fancifyData } from "./data-fancifier.ts";
 
 class Tuix implements ITuix {
-	text(value: string, options?: { bold?: boolean; dim?: boolean; color?: Color }) {
-		const { color, bold = false, dim = false } = options ?? {};
-
-		let val = value;
-
-		if (color) {
-			val = colors[color](val);
-		}
-
-		if (bold) {
-			val = makeBold(val);
-		}
-
-		if (dim) {
-			val = makeDim(val);
-		}
-
-		return val;
-	}
+	text = text;
 
 	link(path: string, options?: { text?: string; line?: number }) {
 		const { text = path, line } = options ?? {};
@@ -121,6 +96,11 @@ class Tuix implements ITuix {
 		const text = noColor ? val : this.text(val, { color: "red" });
 
 		console.error(text);
+	}
+
+	printData(data: unknown) {
+		const result = fancifyData(data);
+		this.print(result);
 	}
 }
 

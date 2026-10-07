@@ -1,4 +1,4 @@
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import type { AppContext, LineRange } from "~/api.ts";
 
 export function createModuleCode(

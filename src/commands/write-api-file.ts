@@ -4,7 +4,7 @@ import { parseArgs } from "@std/cli";
 import { assert } from "~/lib/err.ts";
 import { copyFile, fileExists } from "~/lib/fs.ts";
 import { dedent } from "~/lib/text.ts";
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import { type Command, typesFile } from "~/values.ts";
 
 const fileName = "api.ts";

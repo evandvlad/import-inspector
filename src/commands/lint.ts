@@ -1,6 +1,6 @@
 import { parseArgs } from "@std/cli";
 
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import { Reporter } from "~/reporter.ts";
 import type { Command } from "~/values.ts";
 import { runProgramWorkflow } from "~/workflows/program-workflow.ts";

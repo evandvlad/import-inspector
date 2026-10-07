@@ -1,6 +1,6 @@
 import type { Config } from "~/config/index.ts";
 import { defaultConfigPresetName } from "~/values.ts";
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 
 import { PresetConfigurator } from "../widgets/preset-configurator.ts";
 

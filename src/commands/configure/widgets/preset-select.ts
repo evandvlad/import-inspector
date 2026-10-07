@@ -1,4 +1,4 @@
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 
 export function selectPreset({ presetNames }: { presetNames: string[] }) {
 	const { value } = tuix.select(

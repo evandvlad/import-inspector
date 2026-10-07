@@ -1,6 +1,6 @@
 import type { AppContext, Report, TaskContext as ITaskContext } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import { Reporter } from "~/reporter.ts";
 
 import { Components } from "./components/index.ts";

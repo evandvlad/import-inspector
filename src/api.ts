@@ -83,6 +83,7 @@ export type Tuix = {
 	clear: () => void;
 	print: (value: string | string[]) => void;
 	eprint: (value: string | string[], options?: { noColor?: boolean }) => void;
+	printData: (data: unknown) => void;
 };
 
 export type ViewDataMode = "verbose" | "brief" | "minimal";

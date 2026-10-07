@@ -1,5 +1,5 @@
 import { Config } from "~/config/index.ts";
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 
 export async function createConfig() {
 	tuix.print("Workflow is not configured yet.");

@@ -1,5 +1,5 @@
 import type { Config } from "~/config/index.ts";
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 
 import { selectPreset } from "../widgets/preset-select.ts";
 import { PresetConfigurator } from "../widgets/preset-configurator.ts";

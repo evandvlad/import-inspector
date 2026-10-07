@@ -1,4 +1,4 @@
-import { tuix } from "~/tuix.ts";
+import { tuix } from "~/tuix/index.ts";
 import { version } from "~/values.ts";
 import type { Settings } from "~/settings.ts";
 import type { AppContext } from "~/api.ts";
