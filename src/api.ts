@@ -46,6 +46,7 @@ export type HtmlxComponentBaseOptions = {
 
 export type HtmlxComponentTreeItem = {
 	value: string;
+	opened?: boolean;
 	children?: HtmlxComponentTreeItem[];
 };
 

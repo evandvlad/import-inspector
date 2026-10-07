@@ -4,13 +4,13 @@ import { stringifyCompAttrs } from "../helpers.ts";
 
 function renderTree(items: HtmlxComponentTreeItem[]): string {
 	const content = items
-		.map(({ value, children }) => {
+		.map(({ value, children, opened = false }) => {
 			if (!children || children.length === 0) {
 				return `<div>${value}</div>`;
 			}
 
 			return `
-				<details class="tree__branch">
+				<details class="tree__branch" ${opened ? "open" : ""}>
 					<summary class="tree__branch-handle">${value}</summary>
 					${renderTree(children)}
 				</details>
