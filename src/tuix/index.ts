@@ -4,7 +4,7 @@ import { toFileUrl } from "@std/path";
 
 import { fromLines, tab, toLines } from "~/lib/text.ts";
 import { isNull, isString } from "~/lib/vtype.ts";
-import type { Tuix as ITuix } from "~/api.ts";
+import type { Tuix as ITuix, TuixSelectItem } from "~/api.ts";
 
 import { text } from "./text.ts";
 import { fancifyData } from "./data-fancifier.ts";
@@ -54,7 +54,7 @@ class Tuix implements ITuix {
 		};
 	}
 
-	select<T extends string = string>(items: Array<{ label: string; value: T }>, options?: { label?: string }) {
+	select<T extends string = string>(items: TuixSelectItem<T>[], options?: { label?: string }) {
 		const { label = "" } = options ?? {};
 		const result = promptSelect<T>(label, items as Array<PromptEntry<T>>);
 
@@ -62,7 +62,7 @@ class Tuix implements ITuix {
 			Deno.exit();
 		}
 
-		return result as { label: string; value: T };
+		return result as TuixSelectItem<T>;
 	}
 
 	prompt(options?: { label?: string; value?: string }) {

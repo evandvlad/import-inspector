@@ -65,21 +65,22 @@ export type HtmlxComponents = {
 	data: (value: unknown, options?: HtmlxComponentBaseOptions) => string;
 };
 
+export type TuixColor = "red" | "blue" | "gray" | "white";
+
+export type TuixSelectItem<T extends string = string> = {
+	label: string;
+	value: T;
+};
+
 export type Tuix = {
-	text: (
-		value: string,
-		options?: { bold?: boolean; dim?: boolean; color?: "red" | "blue" | "gray" | "white" },
-	) => string;
+	text: (value: string, options?: { bold?: boolean; dim?: boolean; color?: TuixColor }) => string;
 	lines: (items: string[]) => string;
 	link: (path: string, options?: { text?: string; line?: number }) => string;
 	code: (value: string, options?: { startLine?: number }) => string;
 	spin: (message: string) => { stop: () => void };
 	prompt: (options?: { label?: string; value?: string }) => string;
 	confirm: (message: string) => boolean;
-	select: <T extends string = string>(
-		items: Array<{ label: string; value: T }>,
-		options?: { label?: string },
-	) => { label: string; value: T };
+	select: <T extends string = string>(items: TuixSelectItem<T>[], options?: { label?: string }) => TuixSelectItem<T>;
 	clear: () => void;
 	print: (value: string | string[]) => void;
 	eprint: (value: string | string[], options?: { noColor?: boolean }) => void;
