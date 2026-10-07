@@ -13,7 +13,7 @@ import { tree } from "./components/tree.ts";
 import { code } from "./components/code.ts";
 import { flist } from "./components/flist.ts";
 import { mark } from "./components/mark.ts";
-import { json } from "./components/json.ts";
+import { data } from "./components/data.ts";
 
 export const components = {
 	h,
@@ -29,7 +29,7 @@ export const components = {
 	code,
 	flist,
 	mark,
-	json,
+	data,
 } satisfies HtmlxComponents;
 
 export { createHtml } from "./html/index.ts";

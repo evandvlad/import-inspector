@@ -62,7 +62,7 @@ export type HtmlxComponents = {
 	tabs: (items: Array<{ label: string; value: string }>, options?: HtmlxComponentBaseOptions) => string;
 	tree: (items: HtmlxComponentTreeItem[], options?: { subtree?: boolean } & HtmlxComponentBaseOptions) => string;
 	code: (entries: Array<{ line: number; value: string }>, options?: HtmlxComponentBaseOptions) => string;
-	json: (data: unknown, options?: HtmlxComponentBaseOptions) => string;
+	data: (value: unknown, options?: HtmlxComponentBaseOptions) => string;
 };
 
 export type Tuix = {

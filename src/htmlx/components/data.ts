@@ -6,8 +6,8 @@ import { stringifyCompAttrs } from "../helpers.ts";
 
 function formatSimpleValueToHtml({ key, value }: { key: string; value: SimpleValue }) {
 	return `
-		<div class="json__item">
-			<span class="json__item-key">${key}:</span>
+		<div class="data__item">
+			<span class="data__item-key">${key}:</span>
 			<span>${sanitizeForHtml(String(value))}</span>
 		</div>
 	`;
@@ -17,19 +17,19 @@ function formatCompoundValueToHtml({ key, value }: { key: string; value: Compoun
 	const size = Object.keys(value).length;
 
 	return `
-		<details class="json__item">
-			<summary class="json__item-key json__item-key--compound-value">
+		<details class="data__item">
+			<summary class="data__item-key data__item-key--compound-value">
 				${key}: ${getCompoundValueType(value)}(${size})
 			</summary>
 			<div>
-				${size > 0 ? formatToHtml(value) : `<div class="json__empty-value">Empty</div>`}
+				${size > 0 ? formatToHtml(value) : `<div class="data__empty-value">Empty</div>`}
 			</div>
 		</details>
 	`;
 }
 
-function formatToHtml(data: CompoundValue): string {
-	const value = Object.entries(data).reduce((acc, [key, value]) => {
+function formatToHtml(json: CompoundValue): string {
+	const result = Object.entries(json).reduce((acc, [key, value]) => {
 		const content = isCompoundValue(value)
 			? formatCompoundValueToHtml({ key, value })
 			: formatSimpleValueToHtml({ key, value });
@@ -37,15 +37,15 @@ function formatToHtml(data: CompoundValue): string {
 		return [acc, content].join("");
 	}, "");
 
-	return `<div class="json__block">${value}</div>`;
+	return `<div class="data__block">${result}</div>`;
 }
 
-function getContent(data: unknown) {
+function getContent(value: unknown) {
 	try {
-		const json = JSON.parse(JSON.stringify(data));
+		const json = JSON.parse(JSON.stringify(value));
 
 		if (!isCompoundValue(json)) {
-			return String(json);
+			return `${json}`;
 		}
 
 		if (Object.keys(json).length === 0) {
@@ -58,8 +58,8 @@ function getContent(data: unknown) {
 	}
 }
 
-export const json: HtmlxComponents["json"] = (data, options = {}) => {
-	const content = getContent(data);
+export const data: HtmlxComponents["data"] = (value, options = {}) => {
+	const content = getContent(value);
 
-	return `<div ${stringifyCompAttrs({ classes: ["json"], options })}>${content}</div>`;
+	return `<div ${stringifyCompAttrs({ classes: ["data"], options })}>${content}</div>`;
 };
