@@ -1,4 +1,4 @@
-import { type CompoundValue, getCompoundValueType, isCompoundValue, type SimpleValue } from "~/lib/json.ts";
+import { type CompoundValue, getCompoundValueType, isCompoundValue, type SimpleValue, toJson } from "~/lib/json.ts";
 import { sanitizeForHtml } from "~/lib/text.ts";
 import type { HtmlxComponents } from "~/api.ts";
 
@@ -41,21 +41,17 @@ function formatToHtml(json: CompoundValue): string {
 }
 
 function getContent(value: unknown) {
-	try {
-		const json = JSON.parse(JSON.stringify(value));
+	const json = toJson(value);
 
-		if (!isCompoundValue(json)) {
-			return `${json}`;
-		}
-
-		if (Object.keys(json).length === 0) {
-			return "No data";
-		}
-
-		return formatToHtml(json);
-	} catch (e) {
-		return e?.toString() ?? "Unknown error";
+	if (!isCompoundValue(json)) {
+		return `${json}`;
 	}
+
+	if (Object.keys(json).length === 0) {
+		return "No data";
+	}
+
+	return formatToHtml(json);
 }
 
 export const data: HtmlxComponents["data"] = (value, options = {}) => {

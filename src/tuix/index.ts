@@ -7,7 +7,7 @@ import { isNull, isString } from "~/lib/vtype.ts";
 import type { Tuix as ITuix, TuixSelectItem } from "~/api.ts";
 
 import { text } from "./text.ts";
-import { fancifyData } from "./data-fancifier.ts";
+import { prettifyData } from "./data-prettifier.ts";
 
 class Tuix implements ITuix {
 	text = text;
@@ -99,7 +99,7 @@ class Tuix implements ITuix {
 	}
 
 	printData(data: unknown) {
-		const result = fancifyData(data);
+		const result = prettifyData(data);
 		this.print(result);
 	}
 }
