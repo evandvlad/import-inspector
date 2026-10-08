@@ -16,25 +16,29 @@ export class Frames implements IFrames {
 		return Array.from(new Set(all));
 	}
 
-	getModulePathsByFrame(frame: string) {
+	has(name: string) {
+		return this.getAll().includes(name);
+	}
+
+	getModPaths(name: string) {
 		return Iterator.from(this.#modules.getAll())
-			.filter((mod) => mod.hasFrame(frame))
+			.filter((mod) => mod.hasFrame(name))
 			.map(({ path }) => path)
 			.toArray();
 	}
 
-	getModulePathInOtherFramesMap(path: string) {
+	getModPathInOtherFramesMap(path: string) {
 		const mod = this.#modules.get(path);
 
 		return mod.links.reduce((acc, link) => {
 			const linkedMod = this.#modules.get(link);
 
-			linkedMod.frames.forEach((frame) => {
-				if (mod.frames.includes(frame)) {
+			linkedMod.frames.forEach((name) => {
+				if (mod.frames.includes(name)) {
 					return;
 				}
 
-				acc.getOrInsert(frame, []).push(link);
+				acc.getOrInsert(name, []).push(link);
 			});
 
 			return acc;
@@ -42,7 +46,7 @@ export class Frames implements IFrames {
 	}
 
 	getFrameInFramesMap(name: string) {
-		return this.getModulePathsByFrame(name).reduce((acc, path) => {
+		return this.getModPaths(name).reduce((acc, path) => {
 			const imported = this.#modules.get(path);
 
 			imported.links.forEach((link) => {
@@ -69,7 +73,7 @@ export class Frames implements IFrames {
 
 			case "verbose":
 				return Object.fromEntries(
-					this.getAll().map((frame) => [frame, this.getModulePathsByFrame(frame)]),
+					this.getAll().map((name) => [name, this.getModPaths(name)]),
 				);
 
 			default:

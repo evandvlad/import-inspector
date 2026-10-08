@@ -2,6 +2,7 @@ import { assertNever } from "~/lib/ts.ts";
 import type { Json, Tags as ITags, ViewDataMode } from "~/api.ts";
 
 import type { Modules } from "./modules.ts";
+import { TagSample } from "./samples/tag.ts";
 
 export class Tags implements ITags {
 	#modules;
@@ -15,11 +16,12 @@ export class Tags implements ITags {
 		return Array.from(new Set(all));
 	}
 
-	getModulePathsByTag(tag: string) {
-		return Iterator.from(this.#modules.getAll())
-			.filter((mod) => mod.hasTag(tag))
-			.map(({ path }) => path)
-			.toArray();
+	has(name: string) {
+		return this.getAll().includes(name);
+	}
+
+	sample(name: string) {
+		return new TagSample({ name, modules: this.#modules });
 	}
 
 	toViewData(mode: ViewDataMode = "brief"): Json {
@@ -32,7 +34,7 @@ export class Tags implements ITags {
 
 			case "verbose":
 				return Object.fromEntries(
-					this.getAll().map((tag) => [tag, this.getModulePathsByTag(tag)]),
+					this.getAll().map((tag) => [tag, this.sample(tag).modPaths]),
 				);
 
 			default:

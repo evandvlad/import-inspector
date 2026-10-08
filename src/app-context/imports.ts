@@ -2,8 +2,8 @@ import { assert } from "~/lib/err.ts";
 import { assertNever } from "~/lib/ts.ts";
 import type { Imports as IImports, Json, ViewDataMode } from "~/api.ts";
 
-import type { Import } from "./import.ts";
 import type { Modules } from "./modules.ts";
+import { ExternalImportsSample } from "./samples/external-imports.ts";
 
 export class Imports implements IImports {
 	#all;
@@ -55,11 +55,8 @@ export class Imports implements IImports {
 		return this.#all.filter(({ isDynamic }) => !isDynamic);
 	}
 
-	getExternalMap() {
-		return this.getExternal().reduce((acc, imp) => {
-			acc.getOrInsert(String(imp.locator), []).push(imp);
-			return acc;
-		}, new Map<string, Import[]>());
+	sampleExternal() {
+		return new ExternalImportsSample({ imports: this.getExternal() });
 	}
 
 	find(id: string) {

@@ -229,12 +229,12 @@ export type Module = {
 	getDefect: (rule: string) => ModuleDefect;
 	addDefect: (rule: string, description?: string) => void;
 	removeDefect: (rule: string) => void;
-	hasTag: (tag: string) => boolean;
-	setTag: (tag: string) => void;
-	removeTag: (tag: string) => void;
-	hasFrame: (frame: string) => boolean;
-	setFrame: (frame: string) => void;
-	removeFrame: (frame: string) => void;
+	hasTag: (name: string) => boolean;
+	setTag: (name: string) => void;
+	removeTag: (name: string) => void;
+	hasFrame: (name: string) => boolean;
+	setFrame: (name: string) => void;
+	removeFrame: (name: string) => void;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
@@ -251,9 +251,10 @@ export type Package = {
 
 export type Frames = {
 	getAll: () => string[];
-	getModulePathsByFrame: (name: string) => string[];
+	has: (name: string) => boolean;
+	getModPaths: (name: string) => string[];
 	getFrameInFramesMap: (name: string) => Map</* name */ string, ModuleDependencyItem[]>;
-	getModulePathInOtherFramesMap: (path: string) => Map</* name */ string, /* paths */ string[]>;
+	getModPathInOtherFramesMap: (path: string) => Map</* name */ string, /* paths */ string[]>;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
@@ -277,10 +278,22 @@ export type Packages = {
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
+export type TagSample = {
+	name: string;
+	modPaths: string[];
+};
+
 export type Tags = {
 	getAll: () => string[];
-	getModulePathsByTag: (tag: string) => string[];
+	has: (name: string) => boolean;
+	sample: (name: string) => TagSample;
 	toViewData: (mode?: ViewDataMode) => Json;
+};
+
+export type ExternalImportsSample = {
+	imports: Import[];
+	locators: string[];
+	get: (value: string) => Import[];
 };
 
 export type Imports = {
@@ -294,29 +307,47 @@ export type Imports = {
 	getLocalUnresolved: () => Import[];
 	getDynamic: () => Import[];
 	getStatic: () => Import[];
-	getExternalMap: () => Map</* name */ string, Import[]>;
+	sampleExternal: () => ExternalImportsSample;
 	toViewData: (mode?: ViewDataMode) => Json;
+};
+
+export type ImportDefectRulesSample = {
+	rules: string[];
+	get: (rule: string) => ImportDefect[];
+	getModPaths: (rule: string) => string[];
+};
+
+export type ImportDefectModPathsSample = {
+	modPaths: string[];
+	get: (modPath: string) => ImportDefect[];
 };
 
 export type ImportDefects = {
 	getAll: () => ImportDefect[];
-	getAllAsRuleMap: () => Map</* rule */ string, ImportDefect[]>;
-	getAllAsModulePathMap: () => Map</* module path */ string, ImportDefect[]>;
 	getAllRules: () => string[];
-	getByRule: (rule: string) => ImportDefect[];
-	getModulePathsByRule: (rule: string) => string[];
+	sampleRules: () => ImportDefectRulesSample;
+	sampleModPaths: () => ImportDefectModPathsSample;
 	remove: (importId: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
 	toViewData: (mode?: ViewDataMode) => Json;
 };
 
+export type ModuleDefectRulesSample = {
+	rules: string[];
+	get: (rule: string) => ModuleDefect[];
+};
+
+export type ModuleDefectModPathsSample = {
+	modPaths: string[];
+	get: (modPath: string) => ModuleDefect[];
+};
+
 export type ModuleDefects = {
 	getAll: () => ModuleDefect[];
 	getAllRules: () => string[];
-	getAllAsPathMap: () => Map</* path */ string, ModuleDefect[]>;
-	getAllAsRuleMap: () => Map</* rule */ string, ModuleDefect[]>;
-	getByRule: (rule: string) => ModuleDefect[];
+	sampleRules: () => ModuleDefectRulesSample;
+	sampleModPaths: () => ModuleDefectModPathsSample;
 	remove: (path: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;

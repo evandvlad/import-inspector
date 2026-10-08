@@ -3,6 +3,8 @@ import type { Json, ModuleDefects as IModuleDefects, ViewDataMode } from "~/api.
 
 import type { ModuleDefect } from "./module-defect.ts";
 import type { Modules } from "./modules.ts";
+import { ModuleDefectRulesSample } from "./samples/module-defect-rules.ts";
+import { ModuleDefectModPathsSample } from "./samples/module-defect-mod-paths.ts";
 
 export class ModuleDefects implements IModuleDefects {
 	#modules;
@@ -15,34 +17,17 @@ export class ModuleDefects implements IModuleDefects {
 		return this.#modules.getAll().flatMap(({ defects }) => defects);
 	}
 
-	getAllAsPathMap() {
-		return new Map(
-			Iterator.from(this.#modules.getAll())
-				.filter(({ defects }) => defects.length > 0)
-				.map(({ path, defects }) => [path, defects]),
-		);
-	}
-
-	getAllAsRuleMap() {
-		return this.#modules.getAll().reduce((acc, { defects }) => {
-			defects.forEach((defect) => {
-				acc.getOrInsert(defect.rule, []).push(defect);
-			});
-
-			return acc;
-		}, new Map<string, ModuleDefect[]>());
-	}
-
 	getAllRules() {
 		const all = this.#modules.getAll().flatMap(({ defects }) => defects.map(({ rule }) => rule));
 		return Array.from(new Set(all));
 	}
 
-	getByRule(rule: string) {
-		return Iterator.from(this.#modules.getAll())
-			.map((mod) => mod.findDefect(rule))
-			.filter((defect): defect is ModuleDefect => Boolean(defect))
-			.toArray();
+	sampleRules() {
+		return new ModuleDefectRulesSample({ modules: this.#modules });
+	}
+
+	sampleModPaths() {
+		return new ModuleDefectModPathsSample({ modules: this.#modules });
 	}
 
 	remove(path: string, rule: string) {
@@ -51,9 +36,12 @@ export class ModuleDefects implements IModuleDefects {
 	}
 
 	removeByRule(rule: string) {
-		this.getByRule(rule).forEach(({ sourcePath }) => {
-			this.remove(sourcePath, rule);
-		});
+		Iterator.from(this.#modules.getAll())
+			.map((mod) => mod.findDefect(rule))
+			.filter((defect): defect is ModuleDefect => Boolean(defect))
+			.forEach(({ sourcePath }) => {
+				this.remove(sourcePath, rule);
+			});
 	}
 
 	removeAll() {

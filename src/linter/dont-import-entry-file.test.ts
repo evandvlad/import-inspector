@@ -19,7 +19,8 @@ describe("dont-import-entry-file", () => {
 		dontImportEntryFile(appContext);
 
 		const paths = appContext.importDefects
-			.getModulePathsByRule(ImportLintRule.DontImportEntryFile);
+			.sampleRules()
+			.getModPaths(ImportLintRule.DontImportEntryFile);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});

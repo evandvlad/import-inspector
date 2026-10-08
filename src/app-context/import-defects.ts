@@ -3,6 +3,8 @@ import type { ImportDefects as IImportDefects, Json, ViewDataMode } from "~/api.
 
 import type { ImportDefect } from "./import-defect.ts";
 import type { Imports } from "./imports.ts";
+import { ImportDefectRulesSample } from "./samples/import-defect-rules.ts";
+import { ImportDefectModPathsSample } from "./samples/import-defect-mod-paths.ts";
 
 export class ImportDefects implements IImportDefects {
 	#imports;
@@ -15,43 +17,17 @@ export class ImportDefects implements IImportDefects {
 		return this.#imports.getAll().flatMap(({ defects }) => defects);
 	}
 
-	getAllAsRuleMap() {
-		return this.#imports.getAll().reduce((acc, { defects }) => {
-			defects.forEach((defect) => {
-				acc.getOrInsert(defect.rule, []).push(defect);
-			});
-
-			return acc;
-		}, new Map<string, ImportDefect[]>());
-	}
-
-	getAllAsModulePathMap() {
-		return this.#imports.getAll().reduce((acc, { sourcePath, defects }) => {
-			defects.forEach((defect) => {
-				acc.getOrInsert(sourcePath, []).push(defect);
-			});
-
-			return acc;
-		}, new Map<string, ImportDefect[]>());
-	}
-
 	getAllRules() {
 		const all = this.#imports.getAll().flatMap(({ defects }) => defects.map(({ rule }) => rule));
 		return Array.from(new Set(all));
 	}
 
-	getByRule(rule: string) {
-		return Iterator.from(this.#imports.getAll())
-			.map((imp) => imp.findDefect(rule))
-			.filter((defect): defect is ImportDefect => Boolean(defect))
-			.toArray();
+	sampleRules() {
+		return new ImportDefectRulesSample({ imports: this.#imports });
 	}
 
-	getModulePathsByRule(rule: string) {
-		return Iterator.from(this.#imports.getAll())
-			.filter((imp) => imp.hasDefect(rule))
-			.map(({ sourcePath }) => sourcePath)
-			.toArray();
+	sampleModPaths() {
+		return new ImportDefectModPathsSample({ imports: this.#imports });
 	}
 
 	remove(importId: string, rule: string) {
@@ -60,9 +36,12 @@ export class ImportDefects implements IImportDefects {
 	}
 
 	removeByRule(rule: string) {
-		this.getByRule(rule).forEach(({ importId }) => {
-			this.remove(importId, rule);
-		});
+		Iterator.from(this.#imports.getAll())
+			.map((imp) => imp.findDefect(rule))
+			.filter((defect): defect is ImportDefect => Boolean(defect))
+			.forEach(({ importId }) => {
+				this.remove(importId, rule);
+			});
 	}
 
 	removeAll() {
