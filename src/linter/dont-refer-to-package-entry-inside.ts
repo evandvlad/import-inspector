@@ -19,7 +19,7 @@ export const dontReferToPackageEntryInside: LintFunction = ({ imports, modules, 
 			}
 
 			return sourceModule.packagePath === importedModule.packagePath ||
-				packages.isInAncestryBranch(sourceModule.packagePath!, importedModule.packagePath!);
+				packages.isInAncestry(sourceModule.packagePath!, importedModule.packagePath!);
 		}).forEach((imp) => {
 			imp.addDefect(ImportLintRule.DontReferToPackageEntryInside);
 		});

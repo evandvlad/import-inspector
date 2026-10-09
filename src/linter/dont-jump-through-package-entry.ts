@@ -2,8 +2,6 @@ import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
 export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, packages }) => {
-	const roots = packages.getRoots();
-
 	imports.fullResolved
 		.values()
 		.filter((imp) => {
@@ -14,30 +12,36 @@ export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, pa
 				return false;
 			}
 
-			const importedPackage = packages.get(importedModule.packagePath!);
+			const importedPackage = packages.all.get(importedModule.packagePath!);
 
 			const isImportedFromSameOrAncestorPackage = sourceModule.isInPackage &&
 				(sourceModule.packagePath === importedPackage.path ||
-					packages.isInAncestryBranch(sourceModule.packagePath!, importedPackage.path));
+					packages.isInAncestry(sourceModule.packagePath!, importedPackage.path));
 
 			if (isImportedFromSameOrAncestorPackage) {
 				return false;
 			}
 
 			if (!sourceModule.isInPackage) {
-				return !(roots.includes(importedPackage) && importedModule.isPackageEntryPoint);
+				return !(packages.roots.has(importedPackage.path) && importedModule.isPackageEntryPoint);
 			}
 
-			const sourcePackage = packages.get(sourceModule.packagePath!);
-			const ancestryBranchWithSelf = [sourcePackage].concat(packages.getAncestryBranch(sourcePackage.path));
+			const sourcePackage = packages.all.get(sourceModule.packagePath!);
 
-			const surroundingPackageSet = new Set(
-				ancestryBranchWithSelf.flatMap(({ path }) => packages.getSubs(path)).concat(roots),
+			const ancestryBranchWithSelf = packages
+				.ancestry(sourcePackage.path)
+				.set(sourcePackage.path, sourcePackage);
+
+			const surroundingPackages = ancestryBranchWithSelf.reduce(
+				(acc, _, path) => acc.merge(packages.children(path)),
+				packages.roots.slice(),
 			);
 
-			const allowedPackageSet = surroundingPackageSet.difference(new Set(ancestryBranchWithSelf));
+			const allowedPackageSet = (new Set(surroundingPackages.keys())).difference(
+				new Set(ancestryBranchWithSelf.keys()),
+			);
 
-			return !(allowedPackageSet.has(importedPackage) && importedModule.isPackageEntryPoint);
+			return !(allowedPackageSet.has(importedPackage.path) && importedModule.isPackageEntryPoint);
 		})
 		.forEach((imp) => {
 			imp.addDefect(ImportLintRule.DontJumpThroughPackageEntry);

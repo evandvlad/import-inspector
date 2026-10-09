@@ -28,6 +28,8 @@ export interface Dict<T> {
 	sortE: (callback: (entry1: Entry<T>, entry2: Entry<T>) => number) => Dict<T>;
 	reduce: <U>(callback: (acc: U, value: T, key: string) => U, init: U) => U;
 	group: (callback: (value: T, key: string) => string) => Dict<T[]>;
+	merge: (...args: Array<Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>>) => this;
+	concat: (...args: Array<Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>>) => Dict<T>;
 	keys: () => MapIterator<string>;
 	values: () => MapIterator<T>;
 	entries: () => MapIterator<Entry<T>>;
@@ -291,15 +293,12 @@ export type Modules = {
 };
 
 export type Packages = {
-	getAll: () => Package[];
-	getRoots: () => Package[];
-	find: (path: string) => Nullable<Package>;
-	get: (path: string) => Package;
-	findParent: (path: string) => Nullable<Package>;
-	getParent: (path: string) => Package;
-	getSubs: (path: string) => Package[];
-	isInAncestryBranch: (sourcePath: string, testablePath: string) => boolean;
-	getAncestryBranch: (path: string) => Package[];
+	all: Dict<Package>;
+	roots: Dict<Package>;
+	parent: (path: string) => Package;
+	children: (path: string) => Dict<Package>;
+	ancestry: (path: string) => Dict<Package>;
+	isInAncestry: (sourcePath: string, testablePath: string) => boolean;
 };
 
 export type TagSample = {

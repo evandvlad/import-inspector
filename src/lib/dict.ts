@@ -1,12 +1,13 @@
 import { assert } from "~/lib/err.ts";
 import type { Dict as IDict } from "~/api.ts";
+import { isArray, isMap } from "~/lib/vtype.ts";
 
 type Entry<T> = [key: string, value: T];
 
 export class Dict<T> implements IDict<T> {
 	#map;
 
-	static isDict(value: unknown): value is Dict<unknown> {
+	static isDict<U = unknown>(value: unknown): value is Dict<U> {
 		return value instanceof Dict;
 	}
 
@@ -183,6 +184,44 @@ export class Dict<T> implements IDict<T> {
 			acc.getOrInsert(newKey, []).push(value);
 			return acc;
 		}, new Dict<T[]>());
+	}
+
+	merge(...args: Array<IDict<T> | Record<string, T> | Map<string, T> | Array<Entry<T>>>) {
+		args.forEach((arg) => {
+			if (isMap(arg) || Dict.isDict<T>(arg)) {
+				arg.forEach((value, key) => {
+					this.set(key, value);
+				});
+
+				return;
+			}
+
+			if (isArray(arg)) {
+				arg.forEach(([key, value]) => {
+					this.set(key, value);
+				});
+
+				return;
+			}
+
+			Object.entries(arg).forEach(([key, value]) => {
+				this.set(key, value);
+			});
+		});
+
+		return this;
+	}
+
+	concat(...args: Array<IDict<T> | Record<string, T> | Map<string, T> | Array<Entry<T>>>) {
+		return this.slice().merge(...args);
+	}
+
+	mergeRec(rec: Record<string, T>) {
+		Object.entries(rec).forEach(([key, value]) => {
+			this.set(key, value);
+		});
+
+		return this;
 	}
 
 	keys() {

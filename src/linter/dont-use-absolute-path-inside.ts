@@ -13,7 +13,7 @@ export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, pack
 				const isSamePackage = sourceModule.packagePath === importedModule.packagePath;
 
 				const isImportedFromSameOrAncestorPackage = isSamePackage ||
-					packages.isInAncestryBranch(sourceModule.packagePath!, importedModule.packagePath!);
+					packages.isInAncestry(sourceModule.packagePath!, importedModule.packagePath!);
 
 				if (isImportedFromSameOrAncestorPackage) {
 					return true;

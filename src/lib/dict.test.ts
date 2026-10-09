@@ -206,6 +206,35 @@ describe("dict", () => {
 		expect(dict.entries().toArray()).toEqual([["foo", 1]]);
 	});
 
+	it("merge", () => {
+		const dict = Dict.fromRec({ foo: 1 });
+
+		dict.merge({ bar: 2 }, [["baz", 3]]).merge().merge(new Map([["qux", 4]]), Dict.fromRec({ quux: 5 }));
+
+		expect(dict.toEntries()).toEqual([
+			["foo", 1],
+			["bar", 2],
+			["baz", 3],
+			["qux", 4],
+			["quux", 5],
+		]);
+	});
+
+	it("concat", () => {
+		const dict = new Dict<number>().merge({ foo: 1 }, [["bar", 2], ["baz", 3]]).merge().merge(
+			new Map([["qux", 4]]),
+			Dict.fromRec({ quux: 5 }),
+		);
+
+		expect(dict.toEntries()).toEqual([
+			["foo", 1],
+			["bar", 2],
+			["baz", 3],
+			["qux", 4],
+			["quux", 5],
+		]);
+	});
+
 	it("toArray/toEntries/toKeys/toMap/toRec", () => {
 		const dict = Dict.fromRec({ foo: 1 });
 

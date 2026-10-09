@@ -50,7 +50,7 @@ export class AppContext implements IAppContext {
 			moduleDefects,
 			tags: this.tags.all.length,
 			frames: this.frames.getAll().length,
-			packages: this.packages.getAll().length,
+			packages: this.packages.all.size,
 			modules: this.modules.getAll().length,
 			imports: this.imports.all.size,
 			totalDefects: importDefects + moduleDefects,

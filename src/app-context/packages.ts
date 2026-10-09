@@ -1,65 +1,44 @@
 import { assert } from "~/lib/err.ts";
 import type { Packages as IPackages } from "~/api.ts";
+import { Dict } from "~/lib/dict.ts";
 
 import type { Package } from "./package.ts";
 
 export class Packages implements IPackages {
-	#all;
-	#roots;
-	#packageMap;
+	all;
+	roots;
 
 	constructor({ packages }: { packages: Package[] }) {
-		this.#all = packages;
-		this.#roots = this.#all.filter(({ hasParentPackage }) => !hasParentPackage);
-		this.#packageMap = new Map(packages.map((pack) => [pack.path, pack]));
+		this.all = Dict.fromEntries(packages.map((pack) => [pack.path, pack]));
+		this.roots = this.all.filter(({ hasParentPackage }) => !hasParentPackage);
 	}
 
-	getAll() {
-		return this.#all;
-	}
-
-	getRoots() {
-		return this.#roots;
-	}
-
-	find(path: string) {
-		return this.#packageMap.get(path) ?? null;
-	}
-
-	get(path: string) {
-		const pack = this.find(path);
-		assert(pack, `Can't find package for path '${path}'.`);
-		return pack;
-	}
-
-	getSubs(path: string) {
-		return this.get(path).subPackagePaths.map((subPath) => this.get(subPath));
-	}
-
-	findParent(path: string) {
-		const { parentPackagePath } = this.get(path);
-		return parentPackagePath ? this.get(parentPackagePath) : null;
-	}
-
-	getParent(path: string) {
-		const { parentPackagePath } = this.get(path);
+	parent(path: string) {
+		const { parentPackagePath } = this.all.get(path);
 		assert(parentPackagePath, `Can't find parent package for path '${path}'.`);
-		return this.get(parentPackagePath);
+		return this.all.get(parentPackagePath);
 	}
 
-	isInAncestryBranch(sourcePath: string, testablePath: string) {
-		return this.#getAncestryBranch(sourcePath).some(({ path }) => path === testablePath);
+	children(path: string) {
+		const { subPackagePaths } = this.all.get(path);
+		return Dict.fromEntries(subPackagePaths.map((subPath) => [subPath, this.all.get(subPath)]));
 	}
 
-	getAncestryBranch(path: string) {
-		return Array.from(this.#getAncestryBranch(path));
+	ancestry(path: string) {
+		return Dict.fromEntries(
+			this.#ancestry(path).map((pack) => [pack.path, pack] as [string, Package]).toArray(),
+		);
 	}
 
-	*#getAncestryBranch(path: string) {
-		let pack: Package | null = this.get(path);
+	isInAncestry(sourcePath: string, testablePath: string) {
+		return this.#ancestry(sourcePath).some(({ path }) => path === testablePath);
+	}
+
+	*#ancestry(path: string) {
+		let pack: Package | null = this.all.get(path);
 
 		do {
-			pack = pack.parentPackagePath ? this.find(pack.parentPackagePath) : null;
+			pack = pack.parentPackagePath ? this.all.getOrDefault(pack.parentPackagePath, null) : null;
 
 			if (pack) {
 				yield pack;
