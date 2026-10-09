@@ -4,7 +4,8 @@ import type { LintFunction } from "~/values.ts";
 export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, packages }) => {
 	const roots = packages.getRoots();
 
-	Iterator.from(imports.getFullResolved())
+	imports.fullResolved
+		.values()
 		.filter((imp) => {
 			const sourceModule = modules.get(imp.sourcePath);
 			const importedModule = modules.get(imp.resolutionPath!);

@@ -2,7 +2,8 @@ import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
 export const dontReferToPackageEntryInside: LintFunction = ({ imports, modules, packages }) => {
-	Iterator.from(imports.getFullResolved())
+	imports.fullResolved
+		.values()
 		.filter((imp) => {
 			const importedModule = modules.get(imp.resolutionPath!);
 

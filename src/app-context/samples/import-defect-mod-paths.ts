@@ -9,7 +9,7 @@ export class ImportDefectModPathsSample implements IImportDefectModPathsSample {
 	#defectsMap;
 
 	constructor({ imports }: { imports: Imports }) {
-		this.#defectsMap = imports.getAll().reduce((acc, { sourcePath, defects }) => {
+		this.#defectsMap = imports.all.reduce((acc, { sourcePath, defects }) => {
 			defects.forEach((defect) => {
 				acc.getOrInsert(sourcePath, []).push(defect);
 			});

@@ -11,8 +11,8 @@ export function createSummary(
 	{ settings, appContext }: { settings: Settings; appContext: AppContext },
 ) {
 	const summary = appContext.getSummary();
-	const dynamicImports = appContext.imports.getDynamic().length;
-	const staticImports = appContext.imports.getStatic().length;
+	const dynamicImports = appContext.imports.dynamic.size;
+	const staticImports = appContext.imports.static.size;
 
 	const modulesInfo = Map.groupBy(appContext.modules.getAll(), ({ lang }) => lang)
 		.entries()
@@ -35,7 +35,7 @@ export function createSummary(
 		ln("Modules", `${summary.modules} (${modulesInfo})`),
 		ln("Imports", `${summary.imports} (static: ${staticImports}, dynamic: ${dynamicImports})`),
 		ln("Defects", `${summary.totalDefects} (imports: ${summary.importDefects}, modules: ${summary.moduleDefects})`),
-		ln("Unresolved imports", appContext.imports.getFullUnresolved().length),
+		ln("Unresolved imports", appContext.imports.fullUnresolved.size),
 	];
 
 	if (settings.reportPaths.length > 0) {

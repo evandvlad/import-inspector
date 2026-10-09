@@ -304,33 +304,30 @@ export type Packages = {
 
 export type TagSample = {
 	name: string;
+	modules: Dict<Module>;
 	modPaths: string[];
 };
 
 export type Tags = {
-	getAll: () => string[];
+	all: string[];
 	has: (name: string) => boolean;
-	sample: (name: string) => TagSample;
+	get: (name: string) => TagSample;
 };
 
 export type ExternalImportsSample = {
-	imports: Import[];
-	locators: string[];
-	get: (value: string) => Import[];
+	imports: Dict<Import>;
+	locators: Dict<Import[]>;
 };
 
 export type Imports = {
-	getAll: () => Import[];
-	find: (id: string) => Nullable<Import>;
-	get: (id: string) => Import;
-	getLocal: () => Import[];
-	getExternal: () => Import[];
-	getFullResolved: () => Import[];
-	getFullUnresolved: () => Import[];
-	getLocalUnresolved: () => Import[];
-	getDynamic: () => Import[];
-	getStatic: () => Import[];
-	sampleExternal: () => ExternalImportsSample;
+	all: Dict<Import>;
+	local: Dict<Import>;
+	external: ExternalImportsSample;
+	fullResolved: Dict<Import>;
+	fullUnresolved: Dict<Import>;
+	localUnresolved: Dict<Import>;
+	dynamic: Dict<Import>;
+	static: Dict<Import>;
 };
 
 export type ImportDefectRulesSample = {

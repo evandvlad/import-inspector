@@ -10,16 +10,16 @@ export class Tags implements ITags {
 		this.#modules = modules;
 	}
 
-	getAll() {
+	get all() {
 		const all = this.#modules.getAll().flatMap(({ tags }) => tags);
 		return Array.from(new Set(all));
 	}
 
 	has(name: string) {
-		return this.getAll().includes(name);
+		return this.all.includes(name);
 	}
 
-	sample(name: string) {
+	get(name: string) {
 		return new TagSample({ name, modules: this.#modules });
 	}
 }

@@ -2,7 +2,8 @@ import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
 export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, packages }) => {
-	Iterator.from(imports.getFullResolved())
+	imports.fullResolved
+		.values()
 		.filter(({ resolution }) => !resolution!.isRelative)
 		.filter((imp) => {
 			const sourceModule = modules.get(imp.sourcePath);

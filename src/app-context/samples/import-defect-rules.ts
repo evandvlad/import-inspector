@@ -9,7 +9,7 @@ export class ImportDefectRulesSample implements IImportDefectRulesSample {
 	#defectsMap;
 
 	constructor({ imports }: { imports: Imports }) {
-		this.#defectsMap = imports.getAll().reduce((acc, { defects }) => {
+		this.#defectsMap = imports.all.reduce((acc, { defects }) => {
 			defects.forEach((defect) => {
 				acc.getOrInsert(defect.rule, []).push(defect);
 			});
