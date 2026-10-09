@@ -1,6 +1,5 @@
-import { assertNever } from "~/lib/ts.ts";
 import { assert } from "~/lib/err.ts";
-import type { Import as IImport, Json, ViewDataMode } from "~/api.ts";
+import type { Import as IImport } from "~/api.ts";
 import type { ImportRec, ImportResolution } from "~/values.ts";
 
 import { ImportDefect } from "./import-defect.ts";
@@ -66,32 +65,5 @@ export class Import implements IImport {
 
 	removeDefect(rule: string) {
 		this.defects = this.defects.filter((defect) => defect.rule !== rule);
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.location;
-
-			case "brief":
-				return this.#toBriefViewData();
-
-			case "verbose":
-				return {
-					...this.#toBriefViewData(),
-					defects: this.defects.map((defect) => defect.toViewData("verbose")),
-				};
-
-			default:
-				assertNever(mode);
-		}
-	}
-
-	#toBriefViewData() {
-		return {
-			location: this.location,
-			sourcePath: this.sourcePath,
-			defects: this.defects.length,
-		};
 	}
 }

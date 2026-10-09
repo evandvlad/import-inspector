@@ -1,5 +1,4 @@
-import { assertNever } from "~/lib/ts.ts";
-import type { Json, ModuleDefect as IModuleDefect, ViewDataMode } from "~/api.ts";
+import type { ModuleDefect as IModuleDefect } from "~/api.ts";
 
 export class ModuleDefect implements IModuleDefect {
 	rule;
@@ -20,22 +19,5 @@ export class ModuleDefect implements IModuleDefect {
 		this.description = description;
 
 		this.info = `${rule}${description ? ` (${description})` : ""}`;
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.info;
-
-			case "brief":
-			case "verbose":
-				return {
-					info: this.info,
-					sourcePath: this.sourcePath,
-				};
-
-			default:
-				assertNever(mode);
-		}
 	}
 }

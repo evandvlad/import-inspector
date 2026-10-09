@@ -1,5 +1,4 @@
-import { assertNever } from "~/lib/ts.ts";
-import type { Json, ModuleDefects as IModuleDefects, ViewDataMode } from "~/api.ts";
+import type { ModuleDefects as IModuleDefects } from "~/api.ts";
 
 import type { ModuleDefect } from "./module-defect.ts";
 import type { Modules } from "./modules.ts";
@@ -48,21 +47,5 @@ export class ModuleDefects implements IModuleDefects {
 		this.getAll().forEach(({ sourcePath, rule }) => {
 			this.remove(sourcePath, rule);
 		});
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.getAll().length;
-
-			case "brief":
-				return this.getAll().map((defect) => defect.toViewData("brief"));
-
-			case "verbose":
-				return this.getAll().map((defect) => defect.toViewData("verbose"));
-
-			default:
-				assertNever(mode);
-		}
 	}
 }

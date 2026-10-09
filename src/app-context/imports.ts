@@ -1,6 +1,5 @@
 import { assert } from "~/lib/err.ts";
-import { assertNever } from "~/lib/ts.ts";
-import type { Imports as IImports, Json, ViewDataMode } from "~/api.ts";
+import type { Imports as IImports } from "~/api.ts";
 
 import type { Modules } from "./modules.ts";
 import { ExternalImportsSample } from "./samples/external-imports.ts";
@@ -67,21 +66,5 @@ export class Imports implements IImports {
 		const imp = this.find(id);
 		assert(imp, `Can't find import entry with id '${id}'.`);
 		return imp;
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.getAll().length;
-
-			case "brief":
-				return this.getAll().map((imp) => imp.toViewData("minimal"));
-
-			case "verbose":
-				return this.getAll().map((imp) => imp.toViewData("verbose"));
-
-			default:
-				assertNever(mode);
-		}
 	}
 }

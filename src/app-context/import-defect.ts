@@ -1,5 +1,4 @@
-import { assertNever } from "~/lib/ts.ts";
-import type { ImportDefect as IImportDefect, Json, Span, ViewDataMode } from "~/api.ts";
+import type { ImportDefect as IImportDefect, Span } from "~/api.ts";
 
 export class ImportDefect implements IImportDefect {
 	rule;
@@ -34,23 +33,5 @@ export class ImportDefect implements IImportDefect {
 
 		this.info = `${rule}${description ? ` (${description})` : ""}`;
 		this.imported = this.importedPath ?? this.locator;
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.info;
-
-			case "brief":
-			case "verbose":
-				return {
-					info: this.info,
-					imported: this.imported,
-					sourcePath: this.sourcePath,
-				};
-
-			default:
-				assertNever(mode);
-		}
 	}
 }

@@ -1,5 +1,4 @@
-import { assertNever } from "~/lib/ts.ts";
-import type { Frames as IFrames, Json, ViewDataMode } from "~/api.ts";
+import type { Frames as IFrames } from "~/api.ts";
 
 import type { Module } from "./module.ts";
 import type { Modules } from "./modules.ts";
@@ -61,23 +60,5 @@ export class Frames implements IFrames {
 
 			return acc;
 		}, new Map<string, Array<{ source: Module; imported: Module }>>());
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.getAll().length;
-
-			case "brief":
-				return this.getAll();
-
-			case "verbose":
-				return Object.fromEntries(
-					this.getAll().map((name) => [name, this.getModPaths(name)]),
-				);
-
-			default:
-				assertNever(mode);
-		}
 	}
 }

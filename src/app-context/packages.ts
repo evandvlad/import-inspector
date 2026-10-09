@@ -1,6 +1,5 @@
 import { assert } from "~/lib/err.ts";
-import { assertNever } from "~/lib/ts.ts";
-import type { Json, Packages as IPackages, ViewDataMode } from "~/api.ts";
+import type { Packages as IPackages } from "~/api.ts";
 
 import type { Package } from "./package.ts";
 
@@ -54,22 +53,6 @@ export class Packages implements IPackages {
 
 	getAncestryBranch(path: string) {
 		return Array.from(this.#getAncestryBranch(path));
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.getAll().length;
-
-			case "brief":
-				return this.getAll().map((pack) => pack.toViewData("minimal"));
-
-			case "verbose":
-				return this.getAll().map((pack) => pack.toViewData("verbose"));
-
-			default:
-				assertNever(mode);
-		}
 	}
 
 	*#getAncestryBranch(path: string) {

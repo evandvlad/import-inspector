@@ -1,7 +1,6 @@
-import { assertNever } from "~/lib/ts.ts";
 import { assert } from "~/lib/err.ts";
 import { isNull } from "~/lib/vtype.ts";
-import type { FileContent, Json, Module as IModule, ViewDataMode } from "~/api.ts";
+import type { FileContent, Module as IModule } from "~/api.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
 import type { FilePathRec } from "./path-rec-provider/index.ts";
@@ -107,42 +106,5 @@ export class Module implements IModule {
 
 	removeDefect(rule: string) {
 		this.defects = this.defects.filter((defect) => defect.rule !== rule);
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.path;
-
-			case "brief":
-				return this.#toBriefViewData();
-
-			case "verbose": {
-				return {
-					...this.#toBriefViewData(),
-					links: this.links,
-					tags: this.tags,
-					frames: this.frames,
-					imports: this.imports.map((imp) => imp.toViewData("verbose")),
-					defects: this.defects.map((defect) => defect.toViewData("verbose")),
-					content: this.fileContent.toViewData("verbose"),
-				};
-			}
-
-			default:
-				assertNever(mode);
-		}
-	}
-
-	#toBriefViewData() {
-		return {
-			path: this.path,
-			packagePath: this.packagePath,
-			imports: this.imports.length,
-			links: this.links.length,
-			tags: this.tags.length,
-			frames: this.frames.length,
-			defects: this.defects.length,
-		};
 	}
 }

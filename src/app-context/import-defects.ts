@@ -1,5 +1,4 @@
-import { assertNever } from "~/lib/ts.ts";
-import type { ImportDefects as IImportDefects, Json, ViewDataMode } from "~/api.ts";
+import type { ImportDefects as IImportDefects } from "~/api.ts";
 
 import type { ImportDefect } from "./import-defect.ts";
 import type { Imports } from "./imports.ts";
@@ -48,21 +47,5 @@ export class ImportDefects implements IImportDefects {
 		this.getAll().forEach(({ importId, rule }) => {
 			this.remove(importId, rule);
 		});
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.getAll().length;
-
-			case "brief":
-				return this.getAll().map((defect) => defect.toViewData("brief"));
-
-			case "verbose":
-				return this.getAll().map((defect) => defect.toViewData("verbose"));
-
-			default:
-				assertNever(mode);
-		}
 	}
 }

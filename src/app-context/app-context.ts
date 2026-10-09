@@ -1,4 +1,4 @@
-import type { AppContext as IAppContext, Json, ViewDataMode } from "~/api.ts";
+import type { AppContext as IAppContext } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
@@ -55,23 +55,5 @@ export class AppContext implements IAppContext {
 			imports: this.imports.getAll().length,
 			totalDefects: importDefects + moduleDefects,
 		};
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		const viewData: Json = {
-			tags: this.tags.toViewData(mode),
-			frames: this.frames.toViewData(mode),
-			imports: this.imports.toViewData(mode),
-			modules: this.modules.toViewData(mode),
-			packages: this.packages.toViewData(mode),
-			importDefects: this.importDefects.toViewData(mode),
-			moduleDefects: this.moduleDefects.toViewData(mode),
-		};
-
-		if (mode === "verbose") {
-			viewData.env = this.env.toViewData(mode);
-		}
-
-		return viewData;
 	}
 }

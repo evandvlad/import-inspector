@@ -3,8 +3,6 @@ type Entry<T> = [key: string, value: T];
 type Nullable<T> = T | null;
 type MaybePromise<T> = T | Promise<T>;
 
-export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
-
 export interface Dict<T> {
 	size: number;
 	has: (key: string) => boolean;
@@ -124,8 +122,6 @@ export type Tuix = {
 	printData: (data: unknown) => void;
 };
 
-export type ViewDataMode = "verbose" | "brief" | "minimal";
-
 export type RootEntry = {
 	// absolute path
 	path: string;
@@ -200,7 +196,6 @@ export type FileContent = {
 	getEntriesBySpan: (span: Span) => FileContentEntry[];
 	getContentByLineRange: (lineRange: LineRange) => string;
 	getEntriesByLineRange: (lineRange: LineRange) => FileContentEntry[];
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ModuleDependencyItem = {
@@ -223,7 +218,6 @@ export type Import = {
 	getDefect: (rule: string) => ImportDefect;
 	addDefect: (rule: string, description?: string) => void;
 	removeDefect: (rule: string) => void;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ImportDefect = {
@@ -236,7 +230,6 @@ export type ImportDefect = {
 	locator: Nullable<string>;
 	imported: Nullable<string>;
 	importedPath: Nullable<string>;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ModuleDefect = {
@@ -244,7 +237,6 @@ export type ModuleDefect = {
 	info: string;
 	sourcePath: string;
 	description: string;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Module = {
@@ -272,7 +264,6 @@ export type Module = {
 	hasFrame: (name: string) => boolean;
 	setFrame: (name: string) => void;
 	removeFrame: (name: string) => void;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Package = {
@@ -283,7 +274,6 @@ export type Package = {
 	hasParentPackage: boolean;
 	subPackagePaths: string[];
 	modulePaths: string[];
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Frames = {
@@ -292,14 +282,12 @@ export type Frames = {
 	getModPaths: (name: string) => string[];
 	getFrameInFramesMap: (name: string) => Map</* name */ string, ModuleDependencyItem[]>;
 	getModPathInOtherFramesMap: (path: string) => Map</* name */ string, /* paths */ string[]>;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Modules = {
 	getAll: () => Module[];
 	find: (path: string) => Nullable<Module>;
 	get: (path: string) => Module;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type Packages = {
@@ -312,7 +300,6 @@ export type Packages = {
 	getSubs: (path: string) => Package[];
 	isInAncestryBranch: (sourcePath: string, testablePath: string) => boolean;
 	getAncestryBranch: (path: string) => Package[];
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type TagSample = {
@@ -324,7 +311,6 @@ export type Tags = {
 	getAll: () => string[];
 	has: (name: string) => boolean;
 	sample: (name: string) => TagSample;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ExternalImportsSample = {
@@ -345,7 +331,6 @@ export type Imports = {
 	getDynamic: () => Import[];
 	getStatic: () => Import[];
 	sampleExternal: () => ExternalImportsSample;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ImportDefectRulesSample = {
@@ -367,7 +352,6 @@ export type ImportDefects = {
 	remove: (importId: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type ModuleDefectRulesSample = {
@@ -388,7 +372,6 @@ export type ModuleDefects = {
 	remove: (path: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type AppContextEnv = {
@@ -400,7 +383,6 @@ export type AppContextEnv = {
 	getFullPath: (path: string) => string;
 	findFullPath: (path: string) => string | null;
 	getEditorUrl: (path: string, line?: number) => string;
-	toViewData: (mode?: ViewDataMode) => Json;
 };
 
 export type AppContextSummary = {
@@ -423,7 +405,6 @@ export type AppContext = {
 	frames: Frames;
 	importDefects: ImportDefects;
 	moduleDefects: ModuleDefects;
-	toViewData: (mode?: ViewDataMode) => Json;
 	getSummary: () => AppContextSummary;
 };
 

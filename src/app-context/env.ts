@@ -1,7 +1,6 @@
 import { assert } from "~/lib/err.ts";
-import { assertNever } from "~/lib/ts.ts";
 import { concat, shorten, stripEnd } from "~/lib/upath.ts";
-import type { AppContextEnv, Json, ViewDataMode } from "~/api.ts";
+import type { AppContextEnv } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
 import { components } from "~/htmlx/index.ts";
@@ -50,29 +49,5 @@ export class Env implements AppContextEnv {
 
 	getEditorUrl(path: string, line?: number) {
 		return `vscode://file/${path}${line ? `:${line}` : ""}`;
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-			case "brief":
-				return this.#toMinimalViewData();
-
-			case "verbose":
-				return {
-					...this.#toMinimalViewData(),
-					version: this.version,
-					preset: this.preset,
-				};
-
-			default:
-				assertNever(mode);
-		}
-	}
-
-	#toMinimalViewData() {
-		return {
-			basePath: this.basePath,
-		};
 	}
 }

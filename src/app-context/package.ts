@@ -1,6 +1,5 @@
-import { assertNever } from "~/lib/ts.ts";
 import { isNull } from "~/lib/vtype.ts";
-import type { Json, Package as IPackage, ViewDataMode } from "~/api.ts";
+import type { Package as IPackage } from "~/api.ts";
 
 export class Package implements IPackage {
 	name;
@@ -29,32 +28,5 @@ export class Package implements IPackage {
 		this.subPackagePaths = subPackagePaths;
 		this.parentPackagePath = parentPackagePath;
 		this.hasParentPackage = !isNull(parentPackagePath);
-	}
-
-	toViewData(mode: ViewDataMode = "brief"): Json {
-		switch (mode) {
-			case "minimal":
-				return this.path;
-
-			case "brief":
-				return this.#toBriefViewData();
-
-			case "verbose":
-				return {
-					...this.#toBriefViewData(),
-					modulePaths: this.modulePaths,
-				};
-
-			default:
-				assertNever(mode);
-		}
-	}
-
-	#toBriefViewData() {
-		return {
-			path: this.path,
-			parentPackagePath: this.parentPackagePath,
-			subPackagePaths: this.subPackagePaths,
-		};
 	}
 }
