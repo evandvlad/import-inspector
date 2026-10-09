@@ -55,7 +55,7 @@ export class Dict<T> implements IDict<T> {
 		return this.#map.get(key) as T;
 	}
 
-	getOrDefault(key: string, defaultValue?: T) {
+	getOrDefault<U = undefined>(key: string, defaultValue: U) {
 		if (!this.has(key)) {
 			return defaultValue;
 		}
@@ -197,7 +197,7 @@ export class Dict<T> implements IDict<T> {
 		return this.#map.entries();
 	}
 
-	toList() {
+	toArray() {
 		return this.values().toArray();
 	}
 

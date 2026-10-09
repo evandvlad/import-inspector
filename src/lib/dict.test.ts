@@ -119,15 +119,15 @@ describe("dict", () => {
 
 		const newDict1 = dict.map((value, key) => `${value}.${key}`);
 		expect(newDict1.toKeys()).toEqual(["foo", "bar", "baz"]);
-		expect(newDict1.toList()).toEqual(["1.foo", "2.bar", "3.baz"]);
+		expect(newDict1.toArray()).toEqual(["1.foo", "2.bar", "3.baz"]);
 
 		const newDict2 = dict.mapK((value, key) => `${value}-${key}`);
 		expect(newDict2.toKeys()).toEqual(["1-foo", "2-bar", "3-baz"]);
-		expect(newDict2.toList()).toEqual([1, 2, 3]);
+		expect(newDict2.toArray()).toEqual([1, 2, 3]);
 
 		const newDict3 = dict.mapE((value, key) => [String(value), key]);
 		expect(newDict3.toKeys()).toEqual(["1", "2", "3"]);
-		expect(newDict3.toList()).toEqual(["foo", "bar", "baz"]);
+		expect(newDict3.toArray()).toEqual(["foo", "bar", "baz"]);
 	});
 
 	it("slice", () => {
@@ -206,10 +206,10 @@ describe("dict", () => {
 		expect(dict.entries().toArray()).toEqual([["foo", 1]]);
 	});
 
-	it("toList/toEntries/toKeys/toMap/toRec", () => {
+	it("toArray/toEntries/toKeys/toMap/toRec", () => {
 		const dict = Dict.fromRec({ foo: 1 });
 
-		expect(dict.toList()).toEqual([1]);
+		expect(dict.toArray()).toEqual([1]);
 		expect(dict.toEntries()).toEqual([["foo", 1]]);
 		expect(dict.toKeys()).toEqual(["foo"]);
 

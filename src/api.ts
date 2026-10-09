@@ -10,7 +10,7 @@ export interface Dict<T> {
 	remove: (key: string) => this;
 	clear: () => this;
 	get: (key: string) => T;
-	getOrDefault: (key: string, defaultValue?: T) => T | undefined;
+	getOrDefault: <U = undefined>(key: string, defaultValue: U) => T | U;
 	getOrInsert: (key: string, value: T) => T;
 	find: (callback: (value: T, key: string) => unknown) => T | undefined;
 	findE: (callback: (value: T, key: string) => unknown) => Entry<T> | undefined;
@@ -31,7 +31,7 @@ export interface Dict<T> {
 	keys: () => MapIterator<string>;
 	values: () => MapIterator<T>;
 	entries: () => MapIterator<Entry<T>>;
-	toList: () => T[];
+	toArray: () => T[];
 	toEntries: () => Array<Entry<T>>;
 	toKeys: () => string[];
 	toMap: () => Map<string, T>;

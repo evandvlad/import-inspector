@@ -12,11 +12,11 @@ export class ImportDefects implements IImportDefects {
 	}
 
 	getAll() {
-		return this.#imports.all.toList().flatMap(({ defects }) => defects);
+		return this.#imports.all.toArray().flatMap(({ defects }) => defects);
 	}
 
 	getAllRules() {
-		const all = this.#imports.all.toList().flatMap(({ defects }) => defects.map(({ rule }) => rule));
+		const all = this.#imports.all.toArray().flatMap(({ defects }) => defects.map(({ rule }) => rule));
 		return Array.from(new Set(all));
 	}
 
