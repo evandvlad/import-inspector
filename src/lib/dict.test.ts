@@ -39,6 +39,24 @@ describe("dict", () => {
 		expect(Dict.isDict(new Dict())).toBe(true);
 	});
 
+	it("fromArray", () => {
+		const dict1 = Dict.fromArray([1, 2, 3]);
+
+		expect(dict1.toEntries()).toEqual([
+			["0", 1],
+			["1", 2],
+			["2", 3],
+		]);
+
+		const dict2 = Dict.fromArray([1, 2, 3], (_, value) => String(value));
+
+		expect(dict2.toEntries()).toEqual([
+			["1", 1],
+			["2", 2],
+			["3", 3],
+		]);
+	});
+
 	it("forEach", () => {
 		const dict = Dict.fromRec({ foo: "bar", baz: "qux" });
 		const data: string[] = [];

@@ -18,6 +18,11 @@ export class Dict<T> implements IDict<T> {
 		return new this<U>(new Map(entries));
 	}
 
+	static fromArray<U>(arr: U[], mapKey: (key: number | string, value: U) => string = String) {
+		const entries = Object.entries(arr).map(([key, value]) => [mapKey(key, value), value] satisfies Entry<U>);
+		return this.fromEntries(entries);
+	}
+
 	constructor(map: Map<string, T> = new Map()) {
 		this.#map = map;
 	}
