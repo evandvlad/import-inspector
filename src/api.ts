@@ -1,8 +1,45 @@
 type Rec<T> = Record<string, T>;
+type Entry<T> = [key: string, value: T];
 type Nullable<T> = T | null;
 type MaybePromise<T> = T | Promise<T>;
 
 export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+
+export interface Dict<T> {
+	size: number;
+	has: (key: string) => boolean;
+	set: (key: string, value: T) => this;
+	remove: (key: string) => this;
+	clear: () => this;
+	get: (key: string) => T;
+	getOrDefault: (key: string, defaultValue?: T) => T | undefined;
+	getOrInsert: (key: string, value: T) => T;
+	find: (callback: (value: T, key: string) => unknown) => T | undefined;
+	findE: (callback: (value: T, key: string) => unknown) => Entry<T> | undefined;
+	forEach: (callback: (value: T, key: string) => void) => this;
+	filter: (callback: (value: T, key: string) => unknown) => Dict<T>;
+	pick: (keys: string[]) => Dict<T>;
+	omit: (keys: string[]) => Dict<T>;
+	map: <U>(callback: (value: T, key: string) => U) => Dict<U>;
+	mapK: (callback: (value: T, key: string) => string) => Dict<T>;
+	mapE: <U>(callback: (value: T, key: string) => Entry<U>) => Dict<U>;
+	slice: (start?: number, end?: number) => Dict<T>;
+	some: (callback: (value: T, key: string) => unknown) => boolean;
+	every: (callback: (value: T, key: string) => unknown) => boolean;
+	sortK: (callback?: (key1: string, key2: string) => number) => Dict<T>;
+	sortE: (callback: (entry1: Entry<T>, entry2: Entry<T>) => number) => Dict<T>;
+	reduce: <U>(callback: (acc: U, value: T, key: string) => U, init: U) => U;
+	group: (callback: (value: T, key: string) => string) => Dict<T[]>;
+	keys: () => MapIterator<string>;
+	values: () => MapIterator<T>;
+	entries: () => MapIterator<Entry<T>>;
+	toList: () => T[];
+	toEntries: () => Array<Entry<T>>;
+	toKeys: () => string[];
+	toMap: () => Map<string, T>;
+	toRec: () => Rec<T>;
+	toJSON: () => Rec<T>;
+}
 
 export const langs = ["ts", "js"] as const;
 
