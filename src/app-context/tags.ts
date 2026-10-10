@@ -1,7 +1,7 @@
 import type { Tags as ITags } from "~/api.ts";
+import { Dict } from "~/lib/dict.ts";
 
 import type { Modules } from "./modules.ts";
-import { TagSample } from "./samples/tag.ts";
 
 export class Tags implements ITags {
 	#modules;
@@ -20,6 +20,9 @@ export class Tags implements ITags {
 	}
 
 	get(name: string) {
-		return new TagSample({ name, modules: this.#modules });
+		return Dict.fromArray(
+			this.#modules.getAll().filter((mod) => mod.hasTag(name)),
+			({ path }) => path,
+		);
 	}
 }

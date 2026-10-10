@@ -19,8 +19,8 @@ export class Dict<T> implements IDict<T> {
 		return new this<U>(new Map(entries));
 	}
 
-	static fromArray<U>(arr: U[], mapKey: (key: number | string, value: U) => string = String) {
-		const entries = Object.entries(arr).map(([key, value]) => [mapKey(key, value), value] satisfies Entry<U>);
+	static fromArray<U>(arr: U[], mapKey: (value: U, key: number | string) => string = (_, key) => String(key)) {
+		const entries = Object.entries(arr).map(([key, value]) => [mapKey(value, key), value] satisfies Entry<U>);
 		return this.fromEntries(entries);
 	}
 

@@ -16,7 +16,7 @@ export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, pa
 
 			const isImportedFromSameOrAncestorPackage = sourceModule.isInPackage &&
 				(sourceModule.packagePath === importedPackage.path ||
-					packages.isInAncestry(sourceModule.packagePath!, importedPackage.path));
+					packages.ancestry(sourceModule.packagePath!).has(importedPackage.path));
 
 			if (isImportedFromSameOrAncestorPackage) {
 				return false;

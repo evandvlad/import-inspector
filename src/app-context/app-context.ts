@@ -32,7 +32,7 @@ export class AppContext implements IAppContext {
 		},
 	) {
 		this.modules = new Modules({ modules });
-		this.packages = new Packages({ packages });
+		this.packages = new Packages({ packages, modules: this.modules });
 		this.env = new Env({ settings, pathRecProvider });
 		this.imports = new Imports({ modules: this.modules });
 		this.tags = new Tags({ modules: this.modules });

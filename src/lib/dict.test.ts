@@ -48,7 +48,7 @@ describe("dict", () => {
 			["2", 3],
 		]);
 
-		const dict2 = Dict.fromArray([1, 2, 3], (_, value) => String(value));
+		const dict2 = Dict.fromArray([1, 2, 3], (value) => String(value));
 
 		expect(dict2.toEntries()).toEqual([
 			["1", 1],

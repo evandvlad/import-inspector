@@ -2,14 +2,19 @@ import { assert } from "~/lib/err.ts";
 import type { Packages as IPackages } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
 
+import type { Modules } from "./modules.ts";
 import type { Package } from "./package.ts";
 
 export class Packages implements IPackages {
 	all;
 	roots;
 
-	constructor({ packages }: { packages: Package[] }) {
-		this.all = Dict.fromEntries(packages.map((pack) => [pack.path, pack]));
+	#modules;
+
+	constructor({ packages, modules }: { packages: Package[]; modules: Modules }) {
+		this.#modules = modules;
+
+		this.all = Dict.fromArray(packages, ({ path }) => path);
 		this.roots = this.all.filter(({ hasParentPackage }) => !hasParentPackage);
 	}
 
@@ -25,13 +30,17 @@ export class Packages implements IPackages {
 	}
 
 	ancestry(path: string) {
-		return Dict.fromEntries(
-			this.#ancestry(path).map((pack) => [pack.path, pack] as [string, Package]).toArray(),
+		return Dict.fromArray(
+			this.#ancestry(path).toArray(),
+			({ path }) => path,
 		);
 	}
 
-	isInAncestry(sourcePath: string, testablePath: string) {
-		return this.#ancestry(sourcePath).some(({ path }) => path === testablePath);
+	modules(path: string) {
+		return Dict.fromArray(
+			this.all.get(path).modulePaths.map((modPath) => this.#modules.get(modPath)),
+			({ path }) => path,
+		);
 	}
 
 	*#ancestry(path: string) {

@@ -298,35 +298,25 @@ export type Packages = {
 	parent: (path: string) => Package;
 	children: (path: string) => Dict<Package>;
 	ancestry: (path: string) => Dict<Package>;
-	isInAncestry: (sourcePath: string, testablePath: string) => boolean;
-};
-
-export type TagSample = {
-	name: string;
-	modules: Dict<Module>;
-	modPaths: string[];
+	modules: (path: string) => Dict<Module>;
 };
 
 export type Tags = {
 	all: string[];
 	has: (name: string) => boolean;
-	get: (name: string) => TagSample;
-};
-
-export type ExternalImportsSample = {
-	imports: Dict<Import>;
-	locators: Dict<Import[]>;
+	get: (name: string) => Dict<Module>;
 };
 
 export type Imports = {
 	all: Dict<Import>;
 	local: Dict<Import>;
-	external: ExternalImportsSample;
 	fullResolved: Dict<Import>;
 	fullUnresolved: Dict<Import>;
 	localUnresolved: Dict<Import>;
 	dynamic: Dict<Import>;
 	static: Dict<Import>;
+	external: Dict<Import>;
+	extLocators: Dict<Import[]>;
 };
 
 export type ImportDefectRulesSample = {
