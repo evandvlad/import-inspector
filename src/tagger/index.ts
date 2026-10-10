@@ -4,7 +4,7 @@ import { isDeclarationFile, isEntryPointFile, isIndependentFile, isTestFile } fr
 export function setTags({ appContext }: { appContext: AppContext }) {
 	const { modules } = appContext;
 
-	modules.getAll().forEach((mod) => {
+	modules.forEach((mod) => {
 		const { path } = mod;
 
 		if (isEntryPointFile(path)) {

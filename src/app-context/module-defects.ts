@@ -1,23 +1,24 @@
 import type { ModuleDefects as IModuleDefects } from "~/api.ts";
+import type { Dict } from "~/lib/dict.ts";
 
 import type { ModuleDefect } from "./module-defect.ts";
-import type { Modules } from "./modules.ts";
+import type { Module } from "./module.ts";
 import { ModuleDefectRulesSample } from "./samples/module-defect-rules.ts";
 import { ModuleDefectModPathsSample } from "./samples/module-defect-mod-paths.ts";
 
 export class ModuleDefects implements IModuleDefects {
 	#modules;
 
-	constructor({ modules }: { modules: Modules }) {
+	constructor({ modules }: { modules: Dict<Module> }) {
 		this.#modules = modules;
 	}
 
 	getAll() {
-		return this.#modules.getAll().flatMap(({ defects }) => defects);
+		return this.#modules.toArray().flatMap(({ defects }) => defects);
 	}
 
 	getAllRules() {
-		const all = this.#modules.getAll().flatMap(({ defects }) => defects.map(({ rule }) => rule));
+		const all = this.#modules.toArray().flatMap(({ defects }) => defects.map(({ rule }) => rule));
 		return Array.from(new Set(all));
 	}
 
@@ -35,7 +36,7 @@ export class ModuleDefects implements IModuleDefects {
 	}
 
 	removeByRule(rule: string) {
-		Iterator.from(this.#modules.getAll())
+		Iterator.from(this.#modules.toArray())
 			.map((mod) => mod.findDefect(rule))
 			.filter((defect): defect is ModuleDefect => Boolean(defect))
 			.forEach(({ sourcePath }) => {

@@ -286,12 +286,6 @@ export type Frames = {
 	getModPathInOtherFramesMap: (path: string) => Map</* name */ string, /* paths */ string[]>;
 };
 
-export type Modules = {
-	getAll: () => Module[];
-	find: (path: string) => Nullable<Module>;
-	get: (path: string) => Module;
-};
-
 export type Packages = {
 	all: Dict<Package>;
 	roots: Dict<Package>;
@@ -384,7 +378,7 @@ export type AppContextSummary = {
 
 export type AppContext = {
 	env: AppContextEnv;
-	modules: Modules;
+	modules: Dict<Module>;
 	packages: Packages;
 	imports: Imports;
 	tags: Tags;

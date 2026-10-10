@@ -1,10 +1,10 @@
 import type { AppContext as IAppContext } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
+import { Dict } from "~/lib/dict.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import type { Module } from "./module.ts";
 import type { Package } from "./package.ts";
-import { Modules } from "./modules.ts";
 import { Packages } from "./packages.ts";
 import { Imports } from "./imports.ts";
 import { Tags } from "./tags.ts";
@@ -31,7 +31,7 @@ export class AppContext implements IAppContext {
 			pathRecProvider: PathRecProvider;
 		},
 	) {
-		this.modules = new Modules({ modules });
+		this.modules = Dict.fromArray(modules, ({ path }) => path);
 		this.packages = new Packages({ packages, modules: this.modules });
 		this.env = new Env({ settings, pathRecProvider });
 		this.imports = new Imports({ modules: this.modules });
@@ -51,7 +51,7 @@ export class AppContext implements IAppContext {
 			tags: this.tags.all.length,
 			frames: this.frames.getAll().length,
 			packages: this.packages.all.size,
-			modules: this.modules.getAll().length,
+			modules: this.modules.size,
 			imports: this.imports.all.size,
 			totalDefects: importDefects + moduleDefects,
 		};

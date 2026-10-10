@@ -1,15 +1,16 @@
 import type { Imports as IImports } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
 
-import type { Modules } from "./modules.ts";
+import type { Import } from "./import.ts";
+import type { Module } from "./module.ts";
 
 export class Imports implements IImports {
 	all;
 
-	constructor({ modules }: { modules: Modules }) {
-		this.all = Dict.fromArray(
-			modules.getAll().flatMap(({ imports }) => imports),
-			({ id }) => id,
+	constructor({ modules }: { modules: Dict<Module> }) {
+		this.all = modules.reduce(
+			(acc, { imports }) => acc.merge(Dict.fromArray(imports, ({ id }) => id)),
+			new Dict<Import>(),
 		);
 	}
 

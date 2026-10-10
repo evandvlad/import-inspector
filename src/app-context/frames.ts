@@ -1,17 +1,17 @@
 import type { Frames as IFrames } from "~/api.ts";
+import type { Dict } from "~/lib/dict.ts";
 
 import type { Module } from "./module.ts";
-import type { Modules } from "./modules.ts";
 
 export class Frames implements IFrames {
 	#modules;
 
-	constructor({ modules }: { modules: Modules }) {
+	constructor({ modules }: { modules: Dict<Module> }) {
 		this.#modules = modules;
 	}
 
 	getAll() {
-		const all = this.#modules.getAll().flatMap(({ frames }) => frames);
+		const all = this.#modules.toArray().flatMap(({ frames }) => frames);
 		return Array.from(new Set(all));
 	}
 
@@ -20,7 +20,7 @@ export class Frames implements IFrames {
 	}
 
 	getModPaths(name: string) {
-		return Iterator.from(this.#modules.getAll())
+		return Iterator.from(this.#modules.toArray())
 			.filter((mod) => mod.hasFrame(name))
 			.map(({ path }) => path)
 			.toArray();

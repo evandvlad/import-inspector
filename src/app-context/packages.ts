@@ -2,7 +2,7 @@ import { assert } from "~/lib/err.ts";
 import type { Packages as IPackages } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
 
-import type { Modules } from "./modules.ts";
+import type { Module } from "./module.ts";
 import type { Package } from "./package.ts";
 
 export class Packages implements IPackages {
@@ -11,7 +11,7 @@ export class Packages implements IPackages {
 
 	#modules;
 
-	constructor({ packages, modules }: { packages: Package[]; modules: Modules }) {
+	constructor({ packages, modules }: { packages: Package[]; modules: Dict<Module> }) {
 		this.#modules = modules;
 
 		this.all = Dict.fromArray(packages, ({ path }) => path);

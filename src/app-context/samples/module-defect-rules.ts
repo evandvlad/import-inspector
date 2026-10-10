@@ -1,6 +1,7 @@
 import type { ModuleDefectRulesSample as IModuleDefectRulesSample } from "~/api.ts";
+import type { Dict } from "~/lib/dict.ts";
 
-import type { Modules } from "../modules.ts";
+import type { Module } from "../module.ts";
 import type { ModuleDefect } from "../module-defect.ts";
 
 export class ModuleDefectRulesSample implements IModuleDefectRulesSample {
@@ -8,8 +9,8 @@ export class ModuleDefectRulesSample implements IModuleDefectRulesSample {
 
 	#defectsMap;
 
-	constructor({ modules }: { modules: Modules }) {
-		this.#defectsMap = modules.getAll().reduce((acc, { defects }) => {
+	constructor({ modules }: { modules: Dict<Module> }) {
+		this.#defectsMap = modules.reduce((acc, { defects }) => {
 			defects.forEach((defect) => {
 				acc.getOrInsert(defect.rule, []).push(defect);
 			});

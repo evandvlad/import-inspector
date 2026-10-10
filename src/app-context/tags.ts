@@ -1,17 +1,18 @@
 import type { Tags as ITags } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
 
-import type { Modules } from "./modules.ts";
+import type { Module } from "./module.ts";
 
 export class Tags implements ITags {
 	#modules;
 
-	constructor({ modules }: { modules: Modules }) {
+	constructor({ modules }: { modules: Dict<Module> }) {
 		this.#modules = modules;
 	}
 
 	get all() {
-		const all = this.#modules.getAll().flatMap(({ tags }) => tags);
+		// @TODO !!!
+		const all = this.#modules.toArray().flatMap(({ tags }) => tags);
 		return Array.from(new Set(all));
 	}
 
@@ -21,7 +22,8 @@ export class Tags implements ITags {
 
 	get(name: string) {
 		return Dict.fromArray(
-			this.#modules.getAll().filter((mod) => mod.hasTag(name)),
+			// @TODO !!!
+			this.#modules.toArray().filter((mod) => mod.hasTag(name)),
 			({ path }) => path,
 		);
 	}

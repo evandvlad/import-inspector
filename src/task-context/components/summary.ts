@@ -14,9 +14,9 @@ export function createSummary(
 	const dynamicImports = appContext.imports.dynamic.size;
 	const staticImports = appContext.imports.static.size;
 
-	const modulesInfo = Map.groupBy(appContext.modules.getAll(), ({ lang }) => lang)
-		.entries()
-		.map(([lang, items]) => `${lang}: ${items.length}`)
+	const modulesInfo = appContext.modules
+		.group(({ lang }) => lang)
+		.map((items, lang) => `${lang}: ${items.length}`)
 		.toArray()
 		.join(", ");
 
