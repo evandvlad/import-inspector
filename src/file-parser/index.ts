@@ -41,7 +41,7 @@ class FileParser {
 	async #processImportRec({ importRec }: { importRec: ImportRec }) {
 		if (importRec.isDynamic && !importRec.locator) {
 			const corrections = await this.#settings.correctUnresolvedDynamicImports({
-				sourcePath: this.#path,
+				source: this.#path,
 				posSpan: importRec.posSpan,
 				file: this.#file,
 			});

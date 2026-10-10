@@ -1,7 +1,5 @@
-import type { Tags as ITags } from "~/api.ts";
+import type { Module, Tags as ITags } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
-
-import type { Module } from "./module.ts";
 
 export class Tags implements ITags {
 	#modules;

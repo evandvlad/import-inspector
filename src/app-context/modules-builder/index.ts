@@ -1,4 +1,4 @@
-import type { Dict } from "~/lib/dict.ts";
+import { Dict } from "~/lib/dict.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
 
@@ -24,9 +24,11 @@ export function buildModules(
 	const importResolver = new ImportResolver({ settings, pathRecProvider });
 
 	parsingResult.forEach(({ path, importRecs }) => {
-		const imports = importRecs.map((importRec) =>
-			new Import({ path, importRec, resolution: importResolver.resolve({ path, importRec }) })
-		);
+		const imports = Dict.fromEntries(importRecs.map((importRec) => {
+			const resolution = importResolver.resolve({ path, importRec });
+			const imp = new Import({ path, importRec, resolution });
+			return [imp.id, imp];
+		}));
 
 		interconnectionBuilder.connect({ path, imports });
 	});
@@ -34,16 +36,13 @@ export function buildModules(
 	const interconnectionReader = interconnectionBuilder.build();
 
 	return parsingResult.map(({ path, file }) => {
-		const packagePath = packageFinder.findCurrent(path);
-
-		const isPackageEntryPoint = packagePath
-			? packageEntryPointDetector.selectFromChildren(packagePath) === path
-			: false;
+		const pack = packageFinder.findCurrent(path);
+		const isPackEntry = pack ? packageEntryPointDetector.selectFromChildren(pack) === path : false;
 
 		return new Module({
 			file,
-			packagePath,
-			isPackageEntryPoint,
+			pack,
+			isPackEntry,
 			filePathRec: pathRecProvider.getFilePathRec(path),
 			imports: interconnectionReader.getImports(path),
 			links: interconnectionReader.getLinks(path),

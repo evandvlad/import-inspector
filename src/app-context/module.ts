@@ -1,49 +1,48 @@
-import { assert } from "~/lib/err.ts";
 import { isNull } from "~/lib/vtype.ts";
-import type { File, Module as IModule } from "~/api.ts";
+import { Dict } from "~/lib/dict.ts";
+import type { Dict as IDict, File, Import, Module as IModule } from "~/api.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
 import type { FilePathRec } from "./path-rec-provider/index.ts";
-import type { Import } from "./import.ts";
 import { ModuleDefect } from "./module-defect.ts";
 
 export class Module implements IModule {
 	name;
 	path;
 	lang;
+	file;
+	pack;
 	links;
 	imports;
-	file;
-	packagePath;
-	isPackageEntryPoint;
+	isPackEntry;
 	frames: string[];
 	tags: string[];
-	defects: ModuleDefect[];
+	defects: IDict<ModuleDefect>;
 
-	isInPackage;
+	isInPack;
 
 	constructor(
-		{ filePathRec, packagePath, imports, links, file, isPackageEntryPoint }: {
+		{ filePathRec, pack, imports, links, file, isPackEntry }: {
 			filePathRec: FilePathRec;
-			imports: Import[];
+			imports: IDict<Import>;
 			links: string[];
 			file: File;
-			packagePath: string | null;
-			isPackageEntryPoint: boolean;
+			pack: string | null;
+			isPackEntry: boolean;
 		},
 	) {
 		this.links = links;
 		this.path = filePathRec.path;
 		this.file = file;
-		this.packagePath = packagePath;
+		this.pack = pack;
 		this.name = filePathRec.baseName;
 		this.lang = getFileLang(filePathRec.path);
-		this.isPackageEntryPoint = isPackageEntryPoint;
+		this.isPackEntry = isPackEntry;
 		this.frames = [];
 		this.tags = [];
-		this.defects = [];
+		this.defects = new Dict();
 		this.imports = imports;
-		this.isInPackage = !isNull(this.packagePath);
+		this.isInPack = !isNull(this.pack);
 	}
 
 	hasTag(tag: string) {
@@ -74,35 +73,14 @@ export class Module implements IModule {
 		this.frames = this.frames.filter((value) => value !== frame);
 	}
 
-	hasDefect(rule: string) {
-		return this.defects.some((defect) => defect.rule === rule);
-	}
-
-	findDefect(rule: string) {
-		return this.defects.find((defect) => defect.rule === rule) ?? null;
-	}
-
-	getDefect(rule: string) {
-		const defect = this.findDefect(rule);
-		assert(defect, `Can't find module defect for rule '${rule}'.`);
-		return defect;
-	}
-
 	addDefect(rule: string, description?: string) {
-		if (this.hasDefect(rule)) {
-			return;
-		}
-
-		this.defects.push(
+		this.defects.set(
+			rule,
 			new ModuleDefect({
 				rule,
 				description,
-				sourcePath: this.path,
+				source: this.path,
 			}),
 		);
-	}
-
-	removeDefect(rule: string) {
-		this.defects = this.defects.filter((defect) => defect.rule !== rule);
 	}
 }

@@ -22,7 +22,7 @@ describe("dont-leave-unused-module", () => {
 		const paths = appContext.moduleDefects
 			.sampleRules()
 			.get(ModuleLintRule.DontLeaveUnusedModule)
-			.map(({ sourcePath }) => sourcePath);
+			.map(({ source }) => source);
 
 		expect(paths).toEqual([]);
 	});
@@ -41,7 +41,7 @@ describe("dont-leave-unused-module", () => {
 		const paths = appContext.moduleDefects
 			.sampleRules()
 			.get(ModuleLintRule.DontLeaveUnusedModule)
-			.map(({ sourcePath }) => sourcePath);
+			.map(({ source }) => source);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});

@@ -1,8 +1,6 @@
 import { assert } from "~/lib/err.ts";
-import type { Packages as IPackages } from "~/api.ts";
+import type { Package, Packages as IPackages } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
-
-import type { Package } from "./package.ts";
 
 export class Packages implements IPackages {
 	all;

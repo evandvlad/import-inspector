@@ -5,28 +5,28 @@ export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, pa
 	imports.fullResolved
 		.values()
 		.filter((imp) => {
-			const sourceModule = modules.get(imp.sourcePath);
-			const importedModule = modules.get(imp.resolutionPath!);
+			const sourceModule = modules.get(imp.source);
+			const importedModule = modules.get(imp.resolved!);
 
-			if (!importedModule.isInPackage) {
+			if (!importedModule.isInPack) {
 				return false;
 			}
 
-			const importedPackage = packages.all.get(importedModule.packagePath!);
+			const importedPackage = packages.all.get(importedModule.pack!);
 
-			const isImportedFromSameOrAncestorPackage = sourceModule.isInPackage &&
-				(sourceModule.packagePath === importedPackage.path ||
-					packages.ancestry(sourceModule.packagePath!).has(importedPackage.path));
+			const isImportedFromSameOrAncestorPackage = sourceModule.isInPack &&
+				(sourceModule.pack === importedPackage.path ||
+					packages.ancestry(sourceModule.pack!).has(importedPackage.path));
 
 			if (isImportedFromSameOrAncestorPackage) {
 				return false;
 			}
 
-			if (!sourceModule.isInPackage) {
-				return !(packages.roots.has(importedPackage.path) && importedModule.isPackageEntryPoint);
+			if (!sourceModule.isInPack) {
+				return !(packages.roots.has(importedPackage.path) && importedModule.isPackEntry);
 			}
 
-			const sourcePackage = packages.all.get(sourceModule.packagePath!);
+			const sourcePackage = packages.all.get(sourceModule.pack!);
 
 			const ancestryBranchWithSelf = packages
 				.ancestry(sourcePackage.path)
@@ -41,7 +41,7 @@ export const dontJumpThroughPackageEntry: LintFunction = ({ imports, modules, pa
 				new Set(ancestryBranchWithSelf.keys()),
 			);
 
-			return !(allowedPackageSet.has(importedPackage.path) && importedModule.isPackageEntryPoint);
+			return !(allowedPackageSet.has(importedPackage.path) && importedModule.isPackEntry);
 		})
 		.forEach((imp) => {
 			imp.addDefect(ImportLintRule.DontJumpThroughPackageEntry);

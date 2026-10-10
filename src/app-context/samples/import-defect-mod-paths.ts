@@ -1,7 +1,4 @@
-import type { ImportDefectModPathsSample as IImportDefectModPathsSample } from "~/api.ts";
-
-import type { Imports } from "../imports.ts";
-import type { ImportDefect } from "../import-defect.ts";
+import type { ImportDefect, ImportDefectModPathsSample as IImportDefectModPathsSample, Imports } from "~/api.ts";
 
 export class ImportDefectModPathsSample implements IImportDefectModPathsSample {
 	modPaths;
@@ -9,9 +6,9 @@ export class ImportDefectModPathsSample implements IImportDefectModPathsSample {
 	#defectsMap;
 
 	constructor({ imports }: { imports: Imports }) {
-		this.#defectsMap = imports.all.reduce((acc, { sourcePath, defects }) => {
+		this.#defectsMap = imports.all.reduce((acc, { source, defects }) => {
 			defects.forEach((defect) => {
-				acc.getOrInsert(sourcePath, []).push(defect);
+				acc.getOrInsert(source, []).push(defect);
 			});
 
 			return acc;

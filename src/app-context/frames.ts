@@ -1,7 +1,5 @@
-import type { Frames as IFrames } from "~/api.ts";
+import type { Frames as IFrames, Module } from "~/api.ts";
 import type { Dict } from "~/lib/dict.ts";
-
-import type { Module } from "./module.ts";
 
 export class Frames implements IFrames {
 	#modules;

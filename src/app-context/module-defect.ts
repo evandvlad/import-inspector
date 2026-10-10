@@ -2,20 +2,20 @@ import type { ModuleDefect as IModuleDefect } from "~/api.ts";
 
 export class ModuleDefect implements IModuleDefect {
 	rule;
-	sourcePath;
+	source;
 	description;
 
 	info;
 
 	constructor(
-		{ rule, sourcePath, description = "" }: {
+		{ rule, source, description = "" }: {
 			rule: string;
-			sourcePath: string;
+			source: string;
 			description?: string;
 		},
 	) {
 		this.rule = rule;
-		this.sourcePath = sourcePath;
+		this.source = source;
 		this.description = description;
 
 		this.info = `${rule}${description ? ` (${description})` : ""}`;

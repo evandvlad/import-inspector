@@ -1,10 +1,8 @@
-import type { AppContext as IAppContext } from "~/api.ts";
+import type { AppContext as IAppContext, Module, Package } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import type { Dict } from "~/lib/dict.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
-import type { Module } from "./module.ts";
-import type { Package } from "./package.ts";
 import { Packages } from "./packages.ts";
 import { Imports } from "./imports.ts";
 import { Tags } from "./tags.ts";

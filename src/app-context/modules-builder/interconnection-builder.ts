@@ -1,16 +1,17 @@
 import { assert } from "~/lib/err.ts";
+import type { Dict } from "~/lib/dict.ts";
 
 import type { Import } from "../import.ts";
 
 type FileConnections = {
 	links: string[];
-	imports: Import[];
+	imports: Dict<Import>;
 };
 
 export class InterconnectionBuilder {
 	#interconnectionMap = new Map<string, FileConnections>();
 
-	connect({ path, imports }: { path: string; imports: Import[] }) {
+	connect({ path, imports }: { path: string; imports: Dict<Import> }) {
 		this.#interconnectionMap.set(path, {
 			imports,
 			links: [],
@@ -33,9 +34,9 @@ export class InterconnectionBuilder {
 
 	#fillLinks() {
 		this.#interconnectionMap.forEach(({ imports }, path) => {
-			imports.forEach(({ resolutionPath }) => {
-				if (resolutionPath) {
-					const { links } = this.#getConnections(resolutionPath);
+			imports.forEach(({ resolved }) => {
+				if (resolved) {
+					const { links } = this.#getConnections(resolved);
 
 					if (!links.includes(path)) {
 						links.push(path);

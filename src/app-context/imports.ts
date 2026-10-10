@@ -1,17 +1,10 @@
-import type { Imports as IImports } from "~/api.ts";
-import { Dict } from "~/lib/dict.ts";
-
-import type { Import } from "./import.ts";
-import type { Module } from "./module.ts";
+import type { Dict, Import, Imports as IImports, Module } from "~/api.ts";
 
 export class Imports implements IImports {
 	all;
 
 	constructor({ modules }: { modules: Dict<Module> }) {
-		this.all = modules.reduce(
-			(acc, { imports }) => acc.merge(Dict.fromArray(imports, ({ id }) => id)),
-			new Dict<Import>(),
-		);
+		this.all = modules.fold<Import>((acc, { imports }) => acc.merge(imports));
 	}
 
 	get local() {
@@ -19,7 +12,7 @@ export class Imports implements IImports {
 	}
 
 	get fullResolved() {
-		return this.all.filter(({ resolutionPath }) => Boolean(resolutionPath));
+		return this.all.filter(({ resolved }) => Boolean(resolved));
 	}
 
 	get fullUnresolved() {
@@ -33,7 +26,7 @@ export class Imports implements IImports {
 	}
 
 	get localUnresolved() {
-		return this.local.filter(({ resolutionPath }) => !resolutionPath);
+		return this.local.filter(({ resolved }) => !resolved);
 	}
 
 	get dynamic() {

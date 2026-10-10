@@ -179,6 +179,19 @@ describe("dict", () => {
 		expect(result2).toBe("foobarbaz");
 	});
 
+	it("fold", () => {
+		const dict = Dict.fromRec({ foo: 1, bar: 2, baz: 3 });
+
+		const newDict = dict.fold<string>((acc, value, key) => {
+			const newVal = String(value);
+			acc.set(`${key}-1`, newVal);
+			acc.set(`${key}-2`, newVal);
+			return acc;
+		});
+
+		expect(newDict.toArray()).toEqual(["1", "1", "2", "2", "3", "3"]);
+	});
+
 	it("group", () => {
 		const dict = Dict.fromRec({ foo: 1, bar: 2, baz: 3, qux: 4, quux: 5 });
 

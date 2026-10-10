@@ -5,21 +5,21 @@ export const dontReferToPackageEntryInside: LintFunction = ({ imports, modules, 
 	imports.fullResolved
 		.values()
 		.filter((imp) => {
-			const importedModule = modules.get(imp.resolutionPath!);
+			const importedModule = modules.get(imp.resolved!);
 
 			// Only inspect package entry points
-			if (!(importedModule.isInPackage && importedModule.isPackageEntryPoint)) {
+			if (!(importedModule.isInPack && importedModule.isPackEntry)) {
 				return false;
 			}
 
-			const sourceModule = modules.get(imp.sourcePath);
+			const sourceModule = modules.get(imp.source);
 
-			if (!sourceModule.isInPackage) {
+			if (!sourceModule.isInPack) {
 				return false;
 			}
 
-			return sourceModule.packagePath === importedModule.packagePath ||
-				packages.ancestry(sourceModule.packagePath!).has(importedModule.packagePath!);
+			return sourceModule.pack === importedModule.pack ||
+				packages.ancestry(sourceModule.pack!).has(importedModule.pack!);
 		}).forEach((imp) => {
 			imp.addDefect(ImportLintRule.DontReferToPackageEntryInside);
 		});

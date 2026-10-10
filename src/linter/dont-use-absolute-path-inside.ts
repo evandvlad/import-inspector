@@ -6,14 +6,14 @@ export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, pack
 		.values()
 		.filter(({ resolution }) => !resolution!.isRelative)
 		.filter((imp) => {
-			const sourceModule = modules.get(imp.sourcePath);
-			const importedModule = modules.get(imp.resolutionPath!);
+			const sourceModule = modules.get(imp.source);
+			const importedModule = modules.get(imp.resolved!);
 
-			if (sourceModule.isInPackage && importedModule.isInPackage) {
-				const isSamePackage = sourceModule.packagePath === importedModule.packagePath;
+			if (sourceModule.isInPack && importedModule.isInPack) {
+				const isSamePackage = sourceModule.pack === importedModule.pack;
 
 				const isImportedFromSameOrAncestorPackage = isSamePackage ||
-					packages.ancestry(sourceModule.packagePath!).has(importedModule.packagePath!);
+					packages.ancestry(sourceModule.pack!).has(importedModule.pack!);
 
 				if (isImportedFromSameOrAncestorPackage) {
 					return true;

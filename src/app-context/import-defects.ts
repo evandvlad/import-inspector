@@ -1,6 +1,5 @@
-import type { ImportDefects as IImportDefects } from "~/api.ts";
+import type { ImportDefects as IImportDefects, Imports } from "~/api.ts";
 
-import type { Imports } from "./imports.ts";
 import { ImportDefectRulesSample } from "./samples/import-defect-rules.ts";
 import { ImportDefectModPathsSample } from "./samples/import-defect-mod-paths.ts";
 
@@ -12,11 +11,11 @@ export class ImportDefects implements IImportDefects {
 	}
 
 	getAll() {
-		return this.#imports.all.toArray().flatMap(({ defects }) => defects);
+		return this.#imports.all.toArray().flatMap(({ defects }) => defects.toArray());
 	}
 
 	getAllRules() {
-		const all = this.#imports.all.toArray().flatMap(({ defects }) => defects.map(({ rule }) => rule));
+		const all = this.#imports.all.toArray().flatMap(({ defects }) => defects.toArray().map(({ rule }) => rule));
 		return Array.from(new Set(all));
 	}
 
@@ -30,12 +29,12 @@ export class ImportDefects implements IImportDefects {
 
 	remove(importId: string, rule: string) {
 		const imp = this.#imports.all.get(importId);
-		imp.removeDefect(rule);
+		imp.defects.remove(rule);
 	}
 
 	removeByRule(rule: string) {
 		this.#imports.all.forEach((imp) => {
-			const defect = imp.findDefect(rule);
+			const defect = imp.defects.getOrDefault(rule, null);
 
 			if (defect) {
 				this.remove(imp.id, rule);

@@ -1,8 +1,8 @@
 import { Dict } from "~/lib/dict.ts";
+import type { Module } from "~/api.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import type { PackageFinder } from "./package-finder/index.ts";
-import type { Module } from "./module.ts";
 import { Package } from "./package.ts";
 
 export function buildPackages(
@@ -13,8 +13,8 @@ export function buildPackages(
 	},
 ) {
 	return modules
-		.filter(({ isInPackage }) => isInPackage)
-		.group(({ packagePath }) => packagePath!)
+		.filter(({ isInPack }) => isInPack)
+		.group(({ pack }) => pack!)
 		.map(
 			(modules, path) => {
 				const { name, parentPath } = pathRecProvider.getDirPathRec(path);

@@ -1,7 +1,5 @@
 import { isNull } from "~/lib/vtype.ts";
-import type { Dict, Package as IPackage } from "~/api.ts";
-
-import type { Module } from "./module.ts";
+import type { Dict, Module, Package as IPackage } from "~/api.ts";
 
 export class Package implements IPackage {
 	name;

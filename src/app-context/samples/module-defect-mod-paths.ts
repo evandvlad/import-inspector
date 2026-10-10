@@ -1,7 +1,4 @@
-import type { ModuleDefectModPathsSample as IModuleDefectModPathsSample } from "~/api.ts";
-import type { Dict } from "~/lib/dict.ts";
-
-import type { Module } from "../module.ts";
+import type { Dict, Module, ModuleDefectModPathsSample as IModuleDefectModPathsSample } from "~/api.ts";
 
 export class ModuleDefectModPathsSample implements IModuleDefectModPathsSample {
 	modPaths;
@@ -11,8 +8,8 @@ export class ModuleDefectModPathsSample implements IModuleDefectModPathsSample {
 	constructor({ modules }: { modules: Dict<Module> }) {
 		this.#defectsMap = new Map(
 			Iterator.from(modules.toArray())
-				.filter(({ defects }) => defects.length > 0)
-				.map(({ path, defects }) => [path, defects]),
+				.filter(({ defects }) => defects.size > 0)
+				.map(({ path, defects }) => [path, defects.toArray()]),
 		);
 
 		this.modPaths = this.#defectsMap.keys().toArray();

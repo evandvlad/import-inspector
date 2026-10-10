@@ -27,6 +27,7 @@ export interface Dict<T> {
 	sortK: (callback?: (key1: string, key2: string) => number) => Dict<T>;
 	sortE: (callback: (entry1: Entry<T>, entry2: Entry<T>) => number) => Dict<T>;
 	reduce: <U>(callback: (acc: U, value: T, key: string) => U, init: U) => U;
+	fold: <U>(callback: (acc: Dict<U>, value: T, key: string) => Dict<U>) => Dict<U>;
 	group: (callback: (value: T, key: string) => string) => Dict<T[]>;
 	merge: (...args: Array<Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>>) => this;
 	concat: (...args: Array<Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>>) => Dict<T>;
@@ -153,7 +154,7 @@ export type SettingsModule = {
 };
 
 export type UnresolvedDynamicImportData = {
-	sourcePath: string;
+	source: string;
 	posSpan: Span;
 	file: File;
 };
@@ -207,19 +208,15 @@ export type ModuleDependencyItem = {
 
 export type Import = {
 	id: string;
-	sourcePath: string;
+	source: string;
 	locator: Nullable<string>;
 	location: Nullable<string>;
 	posSpan: Span;
 	isDynamic: boolean;
 	resolution: Nullable<ImportResolution>;
-	resolutionPath: Nullable<string>;
-	defects: ImportDefect[];
-	hasDefect: (rule: string) => boolean;
-	findDefect: (rule: string) => Nullable<ImportDefect>;
-	getDefect: (rule: string) => ImportDefect;
+	resolved: Nullable<string>;
+	defects: Dict<ImportDefect>;
 	addDefect: (rule: string, description?: string) => void;
-	removeDefect: (rule: string) => void;
 };
 
 export type ImportDefect = {
@@ -227,17 +224,17 @@ export type ImportDefect = {
 	info: string;
 	posSpan: Span;
 	importId: string;
-	sourcePath: string;
+	source: string;
 	description: string;
 	locator: Nullable<string>;
 	imported: Nullable<string>;
-	importedPath: Nullable<string>;
+	resolved: Nullable<string>;
 };
 
 export type ModuleDefect = {
 	rule: string;
 	info: string;
-	sourcePath: string;
+	source: string;
 	description: string;
 };
 
@@ -248,17 +245,13 @@ export type Module = {
 	tags: string[];
 	frames: string[];
 	file: File;
-	packagePath: Nullable<string>;
-	isInPackage: boolean;
-	isPackageEntryPoint: boolean;
+	pack: Nullable<string>;
+	isInPack: boolean;
+	isPackEntry: boolean;
 	links: /* path */ string[];
-	imports: Import[];
-	defects: ModuleDefect[];
-	hasDefect: (rule: string) => boolean;
-	findDefect: (rule: string) => Nullable<ModuleDefect>;
-	getDefect: (rule: string) => ModuleDefect;
+	imports: Dict<Import>;
+	defects: Dict<ModuleDefect>;
 	addDefect: (rule: string, description?: string) => void;
-	removeDefect: (rule: string) => void;
 	hasTag: (name: string) => boolean;
 	setTag: (name: string) => void;
 	removeTag: (name: string) => void;

@@ -5,21 +5,21 @@ export class ImportDefect implements IImportDefect {
 	posSpan;
 	locator;
 	importId;
-	sourcePath;
+	source;
 	description;
-	importedPath;
+	resolved;
 
 	info;
 	imported;
 
 	constructor(
-		{ rule, importId, posSpan, locator, sourcePath, importedPath, description = "" }: {
+		{ rule, importId, posSpan, locator, source, resolved, description = "" }: {
 			rule: string;
 			importId: string;
 			posSpan: Span;
 			locator: string | null;
-			sourcePath: string;
-			importedPath: string | null;
+			source: string;
+			resolved: string | null;
 			description?: string;
 		},
 	) {
@@ -27,11 +27,11 @@ export class ImportDefect implements IImportDefect {
 		this.importId = importId;
 		this.posSpan = posSpan;
 		this.locator = locator;
-		this.sourcePath = sourcePath;
-		this.importedPath = importedPath;
+		this.source = source;
+		this.resolved = resolved;
 		this.description = description;
 
 		this.info = `${rule}${description ? ` (${description})` : ""}`;
-		this.imported = this.importedPath ?? this.locator;
+		this.imported = this.resolved ?? this.locator;
 	}
 }

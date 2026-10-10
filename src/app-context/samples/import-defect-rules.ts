@@ -1,7 +1,4 @@
-import type { ImportDefectRulesSample as IImportDefectRulesSample } from "~/api.ts";
-
-import type { Imports } from "../imports.ts";
-import type { ImportDefect } from "../import-defect.ts";
+import type { ImportDefect, ImportDefectRulesSample as IImportDefectRulesSample, Imports } from "~/api.ts";
 
 export class ImportDefectRulesSample implements IImportDefectRulesSample {
 	rules;
@@ -25,6 +22,6 @@ export class ImportDefectRulesSample implements IImportDefectRulesSample {
 	}
 
 	getModPaths(rule: string) {
-		return Array.from(new Set(this.get(rule).map(({ sourcePath }) => sourcePath)));
+		return Array.from(new Set(this.get(rule).map(({ source }) => source)));
 	}
 }

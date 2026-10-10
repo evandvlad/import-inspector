@@ -1,8 +1,4 @@
-import type { ModuleDefectRulesSample as IModuleDefectRulesSample } from "~/api.ts";
-import type { Dict } from "~/lib/dict.ts";
-
-import type { Module } from "../module.ts";
-import type { ModuleDefect } from "../module-defect.ts";
+import type { Dict, Module, ModuleDefect, ModuleDefectRulesSample as IModuleDefectRulesSample } from "~/api.ts";
 
 export class ModuleDefectRulesSample implements IModuleDefectRulesSample {
 	rules;

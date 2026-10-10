@@ -178,6 +178,10 @@ export class Dict<T> implements IDict<T> {
 		return this.toEntries().reduce((acc, [key, value]) => callback(acc, value, key), init);
 	}
 
+	fold<U>(callback: (acc: IDict<U>, value: T, key: string) => IDict<U>): IDict<U> {
+		return this.reduce<IDict<U>>(callback, new Dict<U>());
+	}
+
 	group(callback: (value: T, key: string) => string) {
 		return this.reduce((acc, value, key) => {
 			const newKey = callback(value, key);
