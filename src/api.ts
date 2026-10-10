@@ -297,42 +297,19 @@ export type Imports = {
 	extLocators: Dict<Import[]>;
 };
 
-export type ImportDefectRulesSample = {
-	rules: string[];
-	get: (rule: string) => ImportDefect[];
-	getModPaths: (rule: string) => string[];
-};
-
-export type ImportDefectModPathsSample = {
-	modPaths: string[];
-	get: (modPath: string) => ImportDefect[];
-};
-
 export type ImportDefects = {
-	getAll: () => ImportDefect[];
-	getAllRules: () => string[];
-	sampleRules: () => ImportDefectRulesSample;
-	sampleModPaths: () => ImportDefectModPathsSample;
+	total: number;
+	rules: Dict<ImportDefect[]>;
+	sources: Dict<ImportDefect[]>;
 	remove: (importId: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
 };
 
-export type ModuleDefectRulesSample = {
-	rules: string[];
-	get: (rule: string) => ModuleDefect[];
-};
-
-export type ModuleDefectModPathsSample = {
-	modPaths: string[];
-	get: (modPath: string) => ModuleDefect[];
-};
-
 export type ModuleDefects = {
-	getAll: () => ModuleDefect[];
-	getAllRules: () => string[];
-	sampleRules: () => ModuleDefectRulesSample;
-	sampleModPaths: () => ModuleDefectModPathsSample;
+	total: number;
+	rules: Dict<ModuleDefect[]>;
+	sources: Dict<ModuleDefect[]>;
 	remove: (path: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;

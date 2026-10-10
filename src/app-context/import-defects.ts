@@ -1,7 +1,4 @@
-import type { ImportDefects as IImportDefects, Imports } from "~/api.ts";
-
-import { ImportDefectRulesSample } from "./samples/import-defect-rules.ts";
-import { ImportDefectModPathsSample } from "./samples/import-defect-mod-paths.ts";
+import type { ImportDefect, ImportDefects as IImportDefects, Imports } from "~/api.ts";
 
 export class ImportDefects implements IImportDefects {
 	#imports;
@@ -10,21 +7,28 @@ export class ImportDefects implements IImportDefects {
 		this.#imports = imports;
 	}
 
-	getAll() {
-		return this.#imports.all.toArray().flatMap(({ defects }) => defects.toArray());
+	get total() {
+		return this.#imports.all.reduce((acc, { defects }) => acc + defects.size, 0);
 	}
 
-	getAllRules() {
-		const all = this.#imports.all.toArray().flatMap(({ defects }) => defects.toArray().map(({ rule }) => rule));
-		return Array.from(new Set(all));
+	get rules() {
+		return this.#imports.all.fold<ImportDefect[]>((acc, imp) => {
+			imp.defects.forEach((defect) => {
+				acc.getOrInsert(defect.rule, []).push(defect);
+			});
+
+			return acc;
+		});
 	}
 
-	sampleRules() {
-		return new ImportDefectRulesSample({ imports: this.#imports });
-	}
+	get sources() {
+		return this.#imports.all.fold<ImportDefect[]>((acc, imp) => {
+			imp.defects.forEach((defect) => {
+				acc.getOrInsert(defect.source, []).push(defect);
+			});
 
-	sampleModPaths() {
-		return new ImportDefectModPathsSample({ imports: this.#imports });
+			return acc;
+		});
 	}
 
 	remove(importId: string, rule: string) {
@@ -34,17 +38,13 @@ export class ImportDefects implements IImportDefects {
 
 	removeByRule(rule: string) {
 		this.#imports.all.forEach((imp) => {
-			const defect = imp.defects.getOrDefault(rule, null);
-
-			if (defect) {
-				this.remove(imp.id, rule);
-			}
+			imp.defects.remove(rule);
 		});
 	}
 
 	removeAll() {
-		this.getAll().forEach(({ importId, rule }) => {
-			this.remove(importId, rule);
+		this.#imports.all.forEach((imp) => {
+			imp.defects.clear();
 		});
 	}
 }

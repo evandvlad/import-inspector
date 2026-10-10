@@ -47,8 +47,8 @@ export class AppContext implements IAppContext {
 	}
 
 	get summary() {
-		const importDefects = this.importDefects.getAll().length;
-		const moduleDefects = this.moduleDefects.getAll().length;
+		const importDefects = this.importDefects.total;
+		const moduleDefects = this.moduleDefects.total;
 
 		return {
 			importDefects,
