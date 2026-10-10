@@ -1,8 +1,8 @@
-import type { HtmlxComponents } from "~/api.ts";
+import type { Htmlxc } from "~/api.ts";
 
 import { incId, stringifyCompAttrs } from "../helpers.ts";
 
-export const tabs: HtmlxComponents["tabs"] = (items, options = {}) => {
+export const tabs: Htmlxc["tabs"] = (items, options = {}) => {
 	if (items.length === 0) {
 		return "";
 	}

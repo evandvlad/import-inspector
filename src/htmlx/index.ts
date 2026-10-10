@@ -1,4 +1,4 @@
-import type { HtmlxComponents } from "~/api.ts";
+import type { Htmlxc } from "~/api.ts";
 
 import { h } from "./components/h.ts";
 import { elem } from "./components/elem.ts";
@@ -30,6 +30,6 @@ export const components = {
 	flist,
 	mark,
 	data,
-} satisfies HtmlxComponents;
+} satisfies Htmlxc;
 
 export { createHtml } from "./html/index.ts";

@@ -30,7 +30,7 @@ export class TaskContext implements ITaskContext {
 		this.#reporter = new Reporter({ appContext });
 	}
 
-	writeReport = (report: Report) => {
+	report = (report: Report) => {
 		return this.#reporter.write(report);
 	};
 }

@@ -1,11 +1,11 @@
-import type { HtmlxComponentBaseOptions } from "~/api.ts";
+import type { HtmlxcBaseOptions } from "~/api.ts";
 
 export const incId = (() => {
 	let id = 0;
 	return () => ++id;
 })();
 
-export function stringifyCompAttrs<T extends HtmlxComponentBaseOptions>(
+export function stringifyCompAttrs<T extends HtmlxcBaseOptions>(
 	{ options, attrs, styles, classes = [] }: {
 		options: T;
 		classes?: string[];

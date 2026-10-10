@@ -6,7 +6,7 @@ export function createModuleCode(
 ) {
 	const { env, modules } = appContext;
 
-	const fullPath = env.getFullPath(path);
+	const fullPath = env.fullPath(path);
 	const { file } = modules.get(fullPath);
 
 	const content = lineRange ? file.getContentByLineRange(lineRange) : file.value;

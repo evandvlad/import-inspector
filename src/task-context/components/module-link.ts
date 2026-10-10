@@ -6,8 +6,8 @@ export function createModuleLink(
 ) {
 	const { env } = appContext;
 
-	const fullPath = env.getFullPath(path);
-	const shortPath = env.getShortPath(fullPath);
+	const fullPath = env.fullPath(path);
+	const shortPath = env.shortPath(fullPath);
 
 	return tuix.link(fullPath, { text: shortPath, line: lineRange ? lineRange[0] : undefined });
 }

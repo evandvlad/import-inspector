@@ -71,36 +71,36 @@ export enum ModuleLintRule {
 	DontLeaveUnusedModule = "don't-leave-unused-module",
 }
 
-export type HtmlxComponentBaseOptions = {
+export type HtmlxcBaseOptions = {
 	classes?: string[];
 	attrs?: Rec<string>;
 	styles?: Rec<string>;
 };
 
-export type HtmlxComponentTreeItem = {
+export type HtmlxcTreeItem = {
 	value: string;
 	opened?: boolean;
-	children?: HtmlxComponentTreeItem[];
+	children?: HtmlxcTreeItem[];
 };
 
-export type HtmlxComponents = {
-	h: (value: string, options?: { level?: 1 | 2 | 3 } & HtmlxComponentBaseOptions) => string;
-	elem: (value: string, options?: HtmlxComponentBaseOptions) => string;
-	flex: (items: string[], options?: { dir?: "v" | "h" } & HtmlxComponentBaseOptions) => string;
-	cols: (items: string[], options?: HtmlxComponentBaseOptions) => string;
-	link: (params: { url: string; value: string }, options?: HtmlxComponentBaseOptions) => string;
-	flist: (items: Array<{ value: string; content: string }>, options?: HtmlxComponentBaseOptions) => string;
-	mark: (value: string, options?: HtmlxComponentBaseOptions) => string;
+export type Htmlxc = {
+	h: (value: string, options?: { level?: 1 | 2 | 3 } & HtmlxcBaseOptions) => string;
+	elem: (value: string, options?: HtmlxcBaseOptions) => string;
+	flex: (items: string[], options?: { dir?: "v" | "h" } & HtmlxcBaseOptions) => string;
+	cols: (items: string[], options?: HtmlxcBaseOptions) => string;
+	link: (params: { url: string; value: string }, options?: HtmlxcBaseOptions) => string;
+	flist: (items: Array<{ value: string; content: string }>, options?: HtmlxcBaseOptions) => string;
+	mark: (value: string, options?: HtmlxcBaseOptions) => string;
 	details: (
 		params: { label: string; value: string },
-		options?: { theme?: "standard" | "light" | "dark" } & HtmlxComponentBaseOptions,
+		options?: { theme?: "standard" | "light" | "dark" } & HtmlxcBaseOptions,
 	) => string;
-	table: (rows: string[][], options?: HtmlxComponentBaseOptions) => string;
-	expander: (params: { label: string; value: string }, options?: HtmlxComponentBaseOptions) => string;
-	tabs: (items: Array<{ label: string; value: string }>, options?: HtmlxComponentBaseOptions) => string;
-	tree: (items: HtmlxComponentTreeItem[], options?: { subtree?: boolean } & HtmlxComponentBaseOptions) => string;
-	code: (entries: Array<{ line: number; value: string }>, options?: HtmlxComponentBaseOptions) => string;
-	data: (value: unknown, options?: HtmlxComponentBaseOptions) => string;
+	table: (rows: string[][], options?: HtmlxcBaseOptions) => string;
+	expander: (params: { label: string; value: string }, options?: HtmlxcBaseOptions) => string;
+	tabs: (items: Array<{ label: string; value: string }>, options?: HtmlxcBaseOptions) => string;
+	tree: (items: HtmlxcTreeItem[], options?: { subtree?: boolean } & HtmlxcBaseOptions) => string;
+	code: (entries: Array<{ line: number; value: string }>, options?: HtmlxcBaseOptions) => string;
+	data: (value: unknown, options?: HtmlxcBaseOptions) => string;
 };
 
 export type TuixColor = "red" | "blue" | "gray" | "white";
@@ -285,12 +285,6 @@ export type Packages = {
 	ancestry: (path: string) => Dict<Package>;
 };
 
-export type Tags = {
-	all: string[];
-	has: (name: string) => boolean;
-	get: (name: string) => Dict<Module>;
-};
-
 export type Imports = {
 	all: Dict<Import>;
 	local: Dict<Import>;
@@ -348,11 +342,11 @@ export type AppContextEnv = {
 	version: string;
 	basePath: string;
 	preset: ConfigPreset;
-	htmlxComponents: HtmlxComponents;
-	getShortPath: (path: string) => string;
-	getFullPath: (path: string) => string;
+	htmlxc: Htmlxc;
+	shortPath: (path: string) => string;
+	fullPath: (path: string) => string;
 	findFullPath: (path: string) => string | null;
-	getEditorUrl: (path: string, line?: number) => string;
+	editorUrl: (path: string, line?: number) => string;
 };
 
 export type AppContextSummary = {
@@ -371,11 +365,11 @@ export type AppContext = {
 	modules: Dict<Module>;
 	packages: Packages;
 	imports: Imports;
-	tags: Tags;
+	tags: Dict<Dict<Module>>;
 	frames: Frames;
 	importDefects: ImportDefects;
 	moduleDefects: ModuleDefects;
-	getSummary: () => AppContextSummary;
+	summary: AppContextSummary;
 };
 
 export type TaskContextComponents = {
@@ -392,5 +386,5 @@ export type TaskContext = {
 
 	args: string[];
 
-	writeReport: (report: Report) => Promise<void>;
+	report: (report: Report) => Promise<void>;
 };

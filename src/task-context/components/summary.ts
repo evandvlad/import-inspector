@@ -10,11 +10,11 @@ function ln(caption: string, content: string | number) {
 export function createSummary(
 	{ settings, appContext }: { settings: Settings; appContext: AppContext },
 ) {
-	const summary = appContext.getSummary();
-	const dynamicImports = appContext.imports.dynamic.size;
-	const staticImports = appContext.imports.static.size;
+	const { summary, imports, modules } = appContext;
+	const dynamicImports = imports.dynamic.size;
+	const staticImports = imports.static.size;
 
-	const modulesInfo = appContext.modules
+	const modulesInfo = modules
 		.group(({ lang }) => lang)
 		.map((items, lang) => `${lang}: ${items.length}`)
 		.toArray()
@@ -35,7 +35,7 @@ export function createSummary(
 		ln("Modules", `${summary.modules} (${modulesInfo})`),
 		ln("Imports", `${summary.imports} (static: ${staticImports}, dynamic: ${dynamicImports})`),
 		ln("Defects", `${summary.totalDefects} (imports: ${summary.importDefects}, modules: ${summary.moduleDefects})`),
-		ln("Unresolved imports", appContext.imports.fullUnresolved.size),
+		ln("Unresolved imports", imports.fullUnresolved.size),
 	];
 
 	if (settings.reportPaths.length > 0) {

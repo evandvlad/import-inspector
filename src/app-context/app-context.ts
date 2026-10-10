@@ -1,18 +1,16 @@
-import type { AppContext as IAppContext, Module, Package } from "~/api.ts";
+import type { AppContext as IAppContext, Dict as IDict, Module, Package } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
-import type { Dict } from "~/lib/dict.ts";
+import { Dict } from "~/lib/dict.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import { Packages } from "./packages.ts";
 import { Imports } from "./imports.ts";
-import { Tags } from "./tags.ts";
 import { Frames } from "./frames.ts";
 import { ImportDefects } from "./import-defects.ts";
 import { ModuleDefects } from "./module-defects.ts";
 import { Env } from "./env.ts";
 
 export class AppContext implements IAppContext {
-	tags;
 	frames;
 	modules;
 	imports;
@@ -33,20 +31,29 @@ export class AppContext implements IAppContext {
 		this.packages = new Packages({ packages });
 		this.env = new Env({ settings, pathRecProvider });
 		this.imports = new Imports({ modules: this.modules });
-		this.tags = new Tags({ modules: this.modules });
 		this.frames = new Frames({ modules: this.modules });
 		this.importDefects = new ImportDefects({ imports: this.imports });
 		this.moduleDefects = new ModuleDefects({ modules: this.modules });
 	}
 
-	getSummary() {
+	get tags() {
+		return this.modules.fold<IDict<Module>>((acc, mod) => {
+			mod.tags.forEach((tag) => {
+				acc.getOrInsert(tag, new Dict<Module>()).set(mod.path, mod);
+			});
+
+			return acc;
+		});
+	}
+
+	get summary() {
 		const importDefects = this.importDefects.getAll().length;
 		const moduleDefects = this.moduleDefects.getAll().length;
 
 		return {
 			importDefects,
 			moduleDefects,
-			tags: this.tags.all.length,
+			tags: this.tags.size,
 			frames: this.frames.getAll().length,
 			packages: this.packages.all.size,
 			modules: this.modules.size,

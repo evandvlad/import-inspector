@@ -11,7 +11,7 @@ export class Env implements AppContextEnv {
 	preset;
 	version;
 	basePath;
-	htmlxComponents;
+	htmlxc;
 
 	#pathRecProvider;
 
@@ -21,10 +21,10 @@ export class Env implements AppContextEnv {
 		this.version = version;
 		this.preset = settings.preset;
 		this.basePath = this.#pathRecProvider.basePath;
-		this.htmlxComponents = components;
+		this.htmlxc = components;
 	}
 
-	getShortPath(path: string) {
+	shortPath(path: string) {
 		const pathRec = this.#pathRecProvider.findPathRec(path);
 
 		assert(
@@ -35,7 +35,7 @@ export class Env implements AppContextEnv {
 		return shorten(stripEnd(path), this.basePath);
 	}
 
-	getFullPath(path: string) {
+	fullPath(path: string) {
 		const fullPath = this.findFullPath(path);
 		assert(fullPath, `Can't get full path for '${path}.' It might be outside scope '${this.basePath}'.`);
 		return fullPath;
@@ -47,7 +47,7 @@ export class Env implements AppContextEnv {
 		return pathRec ? fullPath : null;
 	}
 
-	getEditorUrl(path: string, line?: number) {
+	editorUrl(path: string, line?: number) {
 		return `vscode://file/${path}${line ? `:${line}` : ""}`;
 	}
 }

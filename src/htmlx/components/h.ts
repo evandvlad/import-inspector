@@ -1,8 +1,8 @@
-import type { HtmlxComponents } from "~/api.ts";
+import type { Htmlxc } from "~/api.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 
-export const h: HtmlxComponents["h"] = (value, options = {}) => {
+export const h: Htmlxc["h"] = (value, options = {}) => {
 	const { level = 2 } = options;
 	const classes = ["h", `h--${level}`];
 

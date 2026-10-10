@@ -1,8 +1,8 @@
-import type { HtmlxComponents, HtmlxComponentTreeItem } from "~/api.ts";
+import type { Htmlxc, HtmlxcTreeItem } from "~/api.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 
-function renderTree(items: HtmlxComponentTreeItem[]): string {
+function renderTree(items: HtmlxcTreeItem[]): string {
 	const content = items
 		.map(({ value, children, opened = false }) => {
 			if (!children || children.length === 0) {
@@ -25,7 +25,7 @@ function renderTree(items: HtmlxComponentTreeItem[]): string {
 	`;
 }
 
-export const tree: HtmlxComponents["tree"] = (items, options = {}) => {
+export const tree: Htmlxc["tree"] = (items, options = {}) => {
 	if (items.length === 0) {
 		return "";
 	}

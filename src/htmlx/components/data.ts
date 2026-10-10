@@ -1,6 +1,6 @@
 import { type CompoundValue, getCompoundValueType, isCompoundValue, type SimpleValue, toJson } from "~/lib/json.ts";
 import { sanitizeForHtml } from "~/lib/text.ts";
-import type { HtmlxComponents } from "~/api.ts";
+import type { Htmlxc } from "~/api.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 
@@ -54,7 +54,7 @@ function getContent(value: unknown) {
 	return formatToHtml(json);
 }
 
-export const data: HtmlxComponents["data"] = (value, options = {}) => {
+export const data: Htmlxc["data"] = (value, options = {}) => {
 	const content = getContent(value);
 
 	return `<div ${stringifyCompAttrs({ classes: ["data"], options })}>${content}</div>`;
