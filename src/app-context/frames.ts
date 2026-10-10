@@ -1,5 +1,6 @@
-import type { Frames as IFrames, Module } from "~/api.ts";
-import type { Dict } from "~/lib/dict.ts";
+import type { Dict, Frame as IFrame, Frames as IFrames, Module } from "~/api.ts";
+
+import { Frame } from "./frame.ts";
 
 export class Frames implements IFrames {
 	#modules;
@@ -8,20 +9,24 @@ export class Frames implements IFrames {
 		this.#modules = modules;
 	}
 
-	getAll() {
-		const all = this.#modules.toArray().flatMap(({ frames }) => frames);
-		return Array.from(new Set(all));
+	get names() {
+		return this.byFrame.toKeys();
+	}
+
+	get byFrame() {
+		return this.#modules.fold<IFrame>((acc, { frames }) => {
+			frames.forEach((frame) => {
+				if (!acc.has(frame)) {
+					acc.set(frame, new Frame({ name: frame, modules: this.#modules }));
+				}
+			});
+
+			return acc;
+		});
 	}
 
 	has(name: string) {
-		return this.getAll().includes(name);
-	}
-
-	getModPaths(name: string) {
-		return Iterator.from(this.#modules.toArray())
-			.filter((mod) => mod.hasFrame(name))
-			.map(({ path }) => path)
-			.toArray();
+		return this.byFrame.has(name);
 	}
 
 	getModPathInOtherFramesMap(path: string) {
@@ -43,7 +48,7 @@ export class Frames implements IFrames {
 	}
 
 	getFrameInFramesMap(name: string) {
-		return this.getModPaths(name).reduce((acc, path) => {
+		return this.#getModPaths(name).reduce((acc, path) => {
 			const imported = this.#modules.get(path);
 
 			imported.links.forEach((link) => {
@@ -58,5 +63,12 @@ export class Frames implements IFrames {
 
 			return acc;
 		}, new Map<string, Array<{ source: Module; imported: Module }>>());
+	}
+
+	#getModPaths(name: string) {
+		return Iterator.from(this.#modules.toArray())
+			.filter((mod) => mod.hasFrame(name))
+			.map(({ path }) => path)
+			.toArray();
 	}
 }

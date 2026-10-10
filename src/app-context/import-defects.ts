@@ -11,7 +11,7 @@ export class ImportDefects implements IImportDefects {
 		return this.#imports.all.reduce((acc, { defects }) => acc + defects.size, 0);
 	}
 
-	get rules() {
+	get byRule() {
 		return this.#imports.all.fold<ImportDefect[]>((acc, imp) => {
 			imp.defects.forEach((defect) => {
 				acc.getOrInsert(defect.rule, []).push(defect);
@@ -21,7 +21,7 @@ export class ImportDefects implements IImportDefects {
 		});
 	}
 
-	get sources() {
+	get bySource() {
 		return this.#imports.all.fold<ImportDefect[]>((acc, imp) => {
 			imp.defects.forEach((defect) => {
 				acc.getOrInsert(defect.source, []).push(defect);

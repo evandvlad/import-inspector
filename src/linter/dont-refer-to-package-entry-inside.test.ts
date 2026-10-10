@@ -19,7 +19,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 		dontReferToPackageEntryInside(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
 
@@ -38,7 +38,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 		dontReferToPackageEntryInside(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
 
@@ -57,7 +57,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 		dontReferToPackageEntryInside(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
 
@@ -76,7 +76,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 		dontReferToPackageEntryInside(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
 
@@ -96,7 +96,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 		dontReferToPackageEntryInside(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
 
@@ -118,7 +118,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 		dontReferToPackageEntryInside(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
 
@@ -143,7 +143,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 		dontReferToPackageEntryInside(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.getOrDefault(ImportLintRule.DontReferToPackageEntryInside, [])
 			.map(({ source }) => source);
 

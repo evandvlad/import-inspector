@@ -9,7 +9,7 @@ export function createLintResult({ appContext }: { appContext: AppContext }) {
 	const { modules, importDefects, moduleDefects } = appContext;
 	const dict = new Dict<string[]>();
 
-	moduleDefects.sources.forEach((defects, source) => {
+	moduleDefects.bySource.forEach((defects, source) => {
 		const content = defects.reduce((acc, { info }) => {
 			const link = tuix.text(createModuleLink({ appContext, path: source }), { bold: true, color: "blue" });
 			const ruleInfo = [tuix.text("rule (module):", { dim: true }), info].join(" ");
@@ -21,7 +21,7 @@ export function createLintResult({ appContext }: { appContext: AppContext }) {
 		dict.getOrInsert(source, []).push(content);
 	});
 
-	importDefects.sources.forEach((defects, source) => {
+	importDefects.bySource.forEach((defects, source) => {
 		const content = defects.reduce((acc, { source, resolved, posSpan, info }) => {
 			const { file } = modules.get(source);
 			const lineRange = file.getLineRange(posSpan);

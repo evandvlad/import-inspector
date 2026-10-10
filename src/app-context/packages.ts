@@ -1,12 +1,12 @@
 import { assert } from "~/lib/err.ts";
-import type { Package, Packages as IPackages } from "~/api.ts";
+import type { Dict as IDict, Package, Packages as IPackages } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
 
 export class Packages implements IPackages {
 	all;
 	roots;
 
-	constructor({ packages }: { packages: Dict<Package> }) {
+	constructor({ packages }: { packages: IDict<Package> }) {
 		this.all = packages;
 		this.roots = this.all.filter(({ hasParent }) => !hasParent);
 	}

@@ -21,7 +21,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
 			.map(({ source }) => source);
 
@@ -43,7 +43,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
 			.map(({ source }) => source);
 
@@ -65,7 +65,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
 			.map(({ source }) => source);
 
@@ -88,7 +88,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
 			.map(({ source }) => source);
 
@@ -109,7 +109,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ source }) => source);
 
@@ -131,7 +131,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ source }) => source);
 
@@ -154,7 +154,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ source }) => source);
 
@@ -174,7 +174,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ source }) => source);
 
@@ -195,7 +195,7 @@ describe("dont-jump-through-package-entry", () => {
 		dontJumpThroughPackageEntry(appContext);
 
 		const paths = appContext.importDefects
-			.rules
+			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ source }) => source);
 

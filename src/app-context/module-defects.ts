@@ -11,7 +11,7 @@ export class ModuleDefects implements IModuleDefects {
 		return this.#modules.reduce((acc, { defects }) => acc + defects.size, 0);
 	}
 
-	get rules() {
+	get byRule() {
 		return this.#modules.fold<ModuleDefect[]>((acc, mod) => {
 			mod.defects.forEach((defect) => {
 				acc.getOrInsert(defect.rule, []).push(defect);
@@ -21,7 +21,7 @@ export class ModuleDefects implements IModuleDefects {
 		});
 	}
 
-	get sources() {
+	get bySource() {
 		return this.#modules.fold<ModuleDefect[]>((acc, mod) => {
 			mod.defects.forEach((defect) => {
 				acc.getOrInsert(defect.source, []).push(defect);

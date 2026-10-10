@@ -269,12 +269,23 @@ export type Package = {
 	modules: Dict<Module>;
 };
 
+export type Frame = {
+	name: string;
+	modules: Dict<Module>;
+};
+
 export type Frames = {
-	getAll: () => string[];
+	names: string[];
+	byFrame: Dict<Frame>;
 	has: (name: string) => boolean;
-	getModPaths: (name: string) => string[];
 	getFrameInFramesMap: (name: string) => Map</* name */ string, ModuleDependencyItem[]>;
 	getModPathInOtherFramesMap: (path: string) => Map</* name */ string, /* paths */ string[]>;
+};
+
+export type Tags = {
+	names: string[];
+	has: (name: string) => boolean;
+	byTag: Dict<Dict<Module>>;
 };
 
 export type Packages = {
@@ -299,8 +310,8 @@ export type Imports = {
 
 export type ImportDefects = {
 	total: number;
-	rules: Dict<ImportDefect[]>;
-	sources: Dict<ImportDefect[]>;
+	byRule: Dict<ImportDefect[]>;
+	bySource: Dict<ImportDefect[]>;
 	remove: (importId: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
@@ -308,8 +319,8 @@ export type ImportDefects = {
 
 export type ModuleDefects = {
 	total: number;
-	rules: Dict<ModuleDefect[]>;
-	sources: Dict<ModuleDefect[]>;
+	byRule: Dict<ModuleDefect[]>;
+	bySource: Dict<ModuleDefect[]>;
 	remove: (path: string, rule: string) => void;
 	removeByRule: (rule: string) => void;
 	removeAll: () => void;
@@ -342,7 +353,7 @@ export type AppContext = {
 	modules: Dict<Module>;
 	packages: Packages;
 	imports: Imports;
-	tags: Dict<Dict<Module>>;
+	tags: Tags;
 	frames: Frames;
 	importDefects: ImportDefects;
 	moduleDefects: ModuleDefects;
