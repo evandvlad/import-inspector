@@ -1,5 +1,5 @@
 import type { Settings } from "~/settings.ts";
-import { FileContent } from "~/file-content/index.ts";
+import { File } from "~/file/index.ts";
 
 import type { FileParsingResult, ImportRec } from "../values.ts";
 
@@ -7,22 +7,22 @@ import { parseFile as parse } from "./file-parser.ts";
 
 class FileParser {
 	#path;
-	#fileContent;
+	#file;
 	#settings;
 
 	constructor({ path, content, settings }: { path: string; content: string; settings: Settings }) {
 		this.#path = path;
-		this.#fileContent = new FileContent({ value: content });
+		this.#file = new File({ value: content });
 		this.#settings = settings;
 	}
 
 	async parse(): Promise<FileParsingResult> {
-		const importRecs = await parse({ path: this.#path, content: this.#fileContent.value });
+		const importRecs = await parse({ path: this.#path, content: this.#file.value });
 		const newImportRecs = await this.#processImportRecs({ importRecs });
 
 		return {
 			path: this.#path,
-			fileContent: this.#fileContent,
+			file: this.#file,
 			importRecs: newImportRecs,
 		};
 	}
@@ -43,7 +43,7 @@ class FileParser {
 			const corrections = await this.#settings.correctUnresolvedDynamicImports({
 				sourcePath: this.#path,
 				posSpan: importRec.posSpan,
-				fileContent: this.#fileContent,
+				file: this.#file,
 			});
 
 			if (corrections.length > 0) {

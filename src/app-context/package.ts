@@ -1,32 +1,31 @@
 import { isNull } from "~/lib/vtype.ts";
-import type { Package as IPackage } from "~/api.ts";
+import type { Dict, Package as IPackage } from "~/api.ts";
+
+import type { Module } from "./module.ts";
 
 export class Package implements IPackage {
 	name;
 	path;
-	modulePaths;
-	parentDirPath;
-	subPackagePaths;
-	parentPackagePath;
+	modules;
+	children;
+	parent;
 
-	hasParentPackage;
+	hasParent;
 
 	constructor(
-		{ name, path, parentDirPath, modulePaths, subPackagePaths, parentPackagePath }: {
+		{ name, path, modules, children, parent }: {
 			name: string;
 			path: string;
-			modulePaths: string[];
-			subPackagePaths: string[];
-			parentDirPath: string | null;
-			parentPackagePath: string | null;
+			modules: Dict<Module>;
+			children: string[];
+			parent: string | null;
 		},
 	) {
 		this.name = name;
 		this.path = path;
-		this.modulePaths = modulePaths;
-		this.parentDirPath = parentDirPath;
-		this.subPackagePaths = subPackagePaths;
-		this.parentPackagePath = parentPackagePath;
-		this.hasParentPackage = !isNull(parentPackagePath);
+		this.modules = modules;
+		this.children = children;
+		this.parent = parent;
+		this.hasParent = !isNull(parent);
 	}
 }

@@ -40,20 +40,18 @@ export class PackageFinder {
 			.map(this.#mapPathToPathRec)
 			.filter((pathRec) => pathRec.kind === "dir")
 			.flatMap((pathRec) => {
-				const subPackagePaths: string[] = [];
+				const children: string[] = [];
 
 				return this.#pathRecProvider.createDownWalker(pathRec.path)
 					.filter(this.#isPackageEntryPoint)
 					.map((filePathRec) => {
 						const parentPath = filePathRec.parentPath!;
-						subPackagePaths.push(parentPath);
+						children.push(parentPath);
 						return parentPath;
 					})
 					.filter((path) =>
-						!subPackagePaths
-							.some((subPackagePath) =>
-								path.length > subPackagePath.length && path.startsWith(subPackagePath)
-							)
+						!children
+							.some((childPath) => path.length > childPath.length && path.startsWith(childPath))
 					);
 			})
 			.toArray();

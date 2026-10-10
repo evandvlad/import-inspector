@@ -33,7 +33,7 @@ export function buildModules(
 
 	const interconnectionReader = interconnectionBuilder.build();
 
-	return parsingResult.map(({ path, fileContent }) => {
+	return parsingResult.map(({ path, file }) => {
 		const packagePath = packageFinder.findCurrent(path);
 
 		const isPackageEntryPoint = packagePath
@@ -41,7 +41,7 @@ export function buildModules(
 			: false;
 
 		return new Module({
-			fileContent,
+			file,
 			packagePath,
 			isPackageEntryPoint,
 			filePathRec: pathRecProvider.getFilePathRec(path),

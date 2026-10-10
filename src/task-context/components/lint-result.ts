@@ -17,8 +17,8 @@ export function createLintResult({ appContext }: { appContext: AppContext }) {
 	});
 
 	importDefects.getAll().forEach(({ sourcePath, importedPath, posSpan, info }) => {
-		const { fileContent } = modules.get(sourcePath);
-		const lineRange = fileContent.getLineRange(posSpan);
+		const { file } = modules.get(sourcePath);
+		const lineRange = file.getLineRange(posSpan);
 
 		const link = tuix.text(createModuleLink({ appContext, path: sourcePath, lineRange }), {
 			bold: true,

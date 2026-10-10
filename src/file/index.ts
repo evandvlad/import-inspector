@@ -1,12 +1,12 @@
 import { fromLines, normalizeBr, toLines } from "~/lib/text.ts";
 import { isUndefined } from "~/lib/vtype.ts";
-import type { FileContent as IFileContent, FileContentEntry, LineRange, Span } from "~/api.ts";
+import type { File as IFile, FileEntry, LineRange, Span } from "~/api.ts";
 
 function isInSpan({ start, end }: Span, value: number) {
 	return value >= start && value <= end;
 }
 
-export class FileContent implements IFileContent {
+export class File implements IFile {
 	value;
 	entries;
 
@@ -65,7 +65,7 @@ export class FileContent implements IFileContent {
 	}
 
 	#splitToEntries() {
-		const entries: FileContentEntry[] = [];
+		const entries: FileEntry[] = [];
 
 		let start = 0;
 

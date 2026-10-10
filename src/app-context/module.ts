@@ -1,6 +1,6 @@
 import { assert } from "~/lib/err.ts";
 import { isNull } from "~/lib/vtype.ts";
-import type { FileContent, Module as IModule } from "~/api.ts";
+import type { File, Module as IModule } from "~/api.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
 import type { FilePathRec } from "./path-rec-provider/index.ts";
@@ -13,9 +13,8 @@ export class Module implements IModule {
 	lang;
 	links;
 	imports;
-	fileContent;
+	file;
 	packagePath;
-	parentDirPath;
 	isPackageEntryPoint;
 	frames: string[];
 	tags: string[];
@@ -24,22 +23,21 @@ export class Module implements IModule {
 	isInPackage;
 
 	constructor(
-		{ filePathRec, packagePath, imports, links, fileContent, isPackageEntryPoint }: {
+		{ filePathRec, packagePath, imports, links, file, isPackageEntryPoint }: {
 			filePathRec: FilePathRec;
 			imports: Import[];
 			links: string[];
-			fileContent: FileContent;
+			file: File;
 			packagePath: string | null;
 			isPackageEntryPoint: boolean;
 		},
 	) {
 		this.links = links;
 		this.path = filePathRec.path;
-		this.fileContent = fileContent;
+		this.file = file;
 		this.packagePath = packagePath;
 		this.name = filePathRec.baseName;
 		this.lang = getFileLang(filePathRec.path);
-		this.parentDirPath = filePathRec.parentPath;
 		this.isPackageEntryPoint = isPackageEntryPoint;
 		this.frames = [];
 		this.tags = [];

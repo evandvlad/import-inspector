@@ -7,9 +7,9 @@ export function createModuleCode(
 	const { env, modules } = appContext;
 
 	const fullPath = env.getFullPath(path);
-	const { fileContent } = modules.get(fullPath);
+	const { file } = modules.get(fullPath);
 
-	const content = lineRange ? fileContent.getContentByLineRange(lineRange) : fileContent.value;
+	const content = lineRange ? file.getContentByLineRange(lineRange) : file.value;
 	const startLine = lineRange ? lineRange[0] : 1;
 
 	return tuix.code(content, { startLine });

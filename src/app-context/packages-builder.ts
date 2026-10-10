@@ -1,4 +1,4 @@
-import type { Dict } from "~/lib/dict.ts";
+import { Dict } from "~/lib/dict.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import type { PackageFinder } from "./package-finder/index.ts";
@@ -22,10 +22,9 @@ export function buildPackages(
 				return new Package({
 					name,
 					path,
-					parentDirPath: parentPath,
-					modulePaths: modules.map(({ path }) => path),
-					subPackagePaths: packageFinder.findChildren(path),
-					parentPackagePath: parentPath ? packageFinder.findCurrent(path) : null,
+					modules: Dict.fromArray(modules, ({ path }) => path),
+					children: packageFinder.findChildren(path),
+					parent: parentPath ? packageFinder.findCurrent(path) : null,
 				});
 			},
 		);

@@ -155,7 +155,7 @@ export type SettingsModule = {
 export type UnresolvedDynamicImportData = {
 	sourcePath: string;
 	posSpan: Span;
-	fileContent: FileContent;
+	file: File;
 };
 
 export type CorrectUnresolvedDynamicImports = (
@@ -184,20 +184,20 @@ export type ImportResolution = {
 	isRelative: boolean;
 };
 
-export type FileContentEntry = {
+export type FileEntry = {
 	line: number;
 	posSpan: Span;
 	value: string;
 };
 
-export type FileContent = {
+export type File = {
 	value: string;
-	entries: FileContentEntry[];
+	entries: FileEntry[];
 	getLineRange: (span: Span) => LineRange;
 	getContentBySpan: (span: Span) => string;
-	getEntriesBySpan: (span: Span) => FileContentEntry[];
+	getEntriesBySpan: (span: Span) => FileEntry[];
 	getContentByLineRange: (lineRange: LineRange) => string;
-	getEntriesByLineRange: (lineRange: LineRange) => FileContentEntry[];
+	getEntriesByLineRange: (lineRange: LineRange) => FileEntry[];
 };
 
 export type ModuleDependencyItem = {
@@ -247,8 +247,7 @@ export type Module = {
 	path: string;
 	tags: string[];
 	frames: string[];
-	fileContent: FileContent;
-	parentDirPath: Nullable<string>;
+	file: File;
 	packagePath: Nullable<string>;
 	isInPackage: boolean;
 	isPackageEntryPoint: boolean;
@@ -271,11 +270,10 @@ export type Module = {
 export type Package = {
 	name: string;
 	path: string;
-	parentDirPath: Nullable<string>;
-	parentPackagePath: Nullable<string>;
-	hasParentPackage: boolean;
-	subPackagePaths: string[];
-	modulePaths: string[];
+	parent: Nullable<string>;
+	hasParent: boolean;
+	children: string[];
+	modules: Dict<Module>;
 };
 
 export type Frames = {
@@ -292,7 +290,6 @@ export type Packages = {
 	parent: (path: string) => Package;
 	children: (path: string) => Dict<Package>;
 	ancestry: (path: string) => Dict<Package>;
-	modules: (path: string) => Dict<Module>;
 };
 
 export type Tags = {
