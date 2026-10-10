@@ -11,10 +11,10 @@ export class Packages implements IPackages {
 
 	#modules;
 
-	constructor({ packages, modules }: { packages: Package[]; modules: Dict<Module> }) {
+	constructor({ packages, modules }: { packages: Dict<Package>; modules: Dict<Module> }) {
 		this.#modules = modules;
 
-		this.all = Dict.fromArray(packages, ({ path }) => path);
+		this.all = packages;
 		this.roots = this.all.filter(({ hasParentPackage }) => !hasParentPackage);
 	}
 

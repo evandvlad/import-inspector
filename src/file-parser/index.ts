@@ -1,7 +1,7 @@
 import type { Settings } from "~/settings.ts";
 import { FileContent } from "~/file-content/index.ts";
 
-import type { ImportRec } from "../values.ts";
+import type { FileParsingResult, ImportRec } from "../values.ts";
 
 import { parseFile as parse } from "./file-parser.ts";
 
@@ -16,7 +16,7 @@ class FileParser {
 		this.#settings = settings;
 	}
 
-	async parse() {
+	async parse(): Promise<FileParsingResult> {
 		const importRecs = await parse({ path: this.#path, content: this.#fileContent.value });
 		const newImportRecs = await this.#processImportRecs({ importRecs });
 

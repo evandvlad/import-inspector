@@ -1,3 +1,4 @@
+import type { Dict } from "~/lib/dict.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
 
@@ -9,10 +10,9 @@ import { PackageEntryPointDetector } from "./package-entry-point-detector/index.
 import { AppContext } from "./app-context.ts";
 
 export function createAppContext(
-	{ settings, parsingResult }: { settings: Settings; parsingResult: FileParsingResult[] },
+	{ settings, parsingResult }: { settings: Settings; parsingResult: Dict<FileParsingResult> },
 ) {
-	const filePaths = parsingResult.map(({ path }) => path);
-	const pathRecProvider = new PathRecProvider({ filePaths });
+	const pathRecProvider = new PathRecProvider({ filePaths: parsingResult.toKeys() });
 	const packageEntryPointDetector = new PackageEntryPointDetector({ pathRecProvider });
 	const packageFinder = new PackageFinder({ pathRecProvider, packageEntryPointDetector });
 

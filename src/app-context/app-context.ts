@@ -1,6 +1,6 @@
 import type { AppContext as IAppContext } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
-import { Dict } from "~/lib/dict.ts";
+import type { Dict } from "~/lib/dict.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import type { Module } from "./module.ts";
@@ -26,12 +26,12 @@ export class AppContext implements IAppContext {
 	constructor(
 		{ settings, modules, packages, pathRecProvider }: {
 			settings: Settings;
-			modules: Module[];
-			packages: Package[];
+			modules: Dict<Module>;
+			packages: Dict<Package>;
 			pathRecProvider: PathRecProvider;
 		},
 	) {
-		this.modules = Dict.fromArray(modules, ({ path }) => path);
+		this.modules = modules;
 		this.packages = new Packages({ packages, modules: this.modules });
 		this.env = new Env({ settings, pathRecProvider });
 		this.imports = new Imports({ modules: this.modules });

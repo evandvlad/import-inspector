@@ -1,3 +1,4 @@
+import type { Dict } from "~/lib/dict.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
 
@@ -14,7 +15,7 @@ export function buildModules(
 	{ settings, parsingResult, pathRecProvider, packageFinder, packageEntryPointDetector }: {
 		settings: Settings;
 		packageFinder: PackageFinder;
-		parsingResult: FileParsingResult[];
+		parsingResult: Dict<FileParsingResult>;
 		pathRecProvider: PathRecProvider;
 		packageEntryPointDetector: PackageEntryPointDetector;
 	},
