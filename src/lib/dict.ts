@@ -3,6 +3,8 @@ import type { Dict as IDict } from "~/api.ts";
 import { isArray, isMap } from "~/lib/vtype.ts";
 
 type Entry<T> = [key: string, value: T];
+type Reducer<T, U = T> = (acc: U, value: T, key: string) => U;
+type Collection<T> = IDict<T> | Record<string, T> | Map<string, T> | Array<Entry<T>>;
 
 export class Dict<T> implements IDict<T> {
 	#map;
@@ -70,8 +72,11 @@ export class Dict<T> implements IDict<T> {
 		}
 
 		this.set(key, value);
-
 		return value;
+	}
+
+	addOrReduce(key: string, value: T, reducer: Reducer<T>) {
+		return this.set(key, this.has(key) ? reducer(this.get(key), value, key) : value);
 	}
 
 	find(callback: (value: T, key: string) => unknown) {
@@ -174,7 +179,7 @@ export class Dict<T> implements IDict<T> {
 		return Dict.fromEntries(newEntries);
 	}
 
-	reduce<U>(callback: (acc: U, value: T, key: string) => U, init: U) {
+	reduce<U>(callback: Reducer<T, U>, init: U) {
 		return this.toEntries().reduce((acc, [key, value]) => callback(acc, value, key), init);
 	}
 
@@ -190,42 +195,16 @@ export class Dict<T> implements IDict<T> {
 		}, new Dict<T[]>());
 	}
 
-	merge(...args: Array<IDict<T> | Record<string, T> | Map<string, T> | Array<Entry<T>>>) {
-		args.forEach((arg) => {
-			if (isMap(arg) || Dict.isDict<T>(arg)) {
-				arg.forEach((value, key) => {
-					this.set(key, value);
-				});
-
-				return;
-			}
-
-			if (isArray(arg)) {
-				arg.forEach(([key, value]) => {
-					this.set(key, value);
-				});
-
-				return;
-			}
-
-			Object.entries(arg).forEach(([key, value]) => {
-				this.set(key, value);
-			});
+	merge(collection: Collection<T>, reducer: Reducer<T> = (_, value) => value) {
+		this.#eachInCollection(collection, (value, key) => {
+			this.addOrReduce(key, value, reducer);
 		});
 
 		return this;
 	}
 
-	concat(...args: Array<IDict<T> | Record<string, T> | Map<string, T> | Array<Entry<T>>>) {
-		return this.slice().merge(...args);
-	}
-
-	mergeRec(rec: Record<string, T>) {
-		Object.entries(rec).forEach(([key, value]) => {
-			this.set(key, value);
-		});
-
-		return this;
+	concat(collection: Collection<T>, reducer?: Reducer<T>) {
+		return this.slice().merge(collection, reducer);
 	}
 
 	keys() {
@@ -262,5 +241,27 @@ export class Dict<T> implements IDict<T> {
 
 	toJSON() {
 		return this.toRec();
+	}
+
+	#eachInCollection(collection: Collection<T>, callback: (value: T, key: string) => void) {
+		if (isMap(collection) || Dict.isDict<T>(collection)) {
+			collection.forEach((value, key) => {
+				callback(value, key);
+			});
+
+			return;
+		}
+
+		if (isArray(collection)) {
+			collection.forEach(([key, value]) => {
+				callback(value, key);
+			});
+
+			return;
+		}
+
+		Object.entries(collection).forEach(([key, value]) => {
+			callback(value, key);
+		});
 	}
 }

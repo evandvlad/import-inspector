@@ -12,6 +12,7 @@ export interface Dict<T> {
 	get: (key: string) => T;
 	getOrDefault: <U = undefined>(key: string, defaultValue: U) => T | U;
 	getOrInsert: (key: string, value: T) => T;
+	addOrReduce: (key: string, value: T, reducer: (cur: T, value: T, key: string) => T) => this;
 	find: (callback: (value: T, key: string) => unknown) => T | undefined;
 	findE: (callback: (value: T, key: string) => unknown) => Entry<T> | undefined;
 	forEach: (callback: (value: T, key: string) => void) => this;
@@ -29,8 +30,14 @@ export interface Dict<T> {
 	reduce: <U>(callback: (acc: U, value: T, key: string) => U, init: U) => U;
 	fold: <U>(callback: (acc: Dict<U>, value: T, key: string) => Dict<U>) => Dict<U>;
 	group: (callback: (value: T, key: string) => string) => Dict<T[]>;
-	merge: (...args: Array<Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>>) => this;
-	concat: (...args: Array<Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>>) => Dict<T>;
+	merge: (
+		collection: Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>,
+		reducer?: (acc: T, value: T, key: string) => T,
+	) => this;
+	concat: (
+		collection: Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>,
+		reducer?: (acc: T, value: T, key: string) => T,
+	) => Dict<T>;
 	keys: () => MapIterator<string>;
 	values: () => MapIterator<T>;
 	entries: () => MapIterator<Entry<T>>;
@@ -41,6 +48,41 @@ export interface Dict<T> {
 	toRec: () => Rec<T>;
 	toJSON: () => Rec<T>;
 }
+
+export type ReadonlyDict<T> = Pick<
+	Dict<T>,
+	| "size"
+	| "has"
+	| "get"
+	| "getOrDefault"
+	| "find"
+	| "findE"
+	| "forEach"
+	| "filter"
+	| "pick"
+	| "omit"
+	| "map"
+	| "mapK"
+	| "mapE"
+	| "slice"
+	| "some"
+	| "every"
+	| "sortK"
+	| "sortE"
+	| "reduce"
+	| "fold"
+	| "group"
+	| "concat"
+	| "keys"
+	| "values"
+	| "entries"
+	| "toArray"
+	| "toEntries"
+	| "toKeys"
+	| "toMap"
+	| "toRec"
+	| "toJSON"
+>;
 
 export const langs = ["ts", "js"] as const;
 
@@ -396,7 +438,7 @@ export type ModuleDefect_v2 = {
 	mod: Module_v2;
 };
 
-export interface ImportDefects_v2 extends Dict<ImportDefect_v2> {
+export interface ImportDefects_v2 extends ReadonlyDict<ImportDefect_v2> {
 	rules: string[];
 	add: (rule: string, description?: string) => this;
 	remove: (rule: string) => this;
@@ -416,7 +458,7 @@ export type Import_v2 = {
 	defects: ImportDefects_v2;
 };
 
-export interface ImportsLocations_v2 extends Dict<ImportsDict_v2> {
+export interface ImportsLocations_v2 extends ReadonlyDict<ImportsDict_v2> {
 	locators: string[];
 }
 
@@ -424,7 +466,7 @@ export interface ImportsDictWithLocations_v2 extends ImportsDict_v2 {
 	locations: ImportsLocations_v2;
 }
 
-export interface ImportsDict_v2 extends Dict<Import_v2> {
+export interface ImportsDict_v2 extends ReadonlyDict<Import_v2> {
 	ids: string[];
 }
 
@@ -439,7 +481,7 @@ export interface Imports_v2 extends ImportsDict_v2 {
 	external: ImportsDictWithLocations_v2;
 }
 
-export interface ModuleDefects_v2 extends Dict<ModuleDefect_v2> {
+export interface ModuleDefects_v2 extends ReadonlyDict<ModuleDefect_v2> {
 	rules: string[];
 	add: (rule: string, description?: string) => this;
 	remove: (rule: string) => this;
@@ -451,7 +493,7 @@ export type ModuleFrame_v2 = {
 	modules: Modules_v2;
 };
 
-export interface ModuleFrames_v2 extends Dict<ModuleFrame_v2> {
+export interface ModuleFrames_v2 extends ReadonlyDict<ModuleFrame_v2> {
 	names: string[];
 	add: (name: string) => this;
 	remove: (name: string) => this;
@@ -461,7 +503,7 @@ export type ModuleTag_v2 = {
 	modules: Modules_v2;
 };
 
-export interface ModuleTags_v2 extends Dict<ModuleTag_v2> {
+export interface ModuleTags_v2 extends ReadonlyDict<ModuleTag_v2> {
 	size: number;
 	names: string[];
 	add: (name: string) => this;
@@ -483,7 +525,7 @@ export type Module_v2 = {
 	defects: ModuleDefects_v2;
 };
 
-export interface Modules_v2 extends Dict<Module_v2> {
+export interface Modules_v2 extends ReadonlyDict<Module_v2> {
 	paths: string[];
 }
 
@@ -496,7 +538,7 @@ export type Package_v2 = {
 	modules: Modules_v2;
 };
 
-export interface Packages_v2 extends Dict<Package_v2> {
+export interface Packages_v2 extends ReadonlyDict<Package_v2> {
 	paths: string[];
 }
 
@@ -507,22 +549,22 @@ export interface AppContextPackages_v2 extends Packages_v2 {
 	ancestry: (path: string) => Packages_v2;
 }
 
-export interface AppContextTags_v2 extends Dict<ModuleTag_v2> {
+export interface AppContextTags_v2 extends ReadonlyDict<ModuleTag_v2> {
 	names: string[];
 }
 
-export interface AppContextFrames_v2 extends Dict<ModuleFrame_v2> {
+export interface AppContextFrames_v2 extends ReadonlyDict<ModuleFrame_v2> {
 	frames: string[];
 }
 
-export interface AppContextModuleDefects_v2 extends Dict<ModuleDefect_v2> {
+export interface AppContextModuleDefects_v2 extends ReadonlyDict<ModuleDefect_v2> {
 	modules: Modules_v2;
 	remove: (rule: string) => this;
 	removeById: (id: string) => this;
 	removeAll: () => this;
 }
 
-export interface AppContextImportDefects_v2 extends Dict<ImportDefect_v2> {
+export interface AppContextImportDefects_v2 extends ReadonlyDict<ImportDefect_v2> {
 	modules: Modules_v2;
 	imports: Imports_v2;
 	remove: (rule: string) => this;

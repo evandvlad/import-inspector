@@ -82,6 +82,21 @@ describe("dict", () => {
 		expect(dict.size).toBe(3);
 	});
 
+	it("addOrReducer", () => {
+		const dict = Dict.fromRec({ foo: 1, bar: 1 });
+
+		const reducer = (acc: number, value: number) => acc + value;
+
+		dict.addOrReduce("baz", 0, reducer);
+		dict.addOrReduce("foo", 10, reducer);
+
+		expect(dict.toEntries()).toEqual([
+			["foo", 11],
+			["bar", 1],
+			["baz", 0],
+		]);
+	});
+
 	it("find/findK/findE", () => {
 		const dict = Dict.fromEntries(Object.entries(["foo", "bar"]));
 
@@ -221,8 +236,9 @@ describe("dict", () => {
 
 	it("merge", () => {
 		const dict = Dict.fromRec({ foo: 1 });
+		const dict2 = Dict.fromRec({ quux: 5 });
 
-		dict.merge({ bar: 2 }, [["baz", 3]]).merge().merge(new Map([["qux", 4]]), Dict.fromRec({ quux: 5 }));
+		dict.merge({ bar: 2 }).merge([["baz", 3]]).merge(new Map([["qux", 4]])).merge(dict2);
 
 		expect(dict.toEntries()).toEqual([
 			["foo", 1],
@@ -234,12 +250,14 @@ describe("dict", () => {
 	});
 
 	it("concat", () => {
-		const dict = new Dict<number>().merge({ foo: 1 }, [["bar", 2], ["baz", 3]]).merge().merge(
-			new Map([["qux", 4]]),
-			Dict.fromRec({ quux: 5 }),
-		);
+		const dict = Dict.fromRec({ foo: 1 });
+		const newDict = dict.concat([["bar", 2], ["baz", 3]]).concat(new Map([["qux", 4]])).concat({ quux: 5 });
 
 		expect(dict.toEntries()).toEqual([
+			["foo", 1],
+		]);
+
+		expect(newDict.toEntries()).toEqual([
 			["foo", 1],
 			["bar", 2],
 			["baz", 3],
