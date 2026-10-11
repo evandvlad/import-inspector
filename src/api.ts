@@ -376,3 +376,168 @@ export type TaskContext = {
 
 	report: (report: Report) => Promise<void>;
 };
+
+/// app-context API v2
+
+export type ImportDefect_v2 = {
+	id: string;
+	rule: string;
+	info: string;
+	description: string;
+	imp: Import_v2;
+	mod: Module_v2;
+};
+
+export type ModuleDefect_v2 = {
+	id: string;
+	rule: string;
+	info: string;
+	description: string;
+	mod: Module_v2;
+};
+
+export interface ImportDefects_v2 extends Dict<ImportDefect_v2> {
+	rules: string[];
+	add: (rule: string, description?: string) => this;
+	remove: (rule: string) => this;
+	removeById: (id: string) => this;
+	removeAll: () => this;
+}
+
+export type Import_v2 = {
+	id: string;
+	source: Module_v2;
+	locator: Nullable<string>;
+	location: Nullable<string>;
+	posSpan: Span;
+	isDynamic: boolean;
+	resolution: Nullable<ImportResolution>;
+	resolved: Nullable<Module_v2>;
+	defects: ImportDefects_v2;
+};
+
+export interface ImportsLocations_v2 extends Dict<ImportsDict_v2> {
+	locators: string[];
+}
+
+export interface ImportsDictWithLocations_v2 extends ImportsDict_v2 {
+	locations: ImportsLocations_v2;
+}
+
+export interface ImportsDict_v2 extends Dict<Import_v2> {
+	ids: string[];
+}
+
+export interface Imports_v2 extends ImportsDict_v2 {
+	ids: string[];
+	local: ImportsDict_v2;
+	fullResolved: ImportsDict_v2;
+	fullUnresolved: ImportsDict_v2;
+	localUnresolved: ImportsDict_v2;
+	dynamic: ImportsDict_v2;
+	static: ImportsDict_v2;
+	external: ImportsDictWithLocations_v2;
+}
+
+export interface ModuleDefects_v2 extends Dict<ModuleDefect_v2> {
+	rules: string[];
+	add: (rule: string, description?: string) => this;
+	remove: (rule: string) => this;
+	removeById: (id: string) => this;
+	removeAll: () => this;
+}
+
+export type ModuleFrame_v2 = {
+	modules: Modules_v2;
+};
+
+export interface ModuleFrames_v2 extends Dict<ModuleFrame_v2> {
+	names: string[];
+	add: (name: string) => this;
+	remove: (name: string) => this;
+}
+
+export type ModuleTag_v2 = {
+	modules: Modules_v2;
+};
+
+export interface ModuleTags_v2 extends Dict<ModuleTag_v2> {
+	size: number;
+	names: string[];
+	add: (name: string) => this;
+	remove: (name: string) => this;
+}
+
+export type Module_v2 = {
+	name: string;
+	lang: Lang;
+	path: string;
+	tags: ModuleTags_v2;
+	frames: ModuleFrames_v2;
+	file: File;
+	pack: Nullable<Package_v2>;
+	isInPack: boolean;
+	isPackEntry: boolean;
+	links: Modules_v2;
+	imports: Imports_v2;
+	defects: ModuleDefects_v2;
+};
+
+export interface Modules_v2 extends Dict<Module_v2> {
+	paths: string[];
+}
+
+export type Package_v2 = {
+	name: string;
+	path: string;
+	parent: Nullable<Package_v2>;
+	hasParent: boolean;
+	children: Packages_v2;
+	modules: Modules_v2;
+};
+
+export interface Packages_v2 extends Dict<Package_v2> {
+	paths: string[];
+}
+
+export interface AppContextPackages_v2 extends Packages_v2 {
+	roots: Packages_v2;
+	parent: (path: string) => Package_v2;
+	children: (path: string) => Packages_v2;
+	ancestry: (path: string) => Packages_v2;
+}
+
+export interface AppContextTags_v2 extends Dict<ModuleTag_v2> {
+	names: string[];
+}
+
+export interface AppContextFrames_v2 extends Dict<ModuleFrame_v2> {
+	frames: string[];
+}
+
+export interface AppContextModuleDefects_v2 extends Dict<ModuleDefect_v2> {
+	modules: Modules_v2;
+	remove: (rule: string) => this;
+	removeById: (id: string) => this;
+	removeAll: () => this;
+}
+
+export interface AppContextImportDefects_v2 extends Dict<ImportDefect_v2> {
+	modules: Modules_v2;
+	imports: Imports_v2;
+	remove: (rule: string) => this;
+	removeById: (id: string) => this;
+	removeAll: () => this;
+}
+
+export type AppContext_v2 = {
+	env: unknown;
+	summary: unknown;
+	modules: Modules_v2;
+	packages: AppContextPackages_v2;
+	imports: Imports_v2;
+	tags: AppContextTags_v2;
+	frames: AppContextFrames_v2;
+	importDefects: AppContextImportDefects_v2;
+	moduleDefects: AppContextModuleDefects_v2;
+};
