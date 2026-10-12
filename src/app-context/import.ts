@@ -25,7 +25,7 @@ export class Import implements IImport {
 		this.locator = importRec.locator;
 		this.posSpan = importRec.posSpan;
 		this.isDynamic = importRec.isDynamic;
-		this.defects = new Dict();
+		this.defects = Dict.empty();
 
 		this.resolved = resolution?.path ?? null;
 		this.location = this.resolved ?? this.locator;

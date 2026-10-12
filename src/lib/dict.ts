@@ -1,33 +1,51 @@
 import { assert } from "~/lib/err.ts";
 import type { Dict as IDict } from "~/api.ts";
 import { isArray, isMap } from "~/lib/vtype.ts";
+import { type DefRef, DefRefCached } from "~/lib/ref.ts";
 
 type Entry<T> = [key: string, value: T];
 type Reducer<T, U = T> = (acc: U, value: T, key: string) => U;
 type Collection<T> = IDict<T> | Record<string, T> | Map<string, T> | Array<Entry<T>>;
 
 export class Dict<T> implements IDict<T> {
-	#map;
+	#mapDefRef;
 
 	static isDict<U = unknown>(value: unknown): value is Dict<U> {
 		return value instanceof Dict;
 	}
 
 	static fromRec<U>(rec: Record<string, U>) {
-		return this.fromEntries(Object.entries(rec));
+		const defRef = new DefRefCached(() => new Map(Object.entries(rec)));
+		return new this<U>(defRef);
 	}
 
 	static fromEntries<U>(entries: Array<Entry<U>>) {
-		return new this<U>(new Map(entries));
+		const defRef = new DefRefCached(() => new Map(entries));
+		return new this<U>(defRef);
 	}
 
 	static fromArray<U>(arr: U[], mapKey: (value: U, key: number | string) => string = (_, key) => String(key)) {
-		const entries = Object.entries(arr).map(([key, value]) => [mapKey(value, key), value] satisfies Entry<U>);
-		return this.fromEntries(entries);
+		const defRef = new DefRefCached(() => {
+			const entries = Object.entries(arr)
+				.map(([key, value]) => [mapKey(value, key), value] satisfies Entry<U>);
+
+			return new Map(entries);
+		});
+
+		return new this<U>(defRef);
 	}
 
-	constructor(map: Map<string, T> = new Map()) {
-		this.#map = map;
+	static fromMap<U>(map: Map<string, U>) {
+		const defRef = new DefRefCached(() => map);
+		return new this<U>(defRef);
+	}
+
+	static empty<U>() {
+		return new this<U>();
+	}
+
+	protected constructor(mapDefRef?: DefRef<Map<string, T>>) {
+		this.#mapDefRef = mapDefRef ?? new DefRefCached(() => new Map<string, T>());
 	}
 
 	get size() {
@@ -100,15 +118,7 @@ export class Dict<T> implements IDict<T> {
 	}
 
 	filter(callback: (value: T, key: string) => unknown) {
-		const map = new Map<string, T>();
-
-		this.#map.forEach((value, key) => {
-			if (callback(value, key)) {
-				map.set(key, value);
-			}
-		});
-
-		return new Dict(map);
+		return this.fold<T>((acc, value, key) => callback(value, key) ? acc.set(key, value) : acc);
 	}
 
 	pick(keys: string[]) {
@@ -120,34 +130,18 @@ export class Dict<T> implements IDict<T> {
 	}
 
 	map<U>(callback: (value: T, key: string) => U) {
-		const map = new Map<string, U>();
-
-		this.#map.forEach((value, key) => {
-			map.set(key, callback(value, key));
-		});
-
-		return new Dict(map);
+		return this.fold<U>((acc, value, key) => acc.set(key, callback(value, key)));
 	}
 
 	mapK(callback: (value: T, key: string) => string) {
-		const map = new Map<string, T>();
-
-		this.#map.forEach((value, key) => {
-			map.set(callback(value, key), value);
-		});
-
-		return new Dict(map);
+		return this.fold<T>((acc, value, key) => acc.set(callback(value, key), value));
 	}
 
 	mapE<U>(callback: (value: T, key: string) => Entry<U>) {
-		const map = new Map<string, U>();
-
-		this.#map.forEach((value, key) => {
+		return this.fold<U>((acc, value, key) => {
 			const [newKey, newValue] = callback(value, key);
-			map.set(newKey, newValue);
+			return acc.set(newKey, newValue);
 		});
-
-		return new Dict(map);
 	}
 
 	slice(start?: number, end?: number) {
@@ -164,14 +158,7 @@ export class Dict<T> implements IDict<T> {
 	}
 
 	sortK(callback?: (key1: string, key2: string) => number) {
-		const newKeys = this.toKeys().toSorted(callback);
-		const map = new Map<string, T>();
-
-		newKeys.forEach((key) => {
-			map.set(key, this.get(key));
-		});
-
-		return new Dict(map);
+		return this.toKeys().toSorted(callback).reduce((acc, key) => acc.set(key, this.get(key)), Dict.empty<T>());
 	}
 
 	sortE(callback: (entry1: Entry<T>, entry2: Entry<T>) => number) {
@@ -184,7 +171,7 @@ export class Dict<T> implements IDict<T> {
 	}
 
 	fold<U>(callback: (acc: IDict<U>, value: T, key: string) => IDict<U>): IDict<U> {
-		return this.reduce<IDict<U>>(callback, new Dict<U>());
+		return this.reduce<IDict<U>>(callback, Dict.empty<U>());
 	}
 
 	group(callback: (value: T, key: string) => string) {
@@ -192,7 +179,7 @@ export class Dict<T> implements IDict<T> {
 			const newKey = callback(value, key);
 			acc.getOrInsert(newKey, []).push(value);
 			return acc;
-		}, new Dict<T[]>());
+		}, Dict.empty<T[]>());
 	}
 
 	merge(collection: Collection<T>, reducer: Reducer<T> = (_, value) => value) {
@@ -241,6 +228,10 @@ export class Dict<T> implements IDict<T> {
 
 	toJSON() {
 		return this.toRec();
+	}
+
+	get #map() {
+		return this.#mapDefRef.value;
 	}
 
 	#eachInCollection(collection: Collection<T>, callback: (value: T, key: string) => void) {

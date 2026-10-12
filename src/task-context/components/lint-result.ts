@@ -7,7 +7,7 @@ import { createModuleCode } from "./module-code.ts";
 
 export function createLintResult({ appContext }: { appContext: AppContext }) {
 	const { modules, importDefects, moduleDefects } = appContext;
-	const dict = new Dict<string[]>();
+	const dict = Dict.empty<string[]>();
 
 	moduleDefects.bySource.forEach((defects, source) => {
 		const content = defects.reduce((acc, { info }) => {

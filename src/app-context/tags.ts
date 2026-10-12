@@ -19,7 +19,7 @@ export class Tags implements ITags {
 	get byTag() {
 		return this.#modules.fold<IDict<Module>>((acc, mod) => {
 			mod.tags.forEach((tag) => {
-				acc.getOrInsert(tag, new Dict<Module>()).set(mod.path, mod);
+				acc.getOrInsert(tag, Dict.empty<Module>()).set(mod.path, mod);
 			});
 
 			return acc;

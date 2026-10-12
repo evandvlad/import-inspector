@@ -1,4 +1,4 @@
-import type {  ModuleDefects_v2, Module_v2, ModuleDefect_v2 } from "~/api.ts";
+import type { Module_v2, ModuleDefect_v2, ModuleDefects_v2 } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
 
 import { ModuleDefect } from "./module-defect.ts";

@@ -1,5 +1,5 @@
 import { Dict } from "~/lib/dict.ts";
-import type { Module } from "~/api.ts";
+import type { Dict as IDict, Module } from "~/api.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 import type { PackageFinder } from "./package-finder/index.ts";
@@ -7,7 +7,7 @@ import { Package } from "./package.ts";
 
 export function buildPackages(
 	{ modules, pathRecProvider, packageFinder }: {
-		modules: Dict<Module>;
+		modules: IDict<Module>;
 		pathRecProvider: PathRecProvider;
 		packageFinder: PackageFinder;
 	},

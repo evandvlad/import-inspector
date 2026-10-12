@@ -5,7 +5,7 @@ import { Dict } from "./dict.ts";
 
 describe("dict", () => {
 	it("base operations", () => {
-		const dict = new Dict();
+		const dict = Dict.empty();
 
 		expect(dict.size).toBe(0);
 
@@ -36,7 +36,7 @@ describe("dict", () => {
 		expect(Dict.isDict({})).toBe(false);
 		expect(Dict.isDict(new Map())).toBe(false);
 		expect(Dict.isDict([])).toBe(false);
-		expect(Dict.isDict(new Dict())).toBe(true);
+		expect(Dict.isDict(Dict.empty())).toBe(true);
 	});
 
 	it("fromArray", () => {
@@ -107,7 +107,7 @@ describe("dict", () => {
 	});
 
 	it("filter", () => {
-		const dict = new Dict(new Map([["foo", 1], ["bar", 6], ["baz", 17]]));
+		const dict = Dict.fromMap(new Map([["foo", 1], ["bar", 6], ["baz", 17]]));
 
 		const newDict = dict.filter((value) => value > 10);
 

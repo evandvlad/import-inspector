@@ -9,14 +9,14 @@ import { fileExtNames } from "~/project-specifics.ts";
 const extNamesGlob = fileExtNames.map((extName) => extName.slice(1)).join(",");
 
 export async function collectFiles({ settings }: { settings: Settings }) {
-	const files = new Dict<string>();
+	const files = Dict.empty<string>();
 
 	const globs = settings.rootEntries
 		.map(({ path }) => joinGlobs([path, "**", `*.{${extNamesGlob}}`], { globstar: true }));
 
 	for (const glob of globs) {
 		for await (const { path } of expandGlob(glob)) {
-			if (!Object.hasOwn(files, path)) {
+			if (!files.has(path)) {
 				const content = await readFile(path);
 				files.set(path, content);
 			}

@@ -40,7 +40,7 @@ export class Module implements IModule {
 		this.isPackEntry = isPackEntry;
 		this.frames = [];
 		this.tags = [];
-		this.defects = new Dict();
+		this.defects = Dict.empty();
 		this.imports = imports;
 		this.isInPack = !isNull(this.pack);
 	}
