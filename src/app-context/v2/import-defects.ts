@@ -1,17 +1,18 @@
-import type { Import_v2, ImportDefect_v2, ImportDefects_v2, Module_v2 } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
+import type { DefRef } from "~/lib/ref.ts";
+import type { Import_v2, ImportDefect_v2, ImportDefects_v2, Module_v2 } from "~/api.ts";
 
 import { ImportDefect } from "./import-defect.ts";
 
 export class ImportDefects extends Dict<ImportDefect_v2> implements ImportDefects_v2 {
 	#imp;
-	#mod;
+	#modRef;
 
-	constructor({ imp, mod }: { imp: Import_v2; mod: Module_v2 }) {
+	constructor({ imp, modRef }: { imp: Import_v2; modRef: DefRef<Module_v2> }) {
 		super();
 
 		this.#imp = imp;
-		this.#mod = mod;
+		this.#modRef = modRef;
 	}
 
 	get rules() {
@@ -19,7 +20,7 @@ export class ImportDefects extends Dict<ImportDefect_v2> implements ImportDefect
 	}
 
 	add(rule: string, description?: string) {
-		const defect = new ImportDefect({ rule, description, imp: this.#imp, mod: this.#mod });
+		const defect = new ImportDefect({ rule, description, imp: this.#imp, mod: this.#modRef.value });
 		this.set(rule, defect);
 		return this;
 	}
