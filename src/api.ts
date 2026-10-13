@@ -438,11 +438,15 @@ export type ModuleDefect_v2 = {
 	mod: Module_v2;
 };
 
-export interface ImportDefects_v2 extends ReadonlyDict<ImportDefect_v2> {
+export interface ImportDefects_v2 {
+	total: number;
 	rules: string[];
+	byRule: ReadonlyDict<ImportDefect_v2>;
+	has: (rule: string) => boolean;
+	get: (rule: string) => ImportDefect_v2;
+	find: (rule: string) => ImportDefect_v2 | null;
 	add: (rule: string, description?: string) => this;
 	remove: (rule: string) => this;
-	removeById: (id: string) => this;
 	removeAll: () => this;
 }
 
@@ -458,57 +462,55 @@ export type Import_v2 = {
 	defects: ImportDefects_v2;
 };
 
-export interface ImportsLocations_v2 extends ReadonlyDict<ImportsDict_v2> {
-	locators: string[];
-}
+export type Imports_v2 = {
+	byId: ReadonlyDict<Import_v2>;
+	localById: ReadonlyDict<Import_v2>;
+	fullResolvedById: ReadonlyDict<Import_v2>;
+	fullUnresolvedById: ReadonlyDict<Import_v2>;
+	localUnresolvedById: ReadonlyDict<Import_v2>;
+	dynamicById: ReadonlyDict<Import_v2>;
+	staticById: ReadonlyDict<Import_v2>;
+	externalById: ReadonlyDict<Import_v2>;
+	externalByLocator: ReadonlyDict<ReadonlyDict<ImportDefect_v2>>;
+};
 
-export interface ImportsDictWithLocations_v2 extends ImportsDict_v2 {
-	locations: ImportsLocations_v2;
-}
-
-export interface ImportsDict_v2 extends ReadonlyDict<Import_v2> {
-	ids: string[];
-}
-
-export interface Imports_v2 extends ImportsDict_v2 {
-	ids: string[];
-	local: ImportsDict_v2;
-	fullResolved: ImportsDict_v2;
-	fullUnresolved: ImportsDict_v2;
-	localUnresolved: ImportsDict_v2;
-	dynamic: ImportsDict_v2;
-	static: ImportsDict_v2;
-	external: ImportsDictWithLocations_v2;
-}
-
-export interface ModuleDefects_v2 extends ReadonlyDict<ModuleDefect_v2> {
+export interface ModuleDefects_v2 {
+	total: number;
 	rules: string[];
+	byRule: ReadonlyDict<ModuleDefect_v2>;
+	has: (rule: string) => boolean;
+	get: (rule: string) => ModuleDefect_v2;
+	find: (rule: string) => ModuleDefect_v2 | null;
 	add: (rule: string, description?: string) => this;
 	remove: (rule: string) => this;
-	removeById: (id: string) => this;
 	removeAll: () => this;
 }
 
 export type ModuleFrame_v2 = {
-	modules: Modules_v2;
+	modByPath: ReadonlyDict<Module_v2>;
 };
 
-export interface ModuleFrames_v2 extends ReadonlyDict<ModuleFrame_v2> {
+export interface ModuleFrames_v2 {
 	names: string[];
+	byName: ReadonlyDict<ModuleFrame_v2>;
 	add: (name: string) => this;
 	remove: (name: string) => this;
 }
 
 export type ModuleTag_v2 = {
-	modules: Modules_v2;
+	modByPath: ReadonlyDict<Module_v2>;
 };
 
-export interface ModuleTags_v2 extends ReadonlyDict<ModuleTag_v2> {
-	size: number;
+export interface ModuleTags_v2 {
 	names: string[];
+	byName: ReadonlyDict<ModuleTag_v2>;
 	add: (name: string) => this;
 	remove: (name: string) => this;
 }
+
+export type ModuleLinks_v2 = {
+	modByPath: ReadonlyDict<Module_v2>;
+};
 
 export type Module_v2 = {
 	name: string;
@@ -520,62 +522,61 @@ export type Module_v2 = {
 	pack: Nullable<Package_v2>;
 	isInPack: boolean;
 	isPackEntry: boolean;
-	links: Modules_v2;
+	links: ModuleLinks_v2;
 	imports: Imports_v2;
 	defects: ModuleDefects_v2;
 };
-
-export interface Modules_v2 extends ReadonlyDict<Module_v2> {
-	paths: string[];
-}
 
 export type Package_v2 = {
 	name: string;
 	path: string;
 	parent: Nullable<Package_v2>;
 	hasParent: boolean;
-	children: Packages_v2;
-	modules: Modules_v2;
+	childByPath: ReadonlyDict<Package_v2>;
+	ancestorByPath: ReadonlyDict<Package_v2>;
+	modByPath: ReadonlyDict<Module_v2>;
 };
 
 export interface Packages_v2 extends ReadonlyDict<Package_v2> {
 	paths: string[];
 }
 
-export interface AppContextPackages_v2 extends Packages_v2 {
-	roots: Packages_v2;
-	parent: (path: string) => Package_v2;
-	children: (path: string) => Packages_v2;
-	ancestry: (path: string) => Packages_v2;
+export interface AppContextPackages_v2 {
+	byPath: ReadonlyDict<Package_v2>;
+	rootByPath: ReadonlyDict<Package_v2>;
 }
 
-export interface AppContextTags_v2 extends ReadonlyDict<ModuleTag_v2> {
+export interface AppContextModules_v2 {
+	byPath: ReadonlyDict<Module_v2>;
+}
+
+export type AppContextTags_v2 = {
 	names: string[];
-}
+	byName: ReadonlyDict<ModuleTag_v2>;
+};
 
-export interface AppContextFrames_v2 extends ReadonlyDict<ModuleFrame_v2> {
-	frames: string[];
-}
+export type AppContextFrames_v2 = {
+	names: string[];
+	byName: ReadonlyDict<ModuleFrame_v2>;
+};
 
 export interface AppContextModuleDefects_v2 extends ReadonlyDict<ModuleDefect_v2> {
-	modules: Modules_v2;
+	modByPath: ReadonlyDict<Module_v2>;
 	remove: (rule: string) => this;
-	removeById: (id: string) => this;
 	removeAll: () => this;
 }
 
 export interface AppContextImportDefects_v2 extends ReadonlyDict<ImportDefect_v2> {
-	modules: Modules_v2;
-	imports: Imports_v2;
+	modByPath: ReadonlyDict<Module_v2>;
+	importById: ReadonlyDict<Import_v2>;
 	remove: (rule: string) => this;
-	removeById: (id: string) => this;
 	removeAll: () => this;
 }
 
 export type AppContext_v2 = {
 	env: unknown;
 	summary: unknown;
-	modules: Modules_v2;
+	modules: AppContextModules_v2;
 	packages: AppContextPackages_v2;
 	imports: Imports_v2;
 	tags: AppContextTags_v2;

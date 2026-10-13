@@ -1,39 +1,55 @@
-import type { Module_v2, ModuleDefect_v2, ModuleDefects_v2 } from "~/api.ts";
+import { assert } from "~/lib/err.ts";
 import { Dict } from "~/lib/dict.ts";
+import type { Module_v2, ModuleDefect_v2, ModuleDefects_v2 } from "~/api.ts";
 
 import { ModuleDefect } from "./module-defect.ts";
 
-export class ModuleDefects extends Dict<ModuleDefect_v2> implements ModuleDefects_v2 {
+export class ModuleDefects implements ModuleDefects_v2 {
+	byRule;
+
 	#mod;
 
 	constructor({ mod }: { mod: Module_v2 }) {
-		super();
-
 		this.#mod = mod;
+
+		this.byRule = Dict.empty<ModuleDefect_v2>();
+	}
+
+	get total() {
+		return this.byRule.size;
 	}
 
 	get rules() {
-		return this.toKeys();
+		return this.byRule.toKeys();
+	}
+
+	has(rule: string) {
+		return this.byRule.has(rule);
+	}
+
+	get(rule: string) {
+		const defect = this.find(rule);
+		assert(defect, `Can't get module defect for rule '${rule}'.`);
+		return defect;
+	}
+
+	find(rule: string) {
+		return this.byRule.getOrDefault(rule, null);
 	}
 
 	add(rule: string, description?: string) {
 		const defect = new ModuleDefect({ rule, description, mod: this.#mod });
-		this.set(rule, defect);
+		this.byRule.set(rule, defect);
 		return this;
 	}
 
-	removeById(id: string) {
-		const defect = this.find((defect) => defect.id === id);
-
-		if (defect) {
-			this.remove(defect.rule);
-		}
-
+	remove(rule: string) {
+		this.byRule.remove(rule);
 		return this;
 	}
 
 	removeAll() {
-		this.clear();
+		this.byRule.clear();
 		return this;
 	}
 }

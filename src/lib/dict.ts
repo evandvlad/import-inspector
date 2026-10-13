@@ -44,7 +44,7 @@ export class Dict<T> implements IDict<T> {
 		return new this<U>();
 	}
 
-	protected constructor(mapDefRef?: DefRef<Map<string, T>>) {
+	private constructor(mapDefRef?: DefRef<Map<string, T>>) {
 		this.#mapDefRef = mapDefRef ?? new DefRefCached(() => new Map<string, T>());
 	}
 
