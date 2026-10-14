@@ -1,24 +1,23 @@
 import { DefRefCached } from "~/lib/ref.ts";
-import type { Dict as IDict, Import_v2, Module_v2, ImportDefects_v2 } from "~/api.ts";
+import type { Dict as IDict, Import_v2, Module_v2 } from "~/api.ts";
 import type { ImportRec, ImportResolution } from "~/values.ts";
 
 import { ImportDefects } from "./import-defects.ts";
 
 export class Import implements Import_v2 {
 	id;
-	posSpan;
+	defects;
 	locator;
 	location;
 	isDynamic;
-	resolution;
-	defects: ImportDefects_v2;
 
-	#sourceRef;
-	#resolvedRef;
+	#posSpan;
+	#sourceModRef;
+	#resolutionRef;
 
 	constructor(
-		{ sourceId, importRec, resolution, modulesDict }: {
-			sourceId: string;
+		{ modulePath, importRec, resolution, modulesDict }: {
+			modulePath: string;
 			importRec: ImportRec;
 			resolution: ImportResolution | null;
 			modulesDict: IDict<Module_v2>;
@@ -26,22 +25,41 @@ export class Import implements Import_v2 {
 	) {
 		this.id = crypto.randomUUID() as string;
 		this.locator = importRec.locator;
-		this.posSpan = importRec.posSpan;
 		this.isDynamic = importRec.isDynamic;
-		this.resolution = resolution;
 		this.location = resolution?.path ?? this.locator;
 
-		this.#sourceRef = new DefRefCached(() => modulesDict.get(sourceId));
-		this.#resolvedRef = new DefRefCached(() => resolution?.path ? modulesDict.get(resolution.path) : null);
+		this.#posSpan = importRec.posSpan;
 
-		this.defects = new ImportDefects({ imp: this, modRef: this.#sourceRef });
+		this.#sourceModRef = new DefRefCached(() => modulesDict.get(modulePath));
+
+		this.#resolutionRef = new DefRefCached(() =>
+			resolution
+				? {
+					isExternal: resolution.isExternal,
+					isRelative: resolution.isRelative,
+					mod: resolution.path ? modulesDict.get(resolution.path) : null,
+				}
+				: null
+		);
+
+		this.defects = new ImportDefects({ imp: this as Import_v2, modRef: this.#sourceModRef });
 	}
 
-	get source() {
-		return this.#sourceRef.value;
+	get sourceMod() {
+		return this.#sourceModRef.value;
 	}
 
-	get resolved() {
-		return this.#resolvedRef.value;
+	get resolution() {
+		return this.#resolutionRef.value;
+	}
+
+	get fileLineRange() {
+		const { file } = this.#sourceModRef.value;
+		return file.getLineRange(this.#posSpan);
+	}
+
+	get fileEntries() {
+		const { file } = this.#sourceModRef.value;
+		return file.getEntriesBySpan(this.#posSpan);
 	}
 }

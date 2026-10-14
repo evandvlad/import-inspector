@@ -450,19 +450,30 @@ export interface ImportDefects_v2 {
 	removeAll: () => this;
 }
 
+export type ImportResolution_v2 = {
+	mod: Nullable<Module_v2>;
+	isExternal: boolean;
+	isRelative: boolean;
+};
+
 export type Import_v2 = {
 	id: string;
-	source: Module_v2;
 	locator: Nullable<string>;
 	location: Nullable<string>;
-	posSpan: Span;
 	isDynamic: boolean;
-	resolution: Nullable<ImportResolution>;
-	resolved: Nullable<Module_v2>;
+	resolution: Nullable<ImportResolution_v2>;
+	sourceMod: Module_v2;
+	fileLineRange: LineRange;
+	fileEntries: FileEntry[];
 	defects: ImportDefects_v2;
 };
 
 export type Imports_v2 = {
+	total: number;
+	ids: string[];
+	has: (id: string) => boolean;
+	get: (id: string) => Import_v2;
+	find: (id: string) => Import_v2 | null;
 	byId: ReadonlyDict<Import_v2>;
 	localById: ReadonlyDict<Import_v2>;
 	fullResolvedById: ReadonlyDict<Import_v2>;
@@ -471,7 +482,7 @@ export type Imports_v2 = {
 	dynamicById: ReadonlyDict<Import_v2>;
 	staticById: ReadonlyDict<Import_v2>;
 	externalById: ReadonlyDict<Import_v2>;
-	externalByLocator: ReadonlyDict<ReadonlyDict<ImportDefect_v2>>;
+	externalByLocator: ReadonlyDict<ReadonlyDict<Import_v2>>;
 };
 
 export interface ModuleDefects_v2 {
@@ -516,6 +527,7 @@ export type Module_v2 = {
 	name: string;
 	lang: Lang;
 	path: string;
+	shortPath: string;
 	tags: ModuleTags_v2;
 	frames: ModuleFrames_v2;
 	file: File;
@@ -530,6 +542,7 @@ export type Module_v2 = {
 export type Package_v2 = {
 	name: string;
 	path: string;
+	shortPath: string;
 	parent: Nullable<Package_v2>;
 	hasParent: boolean;
 	childByPath: ReadonlyDict<Package_v2>;
