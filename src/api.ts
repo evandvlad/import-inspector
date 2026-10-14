@@ -438,13 +438,13 @@ export type ModuleDefect_v2 = {
 	mod: Module_v2;
 };
 
-export interface ImportDefects_v2 {
+export interface Defects_v2<T extends ModuleDefect_v2 | ImportDefect_v2> {
 	total: number;
 	rules: string[];
-	byRule: ReadonlyDict<ImportDefect_v2>;
+	byRule: ReadonlyDict<T>;
 	has: (rule: string) => boolean;
-	get: (rule: string) => ImportDefect_v2;
-	find: (rule: string) => ImportDefect_v2 | null;
+	get: (rule: string) => T;
+	find: (rule: string) => T | null;
 	add: (rule: string, description?: string) => this;
 	remove: (rule: string) => this;
 	removeAll: () => this;
@@ -465,7 +465,7 @@ export type Import_v2 = {
 	sourceMod: Module_v2;
 	fileLineRange: LineRange;
 	fileEntries: FileEntry[];
-	defects: ImportDefects_v2;
+	defects: Defects_v2<ImportDefect_v2>;
 };
 
 export type Imports_v2 = {
@@ -485,42 +485,21 @@ export type Imports_v2 = {
 	externalByLocator: ReadonlyDict<ReadonlyDict<Import_v2>>;
 };
 
-export interface ModuleDefects_v2 {
+export interface ModuleTrait_v2 {
 	total: number;
-	rules: string[];
-	byRule: ReadonlyDict<ModuleDefect_v2>;
-	has: (rule: string) => boolean;
-	get: (rule: string) => ModuleDefect_v2;
-	find: (rule: string) => ModuleDefect_v2 | null;
-	add: (rule: string, description?: string) => this;
-	remove: (rule: string) => this;
-	removeAll: () => this;
-}
-
-export type ModuleFrame_v2 = {
-	modByPath: ReadonlyDict<Module_v2>;
-};
-
-export interface ModuleFrames_v2 {
 	names: string[];
-	byName: ReadonlyDict<ModuleFrame_v2>;
+	has: (name: string) => boolean;
 	add: (name: string) => this;
 	remove: (name: string) => this;
 }
 
-export type ModuleTag_v2 = {
-	modByPath: ReadonlyDict<Module_v2>;
-};
-
-export interface ModuleTags_v2 {
-	names: string[];
-	byName: ReadonlyDict<ModuleTag_v2>;
-	add: (name: string) => this;
-	remove: (name: string) => this;
-}
-
-export type ModuleLinks_v2 = {
-	modByPath: ReadonlyDict<Module_v2>;
+export type PathableEntities_v2<T extends Module_v2 | Package_v2> = {
+	total: number;
+	paths: string[];
+	has: (path: string) => boolean;
+	get: (path: string) => T;
+	find: (path: string) => T | null;
+	byPath: ReadonlyDict<T>;
 };
 
 export type Module_v2 = {
@@ -528,15 +507,15 @@ export type Module_v2 = {
 	lang: Lang;
 	path: string;
 	shortPath: string;
-	tags: ModuleTags_v2;
-	frames: ModuleFrames_v2;
+	tags: ModuleTrait_v2;
+	frames: ModuleTrait_v2;
 	file: File;
 	pack: Nullable<Package_v2>;
 	isInPack: boolean;
 	isPackEntry: boolean;
-	links: ModuleLinks_v2;
-	imports: Imports_v2;
-	defects: ModuleDefects_v2;
+	links: PathableEntities_v2<Module_v2>;
+	imps: Imports_v2;
+	defects: Defects_v2<ModuleDefect_v2>;
 };
 
 export type Package_v2 = {
@@ -545,32 +524,22 @@ export type Package_v2 = {
 	shortPath: string;
 	parent: Nullable<Package_v2>;
 	hasParent: boolean;
-	childByPath: ReadonlyDict<Package_v2>;
-	ancestorByPath: ReadonlyDict<Package_v2>;
-	modByPath: ReadonlyDict<Module_v2>;
+	children: PathableEntities_v2<Package_v2>;
+	ancestry: PathableEntities_v2<Package_v2>;
+	mods: PathableEntities_v2<Module_v2>;
 };
 
-export interface Packages_v2 extends ReadonlyDict<Package_v2> {
-	paths: string[];
-}
-
-export interface AppContextPackages_v2 {
+export interface AppContextPackages_v2 extends PathableEntities_v2<Package_v2> {
 	byPath: ReadonlyDict<Package_v2>;
-	rootByPath: ReadonlyDict<Package_v2>;
-}
-
-export interface AppContextModules_v2 {
-	byPath: ReadonlyDict<Module_v2>;
+	roots: PathableEntities_v2<Package_v2>;
 }
 
 export type AppContextTags_v2 = {
 	names: string[];
-	byName: ReadonlyDict<ModuleTag_v2>;
 };
 
 export type AppContextFrames_v2 = {
 	names: string[];
-	byName: ReadonlyDict<ModuleFrame_v2>;
 };
 
 export interface AppContextModuleDefects_v2 extends ReadonlyDict<ModuleDefect_v2> {
@@ -589,7 +558,7 @@ export interface AppContextImportDefects_v2 extends ReadonlyDict<ImportDefect_v2
 export type AppContext_v2 = {
 	env: unknown;
 	summary: unknown;
-	modules: AppContextModules_v2;
+	modules: PathableEntities_v2<Module_v2>;
 	packages: AppContextPackages_v2;
 	imports: Imports_v2;
 	tags: AppContextTags_v2;

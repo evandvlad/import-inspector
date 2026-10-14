@@ -2,7 +2,7 @@ import { DefRefCached } from "~/lib/ref.ts";
 import type { Dict as IDict, Import_v2, Module_v2 } from "~/api.ts";
 import type { ImportRec, ImportResolution } from "~/values.ts";
 
-import { ImportDefects } from "./import-defects.ts";
+import { ImportDefects } from "./defects.ts";
 
 export class Import implements Import_v2 {
 	id;
@@ -16,11 +16,11 @@ export class Import implements Import_v2 {
 	#resolutionRef;
 
 	constructor(
-		{ modulePath, importRec, resolution, modulesDict }: {
-			modulePath: string;
+		{ modPath, importRec, resolution, modDict }: {
+			modPath: string;
 			importRec: ImportRec;
 			resolution: ImportResolution | null;
-			modulesDict: IDict<Module_v2>;
+			modDict: IDict<Module_v2>;
 		},
 	) {
 		this.id = crypto.randomUUID() as string;
@@ -30,14 +30,14 @@ export class Import implements Import_v2 {
 
 		this.#posSpan = importRec.posSpan;
 
-		this.#sourceModRef = new DefRefCached(() => modulesDict.get(modulePath));
+		this.#sourceModRef = new DefRefCached(() => modDict.get(modPath));
 
 		this.#resolutionRef = new DefRefCached(() =>
 			resolution
 				? {
 					isExternal: resolution.isExternal,
 					isRelative: resolution.isRelative,
-					mod: resolution.path ? modulesDict.get(resolution.path) : null,
+					mod: resolution.path ? modDict.get(resolution.path) : null,
 				}
 				: null
 		);
