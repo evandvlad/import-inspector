@@ -1,5 +1,5 @@
 import { assert } from "~/lib/err.ts";
-import { concat, shorten, stripEnd } from "~/lib/upath.ts";
+import { concat } from "~/lib/upath.ts";
 import type { AppContextEnv } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
@@ -32,7 +32,7 @@ export class Env implements AppContextEnv {
 			`Can't get short path for '${path}'. It might be outside scope '${this.basePath}'.`,
 		);
 
-		return shorten(stripEnd(path), this.basePath);
+		return pathRec.shortPath;
 	}
 
 	fullPath(path: string) {

@@ -9,8 +9,8 @@ const supportedExtNames = fileExtNames as unknown as string[];
 export class FilePathRec extends PathRec {
 	readonly kind = "file";
 
-	constructor({ path }: { path: string }) {
-		super({ path, parentPath: dirname(path), childPaths: [] });
+	constructor({ basePath, path }: { basePath: string; path: string }) {
+		super({ basePath, path, parentPath: dirname(path), childPaths: [] });
 
 		const extName = extname(path);
 

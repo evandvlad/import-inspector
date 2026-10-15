@@ -11,7 +11,7 @@ export type Node = {
 	children: Map</* name */ string, Node>;
 };
 
-const nullDirPathRec = new DirPathRec({ basePath: "/", path: "/", childPaths: [] });
+const nullDirPathRec = new DirPathRec({ basePath: "/", path: "/null", childPaths: [] });
 
 function extractChildPath({ path, descendantPath }: { path: string; descendantPath: string }) {
 	const pathPartsLength = split(path).length;
@@ -51,7 +51,7 @@ function updateNodeValue({ node, basePath }: { node: Node; basePath: string }) {
 	const isFilePath = node.children.size === 0;
 
 	if (isFilePath) {
-		node.value = new FilePathRec({ path });
+		node.value = new FilePathRec({ basePath, path });
 		return;
 	}
 

@@ -9,6 +9,6 @@ export class DirPathRec extends PathRec {
 		const parentDir = dirname(path);
 		const parentPath = basePath === parentDir ? null : parentDir;
 
-		super({ path, parentPath, childPaths });
+		super({ basePath, path, parentPath, childPaths });
 	}
 }
