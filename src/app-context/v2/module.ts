@@ -3,6 +3,8 @@ import { DefRefCached } from "~/lib/ref.ts";
 import type { Dict, File, Imports_v2, Module_v2, Package_v2 } from "~/api.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
+import type { FilePathRec } from "../path-rec-provider/index.ts";
+
 import { ModuleTrait } from "./module-trait.ts";
 import { PathableEntities } from "./pathable-entities.ts";
 import { ModuleDefects } from "./defects.ts";
@@ -23,10 +25,8 @@ export class Module implements Module_v2 {
 	#linksRef;
 
 	constructor(
-		{ name, path, shortPath, packPath, imps, linkPaths, file, isPackEntry, modDict, packDict }: {
-			name: string;
-			path: string;
-			shortPath: string;
+		{ filePathRec, packPath, imps, linkPaths, file, isPackEntry, modDict, packDict }: {
+			filePathRec: FilePathRec;
 			imps: Imports_v2;
 			linkPaths: string[];
 			file: File;
@@ -36,10 +36,10 @@ export class Module implements Module_v2 {
 			packDict: Dict<Package_v2>;
 		},
 	) {
-		this.name = name;
-		this.path = path;
+		this.name = filePathRec.baseName;
+		this.path = filePathRec.path;
 		this.file = file;
-		this.shortPath = shortPath;
+		this.shortPath = filePathRec.shortPath;
 		this.lang = getFileLang(this.path);
 		this.isPackEntry = isPackEntry;
 		this.frames = new ModuleTrait();

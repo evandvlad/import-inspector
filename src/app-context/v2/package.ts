@@ -3,6 +3,8 @@ import { DefRefCached } from "~/lib/ref.ts";
 import { Dict } from "~/lib/dict.ts";
 import type { Dict as IDict, Module_v2, Package_v2, PathableEntities_v2 } from "~/api.ts";
 
+import type { DirPathRec } from "../path-rec-provider/index.ts";
+
 import { PathableEntities } from "./pathable-entities.ts";
 
 export class Package implements Package_v2 {
@@ -16,20 +18,19 @@ export class Package implements Package_v2 {
 	#ancestryRef;
 
 	constructor(
-		{ name, path, shortPath, mods, childPaths, parentPath, packDict }: {
-			name: string;
-			path: string;
-			shortPath: string;
+		{ dirPathRec, mods, childPaths, packDict }: {
+			dirPathRec: DirPathRec;
 			mods: PathableEntities_v2<Module_v2>;
 			childPaths: string[];
-			parentPath: string | null;
 			packDict: IDict<Package_v2>;
 		},
 	) {
-		this.name = name;
-		this.path = path;
 		this.mods = mods;
-		this.shortPath = shortPath;
+		this.name = dirPathRec.name;
+		this.path = dirPathRec.path;
+		this.shortPath = dirPathRec.shortPath;
+
+		const { parentPath } = dirPathRec;
 
 		this.#parentRef = new DefRefCached(() => parentPath ? packDict.get(parentPath) : null);
 		this.#childrenRef = new DefRefCached(() => new PathableEntities({ dict: packDict.pick(childPaths) }));
