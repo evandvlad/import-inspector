@@ -2,7 +2,7 @@ import { DefRefCached } from "~/lib/ref.ts";
 import type { Dict as IDict, Import_v2, Module_v2 } from "~/api.ts";
 import type { ImportRec, ImportResolution } from "~/values.ts";
 
-import { ImportDefects } from "./defects.ts";
+import { ImportDefects } from "./defects/index.ts";
 
 export class Import implements Import_v2 {
 	id;

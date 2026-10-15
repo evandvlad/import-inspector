@@ -5,7 +5,7 @@ import { getFileLang } from "~/project-specifics.ts";
 
 import { ModuleTrait } from "./module-trait.ts";
 import { PathableEntities } from "./pathable-entities.ts";
-import { ModuleDefects } from "./defects.ts";
+import { ModuleDefects } from "./defects/index.ts";
 
 export class Module implements Module_v2 {
 	name;

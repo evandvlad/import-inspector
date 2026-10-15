@@ -530,7 +530,6 @@ export type Package_v2 = {
 };
 
 export interface AppContextPackages_v2 extends PathableEntities_v2<Package_v2> {
-	byPath: ReadonlyDict<Package_v2>;
 	roots: PathableEntities_v2<Package_v2>;
 }
 
@@ -542,27 +541,47 @@ export type AppContextFrames_v2 = {
 	names: string[];
 };
 
-export interface AppContextModuleDefects_v2 extends ReadonlyDict<ModuleDefect_v2> {
-	modByPath: ReadonlyDict<Module_v2>;
-	remove: (rule: string) => this;
+export interface AppContextDefects_v2<T extends ImportDefect_v2 | ModuleDefect_v2> {
+	total: number;
+	ids: string[];
+	rules: string[];
+	paths: string[];
+	byId: ReadonlyDict<T>;
+	byRule: ReadonlyDict<T[]>;
+	byPath: ReadonlyDict<T[]>;
+	removeByRule: (rule: string) => this;
+	removeById: (id: string) => this;
 	removeAll: () => this;
 }
 
-export interface AppContextImportDefects_v2 extends ReadonlyDict<ImportDefect_v2> {
-	modByPath: ReadonlyDict<Module_v2>;
-	importById: ReadonlyDict<Import_v2>;
-	remove: (rule: string) => this;
-	removeAll: () => this;
-}
+export type AppContextSummary_v2 = {
+	tags: number;
+	frames: number;
+	packages: number;
+	modules: number;
+	imports: number;
+	importDefects: number;
+	moduleDefects: number;
+	totalDefects: number;
+};
+
+export type AppContextEnv_v2 = {
+	version: string;
+	basePath: string;
+	preset: ConfigPreset;
+	htmlxc: Htmlxc;
+	toFullPath: (pathOrShortPath: string) => string | null;
+	editorUrl: (path: string, line?: number) => string;
+};
 
 export type AppContext_v2 = {
-	env: unknown;
-	summary: unknown;
+	env: AppContextEnv_v2;
+	summary: AppContextSummary_v2;
 	modules: PathableEntities_v2<Module_v2>;
 	packages: AppContextPackages_v2;
 	imports: Imports_v2;
 	tags: AppContextTags_v2;
 	frames: AppContextFrames_v2;
-	importDefects: AppContextImportDefects_v2;
-	moduleDefects: AppContextModuleDefects_v2;
+	importDefects: AppContextDefects_v2<ImportDefect_v2>;
+	moduleDefects: AppContextDefects_v2<ModuleDefect_v2>;
 };
