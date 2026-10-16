@@ -17,21 +17,19 @@ export class Imports implements Imports_v2 {
 	#externalByIdRef;
 	#externalByLocatorRef;
 
-	constructor({ impDict }: { impDict: IDict<Import_v2> }) {
-		this.total = impDict.size;
-		this.ids = impDict.toKeys();
-		this.byId = impDict;
+	constructor({ dict }: { dict: IDict<Import_v2> }) {
+		this.total = dict.size;
+		this.ids = dict.toKeys();
+		this.byId = dict;
 
 		this.#localByIdRef = new DefRefCached(() =>
-			impDict.filter(({ resolution }) => resolution && !resolution.isExternal)
+			dict.filter(({ resolution }) => resolution && !resolution.isExternal)
 		);
 
-		this.#fullResolvedByIdRef = new DefRefCached(() =>
-			impDict.filter(({ resolution }) => Boolean(resolution?.mod))
-		);
+		this.#fullResolvedByIdRef = new DefRefCached(() => dict.filter(({ resolution }) => Boolean(resolution?.mod)));
 
 		this.#fullUnresolvedByIdRef = new DefRefCached(() =>
-			impDict.filter(({ locator, isDynamic, resolution }) => {
+			dict.filter(({ locator, isDynamic, resolution }) => {
 				if (!locator) {
 					return true;
 				}
@@ -40,12 +38,12 @@ export class Imports implements Imports_v2 {
 			})
 		);
 
-		this.#localUnresolvedByIdRef = new DefRefCached(() => impDict.filter(({ resolution }) => !resolution));
-		this.#dynamicByIdRef = new DefRefCached(() => impDict.filter(({ isDynamic }) => isDynamic));
-		this.#staticByIdRef = new DefRefCached(() => impDict.filter(({ isDynamic }) => !isDynamic));
+		this.#localUnresolvedByIdRef = new DefRefCached(() => dict.filter(({ resolution }) => !resolution));
+		this.#dynamicByIdRef = new DefRefCached(() => dict.filter(({ isDynamic }) => isDynamic));
+		this.#staticByIdRef = new DefRefCached(() => dict.filter(({ isDynamic }) => !isDynamic));
 
 		this.#externalByIdRef = new DefRefCached(() =>
-			impDict.filter(({ resolution }) => resolution && resolution.isExternal)
+			dict.filter(({ resolution }) => resolution && resolution.isExternal)
 		);
 
 		this.#externalByLocatorRef = new DefRefCached(() =>

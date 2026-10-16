@@ -534,11 +534,17 @@ export interface AppContextPackages_v2 extends PathableEntities_v2<Package_v2> {
 }
 
 export type AppContextTags_v2 = {
+	total: number;
 	names: string[];
+	modBy: ReadonlyDict<PathableEntities_v2<Module_v2>>;
+	has: (name: string) => boolean;
 };
 
 export type AppContextFrames_v2 = {
+	total: number;
 	names: string[];
+	modBy: ReadonlyDict<PathableEntities_v2<Module_v2>>;
+	has: (name: string) => boolean;
 };
 
 export interface AppContextDefects_v2<T extends ImportDefect_v2 | ModuleDefect_v2> {
@@ -557,11 +563,11 @@ export interface AppContextDefects_v2<T extends ImportDefect_v2 | ModuleDefect_v
 export type AppContextSummary_v2 = {
 	tags: number;
 	frames: number;
-	packages: number;
-	modules: number;
-	imports: number;
-	importDefects: number;
-	moduleDefects: number;
+	packs: number;
+	mods: number;
+	imps: number;
+	impDefects: number;
+	modDefects: number;
 	totalDefects: number;
 };
 
@@ -576,12 +582,12 @@ export type AppContextEnv_v2 = {
 
 export type AppContext_v2 = {
 	env: AppContextEnv_v2;
-	summary: AppContextSummary_v2;
-	modules: PathableEntities_v2<Module_v2>;
-	packages: AppContextPackages_v2;
-	imports: Imports_v2;
+	mods: PathableEntities_v2<Module_v2>;
+	imps: Imports_v2;
+	packs: AppContextPackages_v2;
 	tags: AppContextTags_v2;
 	frames: AppContextFrames_v2;
-	importDefects: AppContextDefects_v2<ImportDefect_v2>;
-	moduleDefects: AppContextDefects_v2<ModuleDefect_v2>;
+	summary: AppContextSummary_v2;
+	impDefects: AppContextDefects_v2<ImportDefect_v2>;
+	modDefects: AppContextDefects_v2<ModuleDefect_v2>;
 };

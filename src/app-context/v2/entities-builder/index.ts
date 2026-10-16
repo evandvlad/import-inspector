@@ -1,5 +1,5 @@
 import { Dict } from "~/lib/dict.ts";
-import type { Import_v2, Imports_v2, Module_v2, Package_v2 } from "~/api.ts";
+import type { Dict as IDict, Import_v2, Imports_v2, Module_v2, Package_v2 } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
 
@@ -13,7 +13,7 @@ import { PathRecProvider } from "./path-rec-provider/index.ts";
 import { PackageFinder } from "./package-finder.ts";
 import { ImportResolver } from "./import-resolver.ts";
 
-export class EntitiesBuilder {
+class EntitiesBuilder {
 	#modDict;
 	#impDict;
 	#packDict;
@@ -24,7 +24,7 @@ export class EntitiesBuilder {
 	#pathRecProvider;
 	#packageEntryPointDetector;
 
-	constructor({ settings, parsingResult }: { settings: Settings; parsingResult: Dict<FileParsingResult> }) {
+	constructor({ settings, parsingResult }: { settings: Settings; parsingResult: IDict<FileParsingResult> }) {
 		this.#settings = settings;
 		this.#parsingResult = parsingResult;
 		this.#pathRecProvider = new PathRecProvider({ filePaths: parsingResult.toKeys() });
@@ -45,7 +45,12 @@ export class EntitiesBuilder {
 		const { packsDict } = this.#prepareMods({ linkPathsDict, impsDict });
 		this.#preparePacks({ packsDict });
 
-		return { impDict: this.#impDict, modDict: this.#modDict, packDict: this.#packDict };
+		return {
+			basePath: this.#pathRecProvider.basePath,
+			impDict: this.#impDict,
+			modDict: this.#modDict,
+			packDict: this.#packDict,
+		};
 	}
 
 	#prepareImps() {
@@ -69,7 +74,7 @@ export class EntitiesBuilder {
 				this.#impDict.set(imp.id, imp);
 			});
 
-			impsDict.set(path, new Imports({ impDict }));
+			impsDict.set(path, new Imports({ dict: impDict }));
 		});
 
 		return { linkPathsDict, impsDict };
@@ -126,4 +131,8 @@ export class EntitiesBuilder {
 			this.#packDict.set(path, pack);
 		});
 	}
+}
+
+export function buildEntities(params: { settings: Settings; parsingResult: IDict<FileParsingResult> }) {
+	return new EntitiesBuilder(params).build();
 }
