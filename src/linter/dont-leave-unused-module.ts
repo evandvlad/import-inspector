@@ -1,7 +1,9 @@
 import { ModuleLintRule, Tag } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontLeaveUnusedModule: LintFunction = ({ modules }) => {
+export const dontLeaveUnusedModule: LintFunction = (appContext) => {
+	const { modules } = appContext.v1;
+
 	modules.values()
 		.filter((mod) => !mod.hasTag(Tag.Independent))
 		.filter(({ links }) => links.length === 0)

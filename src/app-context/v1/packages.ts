@@ -1,12 +1,12 @@
 import { assert } from "~/lib/err.ts";
-import type { Dict as IDict, Package, Packages as IPackages } from "~/api.ts";
+import type { Dict as IDict, Package_v1, Packages_v1 } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
 
-export class Packages implements IPackages {
+export class Packages implements Packages_v1 {
 	all;
 	roots;
 
-	constructor({ packages }: { packages: IDict<Package> }) {
+	constructor({ packages }: { packages: IDict<Package_v1> }) {
 		this.all = packages;
 		this.roots = this.all.filter(({ hasParent }) => !hasParent);
 	}
@@ -30,7 +30,7 @@ export class Packages implements IPackages {
 	}
 
 	*#ancestry(path: string) {
-		let pack: Package | null = this.all.get(path);
+		let pack: Package_v1 | null = this.all.get(path);
 
 		do {
 			pack = pack.parent ? this.all.getOrDefault(pack.parent, null) : null;

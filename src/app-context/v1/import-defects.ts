@@ -1,9 +1,9 @@
-import type { ImportDefect, ImportDefects as IImportDefects, Imports } from "~/api.ts";
+import type { ImportDefect_v1, ImportDefects_v1, Imports_v1 } from "~/api.ts";
 
-export class ImportDefects implements IImportDefects {
+export class ImportDefects implements ImportDefects_v1 {
 	#imports;
 
-	constructor({ imports }: { imports: Imports }) {
+	constructor({ imports }: { imports: Imports_v1 }) {
 		this.#imports = imports;
 	}
 
@@ -12,7 +12,7 @@ export class ImportDefects implements IImportDefects {
 	}
 
 	get byRule() {
-		return this.#imports.all.fold<ImportDefect[]>((acc, imp) => {
+		return this.#imports.all.fold<ImportDefect_v1[]>((acc, imp) => {
 			imp.defects.forEach((defect) => {
 				acc.getOrInsert(defect.rule, []).push(defect);
 			});
@@ -22,7 +22,7 @@ export class ImportDefects implements IImportDefects {
 	}
 
 	get bySource() {
-		return this.#imports.all.fold<ImportDefect[]>((acc, imp) => {
+		return this.#imports.all.fold<ImportDefect_v1[]>((acc, imp) => {
 			imp.defects.forEach((defect) => {
 				acc.getOrInsert(defect.source, []).push(defect);
 			});

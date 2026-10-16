@@ -1,6 +1,6 @@
-import type { ImportDefect as IImportDefect, Span } from "~/api.ts";
+import type { ImportDefect_v1, Span } from "~/api.ts";
 
-export class ImportDefect implements IImportDefect {
+export class ImportDefect implements ImportDefect_v1 {
 	rule;
 	posSpan;
 	locator;

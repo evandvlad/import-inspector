@@ -2,7 +2,7 @@ import { type AppContext, Tag } from "~/api.ts";
 import { isDeclarationFile, isEntryPointFile, isIndependentFile, isTestFile } from "~/project-specifics.ts";
 
 export function setTags({ appContext }: { appContext: AppContext }) {
-	const { modules } = appContext;
+	const { modules } = appContext.v1;
 
 	modules.forEach((mod) => {
 		const { path } = mod;

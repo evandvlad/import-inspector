@@ -1,12 +1,12 @@
 import { isNull } from "~/lib/vtype.ts";
 import { Dict } from "~/lib/dict.ts";
-import type { Dict as IDict, File, Import, Module as IModule } from "~/api.ts";
+import type { Dict as IDict, File, Import_v1, Module_v1 } from "~/api.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
 import type { FilePathRec } from "./path-rec-provider/index.ts";
 import { ModuleDefect } from "./module-defect.ts";
 
-export class Module implements IModule {
+export class Module implements Module_v1 {
 	name;
 	path;
 	lang;
@@ -24,7 +24,7 @@ export class Module implements IModule {
 	constructor(
 		{ filePathRec, pack, imports, links, file, isPackEntry }: {
 			filePathRec: FilePathRec;
-			imports: IDict<Import>;
+			imports: IDict<Import_v1>;
 			links: string[];
 			file: File;
 			pack: string | null;

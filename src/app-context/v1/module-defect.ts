@@ -1,6 +1,6 @@
-import type { ModuleDefect as IModuleDefect } from "~/api.ts";
+import type { ModuleDefect_v1 } from "~/api.ts";
 
-export class ModuleDefect implements IModuleDefect {
+export class ModuleDefect implements ModuleDefect_v1 {
 	rule;
 	source;
 	description;

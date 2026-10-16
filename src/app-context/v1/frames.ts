@@ -1,11 +1,11 @@
-import type { Dict, Frame as IFrame, Frames as IFrames, Module } from "~/api.ts";
+import type { Dict, Frame_v1, Frames_v1, Module_v1 } from "~/api.ts";
 
 import { Frame } from "./frame.ts";
 
-export class Frames implements IFrames {
+export class Frames implements Frames_v1 {
 	#modules;
 
-	constructor({ modules }: { modules: Dict<Module> }) {
+	constructor({ modules }: { modules: Dict<Module_v1> }) {
 		this.#modules = modules;
 	}
 
@@ -14,7 +14,7 @@ export class Frames implements IFrames {
 	}
 
 	get byFrame() {
-		return this.#modules.fold<IFrame>((acc, { frames }) => {
+		return this.#modules.fold<Frame_v1>((acc, { frames }) => {
 			frames.forEach((frame) => {
 				if (!acc.has(frame)) {
 					acc.set(frame, new Frame({ name: frame, modules: this.#modules }));
@@ -62,7 +62,7 @@ export class Frames implements IFrames {
 			});
 
 			return acc;
-		}, new Map<string, Array<{ source: Module; imported: Module }>>());
+		}, new Map<string, Array<{ source: Module_v1; imported: Module_v1 }>>());
 	}
 
 	#getModPaths(name: string) {

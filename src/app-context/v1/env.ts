@@ -1,13 +1,13 @@
 import { assert } from "~/lib/err.ts";
 import { concat } from "~/lib/upath.ts";
-import type { AppContextEnv } from "~/api.ts";
+import type { AppContextEnv_v1 } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
 import { components } from "~/htmlx/index.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 
-export class Env implements AppContextEnv {
+export class Env implements AppContextEnv_v1 {
 	preset;
 	version;
 	basePath;

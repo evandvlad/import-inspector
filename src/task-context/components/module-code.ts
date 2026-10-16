@@ -4,7 +4,7 @@ import type { AppContext, LineRange } from "~/api.ts";
 export function createModuleCode(
 	{ appContext, path, lineRange }: { appContext: AppContext; path: string; lineRange?: LineRange },
 ) {
-	const { env, modules } = appContext;
+	const { env, modules } = appContext.v1;
 
 	const fullPath = env.fullPath(path);
 	const { file } = modules.get(fullPath);

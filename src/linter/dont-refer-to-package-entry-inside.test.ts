@@ -18,7 +18,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
@@ -37,7 +37,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
@@ -56,7 +56,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
@@ -75,7 +75,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
@@ -95,7 +95,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
@@ -117,7 +117,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ source }) => source);
@@ -142,7 +142,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontReferToPackageEntryInside, [])
 			.map(({ source }) => source);

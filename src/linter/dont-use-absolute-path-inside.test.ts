@@ -20,7 +20,7 @@ describe("dont-use-absolute-path-inside", () => {
 
 		dontUseAbsolutePathInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.get(ImportLintRule.DontUseAbsolutePathInside)
 			.map(({ source }) => source);
@@ -42,7 +42,7 @@ describe("dont-use-absolute-path-inside", () => {
 
 		dontUseAbsolutePathInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.get(ImportLintRule.DontUseAbsolutePathInside)
 			.map(({ source }) => source);
@@ -62,7 +62,7 @@ describe("dont-use-absolute-path-inside", () => {
 
 		dontUseAbsolutePathInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontUseAbsolutePathInside, [])
 			.map(({ source }) => source);
@@ -84,7 +84,7 @@ describe("dont-use-absolute-path-inside", () => {
 
 		dontUseAbsolutePathInside(appContext);
 
-		const paths = appContext.importDefects
+		const paths = appContext.v1.importDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontUseAbsolutePathInside, [])
 			.map(({ source }) => source);

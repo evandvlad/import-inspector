@@ -1,10 +1,10 @@
 import { Dict } from "~/lib/dict.ts";
-import type { Dict as IDict, Import as IImport } from "~/api.ts";
+import type { Dict as IDict, Import_v1 } from "~/api.ts";
 import type { ImportRec, ImportResolution } from "~/values.ts";
 
 import { ImportDefect } from "./import-defect.ts";
 
-export class Import implements IImport {
+export class Import implements Import_v1 {
 	id;
 	locator;
 	posSpan;

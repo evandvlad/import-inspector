@@ -1,7 +1,9 @@
 import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontUseAbsolutePathInside: LintFunction = ({ imports, modules, packages }) => {
+export const dontUseAbsolutePathInside: LintFunction = (appContext) => {
+	const { imports, modules, packages } = appContext.v1;
+
 	imports.fullResolved
 		.values()
 		.filter(({ resolution }) => !resolution!.isRelative)

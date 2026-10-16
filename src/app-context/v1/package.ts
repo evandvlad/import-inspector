@@ -1,7 +1,7 @@
 import { isNull } from "~/lib/vtype.ts";
-import type { Dict, Module, Package as IPackage } from "~/api.ts";
+import type { Dict, Module_v1, Package_v1 } from "~/api.ts";
 
-export class Package implements IPackage {
+export class Package implements Package_v1 {
 	name;
 	path;
 	modules;
@@ -14,7 +14,7 @@ export class Package implements IPackage {
 		{ name, path, modules, children, parent }: {
 			name: string;
 			path: string;
-			modules: Dict<Module>;
+			modules: Dict<Module_v1>;
 			children: string[];
 			parent: string | null;
 		},

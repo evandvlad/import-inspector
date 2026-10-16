@@ -19,7 +19,7 @@ describe("dont-leave-unused-module", () => {
 
 		dontLeaveUnusedModule(appContext);
 
-		const paths = appContext.moduleDefects
+		const paths = appContext.v1.moduleDefects
 			.byRule
 			.getOrDefault(ModuleLintRule.DontLeaveUnusedModule, [])
 			.map(({ source }) => source);
@@ -38,7 +38,7 @@ describe("dont-leave-unused-module", () => {
 
 		dontLeaveUnusedModule(appContext);
 
-		const paths = appContext.moduleDefects
+		const paths = appContext.v1.moduleDefects
 			.byRule
 			.get(ModuleLintRule.DontLeaveUnusedModule)
 			.map(({ source }) => source);

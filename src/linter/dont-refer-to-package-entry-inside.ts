@@ -1,7 +1,9 @@
 import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontReferToPackageEntryInside: LintFunction = ({ imports, modules, packages }) => {
+export const dontReferToPackageEntryInside: LintFunction = (appContext) => {
+	const { imports, modules, packages } = appContext.v1;
+
 	imports.fullResolved
 		.values()
 		.filter((imp) => {

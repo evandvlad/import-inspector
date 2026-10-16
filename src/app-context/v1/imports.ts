@@ -1,10 +1,10 @@
-import type { Dict, Import, Imports as IImports, Module } from "~/api.ts";
+import type { Dict, Import_v1, Imports_v1, Module_v1 } from "~/api.ts";
 
-export class Imports implements IImports {
+export class Imports implements Imports_v1 {
 	all;
 
-	constructor({ modules }: { modules: Dict<Module> }) {
-		this.all = modules.fold<Import>((acc, { imports }) => acc.merge(imports));
+	constructor({ modules }: { modules: Dict<Module_v1> }) {
+		this.all = modules.fold<Import_v1>((acc, { imports }) => acc.merge(imports));
 	}
 
 	get local() {

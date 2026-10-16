@@ -1,4 +1,4 @@
-import type { AppContext as IAppContext, Dict, Module, Package } from "~/api.ts";
+import type { AppContext_v1, Dict, Module_v1, Package_v1 } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
@@ -10,7 +10,7 @@ import { ImportDefects } from "./import-defects.ts";
 import { ModuleDefects } from "./module-defects.ts";
 import { Env } from "./env.ts";
 
-export class AppContext implements IAppContext {
+export class AppContext implements AppContext_v1 {
 	tags;
 	frames;
 	modules;
@@ -23,8 +23,8 @@ export class AppContext implements IAppContext {
 	constructor(
 		{ settings, modules, packages, pathRecProvider }: {
 			settings: Settings;
-			modules: Dict<Module>;
-			packages: Dict<Package>;
+			modules: Dict<Module_v1>;
+			packages: Dict<Package_v1>;
 			pathRecProvider: PathRecProvider;
 		},
 	) {

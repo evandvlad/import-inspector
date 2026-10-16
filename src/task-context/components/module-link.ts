@@ -4,7 +4,7 @@ import type { AppContext, LineRange } from "~/api.ts";
 export function createModuleLink(
 	{ appContext, path, lineRange }: { appContext: AppContext; path: string; lineRange?: LineRange },
 ) {
-	const { env } = appContext;
+	const { env } = appContext.v1;
 
 	const fullPath = env.fullPath(path);
 	const shortPath = env.shortPath(fullPath);

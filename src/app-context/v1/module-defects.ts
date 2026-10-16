@@ -1,9 +1,9 @@
-import type { Dict as IDict, Module, ModuleDefect, ModuleDefects as IModuleDefects } from "~/api.ts";
+import type { Dict as IDict, Module_v1, ModuleDefect_v1, ModuleDefects_v1 } from "~/api.ts";
 
-export class ModuleDefects implements IModuleDefects {
+export class ModuleDefects implements ModuleDefects_v1 {
 	#modules;
 
-	constructor({ modules }: { modules: IDict<Module> }) {
+	constructor({ modules }: { modules: IDict<Module_v1> }) {
 		this.#modules = modules;
 	}
 
@@ -12,7 +12,7 @@ export class ModuleDefects implements IModuleDefects {
 	}
 
 	get byRule() {
-		return this.#modules.fold<ModuleDefect[]>((acc, mod) => {
+		return this.#modules.fold<ModuleDefect_v1[]>((acc, mod) => {
 			mod.defects.forEach((defect) => {
 				acc.getOrInsert(defect.rule, []).push(defect);
 			});
@@ -22,7 +22,7 @@ export class ModuleDefects implements IModuleDefects {
 	}
 
 	get bySource() {
-		return this.#modules.fold<ModuleDefect[]>((acc, mod) => {
+		return this.#modules.fold<ModuleDefect_v1[]>((acc, mod) => {
 			mod.defects.forEach((defect) => {
 				acc.getOrInsert(defect.source, []).push(defect);
 			});
