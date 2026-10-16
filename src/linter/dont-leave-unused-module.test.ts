@@ -19,10 +19,10 @@ describe("dont-leave-unused-module", () => {
 
 		dontLeaveUnusedModule(appContext);
 
-		const paths = appContext.v1.moduleDefects
+		const paths = appContext.v2.modDefects
 			.byRule
 			.getOrDefault(ModuleLintRule.DontLeaveUnusedModule, [])
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual([]);
 	});
@@ -38,10 +38,10 @@ describe("dont-leave-unused-module", () => {
 
 		dontLeaveUnusedModule(appContext);
 
-		const paths = appContext.v1.moduleDefects
+		const paths = appContext.v2.modDefects
 			.byRule
 			.get(ModuleLintRule.DontLeaveUnusedModule)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});

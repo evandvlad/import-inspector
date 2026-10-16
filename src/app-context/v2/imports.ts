@@ -38,7 +38,10 @@ export class Imports implements Imports_v2 {
 			})
 		);
 
-		this.#localUnresolvedByIdRef = new DefRefCached(() => dict.filter(({ resolution }) => !resolution));
+		this.#localUnresolvedByIdRef = new DefRefCached(() =>
+			dict.filter(({ resolution }) => resolution && !resolution.mod)
+		);
+
 		this.#dynamicByIdRef = new DefRefCached(() => dict.filter(({ isDynamic }) => isDynamic));
 		this.#staticByIdRef = new DefRefCached(() => dict.filter(({ isDynamic }) => !isDynamic));
 

@@ -18,10 +18,10 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
@@ -37,10 +37,10 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
@@ -56,10 +56,10 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -75,10 +75,10 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -95,10 +95,10 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -117,10 +117,10 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar/baz/qux/quux/other.tsx"]);
 	});
@@ -142,10 +142,10 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontReferToPackageEntryInside, [])
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual([]);
 	});

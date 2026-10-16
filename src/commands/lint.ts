@@ -25,7 +25,7 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 
 				spinner.stop();
 
-				const hasDefects = appContext.v1.summary.totalDefects > 0;
+				const hasDefects = appContext.v2.summary.totalDefects > 0;
 
 				if (hasDefects) {
 					const lintResult = taskContext.components.lintResult();

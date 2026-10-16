@@ -20,10 +20,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -42,10 +42,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -64,10 +64,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -87,10 +87,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
@@ -108,10 +108,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual([]);
 	});
@@ -130,10 +130,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual([]);
 	});
@@ -153,10 +153,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual([]);
 	});
@@ -173,10 +173,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual([]);
 	});
@@ -194,10 +194,10 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v1.importDefects
+		const paths = appContext.v2.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
-			.map(({ source }) => source);
+			.map(({ mod }) => mod.path);
 
 		expect(paths).toEqual([]);
 	});
