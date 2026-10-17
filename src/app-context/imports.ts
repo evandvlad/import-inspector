@@ -1,9 +1,10 @@
 import { assert } from "~/lib/err.ts";
 import { DefRefCached } from "~/lib/ref.ts";
-import type { Dict as IDict, Import, Imports as IImports } from "~/api.ts";
+import type { Dict as IDict, Import, Imports as IImports, ReadonlyDict } from "~/api.ts";
+import { Dict } from "~/lib/dict.ts";
 
 export class Imports implements IImports {
-	total;
+	size;
 	ids;
 	byId;
 
@@ -11,13 +12,14 @@ export class Imports implements IImports {
 	#fullResolvedByIdRef;
 	#fullUnresolvedByIdRef;
 	#localUnresolvedByIdRef;
+	#localUnresolvedByLocatorRef;
 	#dynamicByIdRef;
 	#staticByIdRef;
 	#externalByIdRef;
 	#externalByLocatorRef;
 
 	constructor({ dict }: { dict: IDict<Import> }) {
-		this.total = dict.size;
+		this.size = dict.size;
 		this.ids = dict.toKeys();
 		this.byId = dict;
 
@@ -25,7 +27,7 @@ export class Imports implements IImports {
 			dict.filter(({ resolution }) => resolution && !resolution.isExternal)
 		);
 
-		this.#fullResolvedByIdRef = new DefRefCached(() => dict.filter(({ resolution }) => Boolean(resolution?.mod)));
+		this.#fullResolvedByIdRef = new DefRefCached(() => dict.filter(({ importedMod }) => importedMod));
 
 		this.#fullUnresolvedByIdRef = new DefRefCached(() =>
 			dict.filter(({ locator, isDynamic, resolution }) => {
@@ -41,6 +43,8 @@ export class Imports implements IImports {
 			this.localById.filter(({ resolution }) => !resolution!.mod)
 		);
 
+		this.#localUnresolvedByLocatorRef = new DefRefCached(() => this.#mapByLocator(this.localUnresolvedById));
+
 		this.#dynamicByIdRef = new DefRefCached(() => dict.filter(({ isDynamic }) => isDynamic));
 		this.#staticByIdRef = new DefRefCached(() => dict.filter(({ isDynamic }) => !isDynamic));
 
@@ -48,11 +52,7 @@ export class Imports implements IImports {
 			dict.filter(({ resolution }) => resolution && resolution.isExternal)
 		);
 
-		this.#externalByLocatorRef = new DefRefCached(() =>
-			this.#externalByIdRef.value
-				.group(({ locator }) => String(locator))
-				.sortK((a, b) => a.localeCompare(b))
-		);
+		this.#externalByLocatorRef = new DefRefCached(() => this.#mapByLocator(this.externalById));
 	}
 
 	get localById() {
@@ -69,6 +69,10 @@ export class Imports implements IImports {
 
 	get localUnresolvedById() {
 		return this.#localUnresolvedByIdRef.value;
+	}
+
+	get localUnresolvedByLocator() {
+		return this.#localUnresolvedByLocatorRef.value;
 	}
 
 	get dynamicById() {
@@ -99,5 +103,11 @@ export class Imports implements IImports {
 
 	find(id: string) {
 		return this.byId.getOrDefault(id, null);
+	}
+
+	#mapByLocator(dict: IDict<Import>) {
+		return dict.group(({ locator }) => String(locator))
+			.sortK((a, b) => a.localeCompare(b))
+			.map<ReadonlyDict<Import>>((arr) => Dict.fromArray(arr, ({ id }) => id));
 	}
 }

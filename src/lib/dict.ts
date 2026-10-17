@@ -93,6 +93,17 @@ export class Dict<T> implements IDict<T> {
 		return value;
 	}
 
+	getOrInsertComputed(key: string, compute: () => T) {
+		if (this.has(key)) {
+			return this.get(key);
+		}
+
+		const value = compute();
+		this.set(key, value);
+
+		return value;
+	}
+
 	addOrReduce(key: string, value: T, reducer: Reducer<T>) {
 		return this.set(key, this.has(key) ? reducer(this.get(key), value, key) : value);
 	}

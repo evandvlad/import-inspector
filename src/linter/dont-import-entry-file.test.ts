@@ -21,7 +21,8 @@ describe("dont-import-entry-file", () => {
 		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontImportEntryFile)
-			.map(({ mod }) => mod.path);
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});

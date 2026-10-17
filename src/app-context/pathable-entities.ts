@@ -9,7 +9,7 @@ export class PathableEntities<T extends Module | Package> implements IPathableEn
 		this.#byPathRef = new DefRefCached(() => dict);
 	}
 
-	get total() {
+	get size() {
 		return this.byPath.size;
 	}
 

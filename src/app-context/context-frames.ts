@@ -10,7 +10,7 @@ export class ContextFrames implements AppContextFrames {
 		this.#modDict = modDict;
 	}
 
-	get total() {
+	get size() {
 		return this.modBy.size;
 	}
 
@@ -21,7 +21,7 @@ export class ContextFrames implements AppContextFrames {
 	get modBy() {
 		return this.#modDict.fold<IDict<Module>>((acc, mod) => {
 			mod.frames.names.forEach((frame) => {
-				acc.getOrInsert(frame, Dict.empty<Module>()).set(mod.path, mod);
+				acc.getOrInsertComputed(frame, () => Dict.empty()).set(mod.path, mod);
 			});
 
 			return acc;

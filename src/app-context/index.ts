@@ -35,17 +35,17 @@ export class AppContext implements IAppContext {
 	}
 
 	get summary() {
-		const impDefects = this.impDefects.total;
-		const modDefects = this.modDefects.total;
+		const impDefects = this.impDefects.size;
+		const modDefects = this.modDefects.size;
 
 		return {
 			impDefects,
 			modDefects,
-			imps: this.imps.total,
-			mods: this.mods.total,
-			packs: this.packs.total,
-			tags: this.tags.total,
-			frames: this.frames.total,
+			imps: this.imps.size,
+			mods: this.mods.size,
+			packs: this.packs.size,
+			tags: this.tags.size,
+			frames: this.frames.size,
 			totalDefects: impDefects + modDefects,
 		};
 	}

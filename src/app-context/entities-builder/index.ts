@@ -113,7 +113,7 @@ class EntitiesBuilder {
 			this.#modDict.set(path, mod);
 
 			if (packPath) {
-				packsDict.getOrInsert(packPath, Dict.empty()).set(path, mod);
+				packsDict.getOrInsertComputed(packPath, () => Dict.empty()).set(path, mod);
 			}
 		});
 

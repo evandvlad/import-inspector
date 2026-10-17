@@ -12,6 +12,7 @@ export interface Dict<T> {
 	get: (key: string) => T;
 	getOrDefault: <U = undefined>(key: string, defaultValue: U) => T | U;
 	getOrInsert: (key: string, value: T) => T;
+	getOrInsertComputed: (key: string, compute: () => T) => T;
 	addOrReduce: (key: string, value: T, reducer: (cur: T, value: T, key: string) => T) => this;
 	find: (callback: (value: T, key: string) => unknown) => T | undefined;
 	findE: (callback: (value: T, key: string) => unknown) => Entry<T> | undefined;
@@ -255,7 +256,7 @@ export type ModuleDefect = {
 };
 
 export interface Defects<T extends ModuleDefect | ImportDefect> {
-	total: number;
+	size: number;
 	rules: string[];
 	byRule: ReadonlyDict<T>;
 	has: (rule: string) => boolean;
@@ -279,13 +280,14 @@ export type Import = {
 	isDynamic: boolean;
 	resolution: Nullable<ImportResolution>;
 	sourceMod: Module;
+	importedMod: Nullable<Module>;
 	fileLineRange: LineRange;
 	fileEntries: FileEntry[];
 	defects: Defects<ImportDefect>;
 };
 
 export type Imports = {
-	total: number;
+	size: number;
 	ids: string[];
 	has: (id: string) => boolean;
 	get: (id: string) => Import;
@@ -295,14 +297,15 @@ export type Imports = {
 	fullResolvedById: ReadonlyDict<Import>;
 	fullUnresolvedById: ReadonlyDict<Import>;
 	localUnresolvedById: ReadonlyDict<Import>;
+	localUnresolvedByLocator: ReadonlyDict<ReadonlyDict<Import>>;
 	dynamicById: ReadonlyDict<Import>;
 	staticById: ReadonlyDict<Import>;
 	externalById: ReadonlyDict<Import>;
-	externalByLocator: ReadonlyDict<Import[]>;
+	externalByLocator: ReadonlyDict<ReadonlyDict<Import>>;
 };
 
 export interface ModuleTrait {
-	total: number;
+	size: number;
 	names: string[];
 	has: (name: string) => boolean;
 	add: (name: string) => this;
@@ -310,7 +313,7 @@ export interface ModuleTrait {
 }
 
 export type PathableEntities<T extends Module | Package> = {
-	total: number;
+	size: number;
 	paths: string[];
 	has: (path: string) => boolean;
 	get: (path: string) => T;
@@ -350,27 +353,27 @@ export interface AppContextPackages extends PathableEntities<Package> {
 }
 
 export type AppContextTags = {
-	total: number;
+	size: number;
 	names: string[];
 	modBy: ReadonlyDict<PathableEntities<Module>>;
 	has: (name: string) => boolean;
 };
 
 export type AppContextFrames = {
-	total: number;
+	size: number;
 	names: string[];
 	modBy: ReadonlyDict<PathableEntities<Module>>;
 	has: (name: string) => boolean;
 };
 
 export interface AppContextDefects<T extends ImportDefect | ModuleDefect> {
-	total: number;
+	size: number;
 	ids: string[];
 	rules: string[];
 	paths: string[];
 	byId: ReadonlyDict<T>;
-	byRule: ReadonlyDict<T[]>;
-	byPath: ReadonlyDict<T[]>;
+	byRule: ReadonlyDict<ReadonlyDict<T>>;
+	byPath: ReadonlyDict<ReadonlyDict<T>>;
 	removeByRule: (rule: string) => this;
 	removeById: (id: string) => this;
 	removeAll: () => this;

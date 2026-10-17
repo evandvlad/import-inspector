@@ -21,10 +21,11 @@ describe("dont-leave-unused-module", () => {
 
 		const paths = appContext.modDefects
 			.byRule
-			.getOrDefault(ModuleLintRule.DontLeaveUnusedModule, [])
-			.map(({ mod }) => mod.path);
+			.getOrDefault(ModuleLintRule.DontLeaveUnusedModule, undefined)
+			?.map(({ mod }) => mod.path)
+			.toArray();
 
-		expect(paths).toEqual([]);
+		expect(paths).toEqual(undefined);
 	});
 
 	it("orphan files", async () => {
@@ -41,7 +42,8 @@ describe("dont-leave-unused-module", () => {
 		const paths = appContext.modDefects
 			.byRule
 			.get(ModuleLintRule.DontLeaveUnusedModule)
-			.map(({ mod }) => mod.path);
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});

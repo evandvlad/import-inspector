@@ -21,7 +21,8 @@ describe("dont-refer-to-package-entry-inside", () => {
 		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ mod }) => mod.path);
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
@@ -40,7 +41,8 @@ describe("dont-refer-to-package-entry-inside", () => {
 		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ mod }) => mod.path);
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar/other.tsx"]);
 	});
@@ -59,7 +61,8 @@ describe("dont-refer-to-package-entry-inside", () => {
 		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ mod }) => mod.path);
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -78,7 +81,8 @@ describe("dont-refer-to-package-entry-inside", () => {
 		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ mod }) => mod.path);
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -98,7 +102,8 @@ describe("dont-refer-to-package-entry-inside", () => {
 		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ mod }) => mod.path);
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
@@ -120,7 +125,8 @@ describe("dont-refer-to-package-entry-inside", () => {
 		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
-			.map(({ mod }) => mod.path);
+			.map(({ mod }) => mod.path)
+			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar/baz/qux/quux/other.tsx"]);
 	});
@@ -144,9 +150,10 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontReferToPackageEntryInside, [])
-			.map(({ mod }) => mod.path);
+			.getOrDefault(ImportLintRule.DontReferToPackageEntryInside, undefined)
+			?.map(({ mod }) => mod.path)
+			.toArray();
 
-		expect(paths).toEqual([]);
+		expect(paths).toEqual(undefined);
 	});
 });

@@ -1,12 +1,14 @@
-import type { AppContextDefects, Dict, Import, ImportDefect } from "~/api.ts";
+import { Dict } from "~/lib/dict.ts";
+import type { AppContextDefects, Dict as IDict, Import, ImportDefect, ReadonlyDict } from "~/api.ts";
 
 import { ContextDefects } from "./context-defects.ts";
 
 export class ContextImportDefects extends ContextDefects<ImportDefect> implements AppContextDefects<ImportDefect> {
 	#impDict;
 
-	constructor({ impDict }: { impDict: Dict<Import> }) {
+	constructor({ impDict }: { impDict: IDict<Import> }) {
 		super();
+
 		this.#impDict = impDict;
 	}
 
@@ -15,9 +17,10 @@ export class ContextImportDefects extends ContextDefects<ImportDefect> implement
 	}
 
 	protected override createDictByPath() {
-		return this.#impDict.fold<ImportDefect[]>((acc, imp) => {
-			if (imp.defects.total > 0) {
-				acc.addOrReduce(imp.sourceMod.path, imp.defects.byRule.toArray(), (acc, value) => acc.concat(value));
+		return this.#impDict.fold<ReadonlyDict<ImportDefect>>((acc, imp) => {
+			if (imp.defects.size > 0) {
+				const dict = acc.getOrInsertComputed(imp.sourceMod.path, () => Dict.empty());
+				(dict as IDict<ImportDefect>).merge(imp.defects.byRule.mapK(({ id }) => id));
 			}
 
 			return acc;
@@ -25,9 +28,10 @@ export class ContextImportDefects extends ContextDefects<ImportDefect> implement
 	}
 
 	protected override createDictByRule() {
-		return this.#impDict.fold<ImportDefect[]>((acc, imp) => {
+		return this.#impDict.fold<ReadonlyDict<ImportDefect>>((acc, imp) => {
 			imp.defects.byRule.forEach((defect) => {
-				acc.getOrInsert(defect.rule, []).push(defect);
+				const dict = acc.getOrInsertComputed(defect.rule, () => Dict.empty());
+				(dict as IDict<ImportDefect>).set(defect.id, defect);
 			});
 
 			return acc;

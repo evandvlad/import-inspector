@@ -33,7 +33,7 @@ export function createLintResult({ appContext }: { appContext: AppContext }) {
 				color: "blue",
 			});
 
-			const moduleLink = imp.resolution?.mod ? createModuleLink({ mod: imp.resolution.mod }) : " ? ";
+			const moduleLink = imp.importedMod ? createModuleLink({ mod: imp.importedMod }) : " ? ";
 
 			const ruleInfo = [tuix.text("rule (import):", { dim: true }), info].join(" ");
 			const importedModule = [tuix.text("imported module:", { dim: true }), moduleLink].join(" ");

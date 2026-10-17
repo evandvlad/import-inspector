@@ -14,6 +14,7 @@ export class Import implements IImport {
 	#posSpan;
 	#sourceModRef;
 	#resolutionRef;
+	#importedModRef;
 
 	constructor(
 		{ modPath, importRec, resolution, modDict }: {
@@ -42,11 +43,17 @@ export class Import implements IImport {
 				: null
 		);
 
+		this.#importedModRef = new DefRefCached(() => this.resolution?.mod ?? null);
+
 		this.defects = new ImportDefects({ imp: this as IImport, modRef: this.#sourceModRef });
 	}
 
 	get sourceMod() {
 		return this.#sourceModRef.value;
+	}
+
+	get importedMod() {
+		return this.#importedModRef.value;
 	}
 
 	get resolution() {

@@ -9,7 +9,7 @@ export abstract class Defects<T extends ImportDefect | ModuleDefect> implements 
 		this.byRule = Dict.empty<T>();
 	}
 
-	get total() {
+	get size() {
 		return this.byRule.size;
 	}
 

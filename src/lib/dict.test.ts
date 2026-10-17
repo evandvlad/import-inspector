@@ -82,6 +82,20 @@ describe("dict", () => {
 		expect(dict.size).toBe(3);
 	});
 
+	it("getOrInsertComputed", () => {
+		const dict = Dict.fromEntries([["foo", [1]]]);
+
+		expect(dict.getOrInsertComputed("foo", () => [])).toEqual([1]);
+		expect(dict.getOrInsertComputed("bar", () => [])).toEqual([]);
+
+		expect(dict.size).toBe(2);
+
+		dict.getOrInsertComputed("baz", () => []).push(100);
+
+		expect(dict.get("baz")).toEqual([100]);
+		expect(dict.size).toBe(3);
+	});
+
 	it("addOrReducer", () => {
 		const dict = Dict.fromRec({ foo: 1, bar: 1 });
 

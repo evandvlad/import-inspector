@@ -10,7 +10,7 @@ export class ContextTags implements AppContextTags {
 		this.#modDict = modDict;
 	}
 
-	get total() {
+	get size() {
 		return this.modBy.size;
 	}
 
@@ -21,7 +21,7 @@ export class ContextTags implements AppContextTags {
 	get modBy() {
 		return this.#modDict.fold<IDict<Module>>((acc, mod) => {
 			mod.tags.names.forEach((tag) => {
-				acc.getOrInsert(tag, Dict.empty<Module>()).set(mod.path, mod);
+				acc.getOrInsertComputed(tag, () => Dict.empty()).set(mod.path, mod);
 			});
 
 			return acc;

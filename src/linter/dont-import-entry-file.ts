@@ -4,7 +4,7 @@ import type { LintFunction } from "~/values.ts";
 
 export const dontImportEntryFile: LintFunction = ({ imps }) => {
 	imps.fullResolvedById
-		.filter(({ resolution }) => isEntryPointFile(resolution!.mod!.path))
+		.filter(({ importedMod }) => isEntryPointFile(importedMod!.path))
 		.forEach((imp) => {
 			imp.defects.add(ImportLintRule.DontImportEntryFile);
 		});

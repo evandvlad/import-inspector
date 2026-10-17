@@ -7,7 +7,7 @@ export class ModuleTrait implements IModuleTrait {
 		this.#nameSet = new Set<string>();
 	}
 
-	get total() {
+	get size() {
 		return this.#nameSet.size;
 	}
 
