@@ -50,41 +50,6 @@ export interface Dict<T> {
 	toJSON: () => Rec<T>;
 }
 
-export type ReadonlyDict<T> = Pick<
-	Dict<T>,
-	| "size"
-	| "has"
-	| "get"
-	| "getOrDefault"
-	| "find"
-	| "findE"
-	| "forEach"
-	| "filter"
-	| "pick"
-	| "omit"
-	| "map"
-	| "mapK"
-	| "mapE"
-	| "slice"
-	| "some"
-	| "every"
-	| "sortK"
-	| "sortE"
-	| "reduce"
-	| "fold"
-	| "group"
-	| "concat"
-	| "keys"
-	| "values"
-	| "entries"
-	| "toArray"
-	| "toEntries"
-	| "toKeys"
-	| "toMap"
-	| "toRec"
-	| "toJSON"
->;
-
 export const langs = ["ts", "js"] as const;
 
 export type Lang = typeof langs[number];
@@ -258,7 +223,7 @@ export type ModuleDefect = {
 export interface Defects<T extends ModuleDefect | ImportDefect> {
 	size: number;
 	rules: string[];
-	byRule: ReadonlyDict<T>;
+	byRule: Dict<T>;
 	has: (rule: string) => boolean;
 	get: (rule: string) => T;
 	find: (rule: string) => T | null;
@@ -292,16 +257,16 @@ export type Imports = {
 	has: (id: string) => boolean;
 	get: (id: string) => Import;
 	find: (id: string) => Import | null;
-	byId: ReadonlyDict<Import>;
-	localById: ReadonlyDict<Import>;
-	fullResolvedById: ReadonlyDict<Import>;
-	fullUnresolvedById: ReadonlyDict<Import>;
-	localUnresolvedById: ReadonlyDict<Import>;
-	localUnresolvedByLocator: ReadonlyDict<ReadonlyDict<Import>>;
-	dynamicById: ReadonlyDict<Import>;
-	staticById: ReadonlyDict<Import>;
-	externalById: ReadonlyDict<Import>;
-	externalByLocator: ReadonlyDict<ReadonlyDict<Import>>;
+	byId: Dict<Import>;
+	localById: Dict<Import>;
+	fullResolvedById: Dict<Import>;
+	fullUnresolvedById: Dict<Import>;
+	localUnresolvedById: Dict<Import>;
+	localUnresolvedByLocator: Dict<Dict<Import>>;
+	dynamicById: Dict<Import>;
+	staticById: Dict<Import>;
+	externalById: Dict<Import>;
+	externalByLocator: Dict<Dict<Import>>;
 };
 
 export interface ModuleTrait {
@@ -318,7 +283,7 @@ export type PathableEntities<T extends Module | Package> = {
 	has: (path: string) => boolean;
 	get: (path: string) => T;
 	find: (path: string) => T | null;
-	byPath: ReadonlyDict<T>;
+	byPath: Dict<T>;
 };
 
 export type Module = {
@@ -355,14 +320,14 @@ export interface AppContextPackages extends PathableEntities<Package> {
 export type AppContextTags = {
 	size: number;
 	names: string[];
-	modBy: ReadonlyDict<PathableEntities<Module>>;
+	modBy: Dict<PathableEntities<Module>>;
 	has: (name: string) => boolean;
 };
 
 export type AppContextFrames = {
 	size: number;
 	names: string[];
-	modBy: ReadonlyDict<PathableEntities<Module>>;
+	modBy: Dict<PathableEntities<Module>>;
 	has: (name: string) => boolean;
 };
 
@@ -371,9 +336,9 @@ export interface AppContextDefects<T extends ImportDefect | ModuleDefect> {
 	ids: string[];
 	rules: string[];
 	paths: string[];
-	byId: ReadonlyDict<T>;
-	byRule: ReadonlyDict<ReadonlyDict<T>>;
-	byPath: ReadonlyDict<ReadonlyDict<T>>;
+	byId: Dict<T>;
+	byRule: Dict<Dict<T>>;
+	byPath: Dict<Dict<T>>;
 	removeByRule: (rule: string) => this;
 	removeById: (id: string) => this;
 	removeAll: () => this;

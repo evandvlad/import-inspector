@@ -1,4 +1,4 @@
-import type { Dict, ImportDefect, ModuleDefect, ReadonlyDict } from "~/api.ts";
+import type { Dict, ImportDefect, ModuleDefect } from "~/api.ts";
 
 export abstract class ContextDefects<T extends ImportDefect | ModuleDefect> {
 	get size() {
@@ -58,7 +58,7 @@ export abstract class ContextDefects<T extends ImportDefect | ModuleDefect> {
 	}
 
 	protected abstract createDictById(): Dict<T>;
-	protected abstract createDictByPath(): Dict<ReadonlyDict<T>>;
-	protected abstract createDictByRule(): Dict<ReadonlyDict<T>>;
+	protected abstract createDictByPath(): Dict<Dict<T>>;
+	protected abstract createDictByRule(): Dict<Dict<T>>;
 	protected abstract removeDefect(defect: T): void;
 }

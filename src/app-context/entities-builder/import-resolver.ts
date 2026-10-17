@@ -1,7 +1,9 @@
 import { dirname, join } from "~/lib/upath.ts";
 import type { Settings } from "~/settings.ts";
 import { getImportPathSuffixCandidates } from "~/project-specifics.ts";
-import type { ImportRec, ImportResolution } from "~/values.ts";
+import type { ImportRec } from "~/values.ts";
+
+import type { ImportResolution } from "../values.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 

@@ -1,6 +1,8 @@
 import { DefRefCached } from "~/lib/ref.ts";
 import type { Dict as IDict, Import as IImport, Module } from "~/api.ts";
-import type { ImportRec, ImportResolution } from "~/values.ts";
+import type { ImportRec } from "~/values.ts";
+
+import type { ImportResolution } from "./values.ts";
 
 import { ImportDefects } from "./defects/index.ts";
 

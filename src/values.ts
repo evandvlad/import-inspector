@@ -39,10 +39,4 @@ export type FileParsingResult = {
 	importRecs: ImportRec[];
 };
 
-export type ImportResolution = {
-	path: string | null;
-	isExternal: boolean;
-	isRelative: boolean;
-};
-
 export type LintFunction = (appContext: AppContext) => Promise<void> | void;

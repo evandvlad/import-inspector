@@ -1,6 +1,6 @@
 import { assert } from "~/lib/err.ts";
 import { DefRefCached } from "~/lib/ref.ts";
-import type { Dict as IDict, Import, Imports as IImports, ReadonlyDict } from "~/api.ts";
+import type { Dict as IDict, Import, Imports as IImports } from "~/api.ts";
 import { Dict } from "~/lib/dict.ts";
 
 export class Imports implements IImports {
@@ -108,6 +108,6 @@ export class Imports implements IImports {
 	#mapByLocator(dict: IDict<Import>) {
 		return dict.group(({ locator }) => String(locator))
 			.sortK((a, b) => a.localeCompare(b))
-			.map<ReadonlyDict<Import>>((arr) => Dict.fromArray(arr, ({ id }) => id));
+			.map<IDict<Import>>((arr) => Dict.fromArray(arr, ({ id }) => id));
 	}
 }
