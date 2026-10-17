@@ -1,11 +1,11 @@
 import { isNull } from "~/lib/vtype.ts";
 import { DefRefCached } from "~/lib/ref.ts";
 import { Dict } from "~/lib/dict.ts";
-import type { Dict as IDict, Module_v2, Package_v2 } from "~/api.ts";
+import type { Dict as IDict, Module, Package as IPackage } from "~/api.ts";
 
 import { PathableEntities } from "./pathable-entities.ts";
 
-export class Package implements Package_v2 {
+export class Package implements IPackage {
 	name;
 	path;
 	mods;
@@ -20,10 +20,10 @@ export class Package implements Package_v2 {
 			name: string;
 			path: string;
 			shortPath: string;
-			modDict: IDict<Module_v2>;
+			modDict: IDict<Module>;
 			parentPath: string | null;
 			childPaths: string[];
-			packDict: IDict<Package_v2>;
+			packDict: IDict<IPackage>;
 		},
 	) {
 		this.name = name;
@@ -35,7 +35,7 @@ export class Package implements Package_v2 {
 		this.#childrenRef = new DefRefCached(() => new PathableEntities({ dict: packDict.pick(childPaths) }));
 
 		this.#ancestryRef = new DefRefCached(() => {
-			const dict = Dict.empty<Package_v2>();
+			const dict = Dict.empty<IPackage>();
 
 			let parPath = parentPath;
 

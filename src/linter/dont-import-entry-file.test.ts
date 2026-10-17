@@ -18,7 +18,7 @@ describe("dont-import-entry-file", () => {
 
 		dontImportEntryFile(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontImportEntryFile)
 			.map(({ mod }) => mod.path);

@@ -1,15 +1,15 @@
 import type { DefRef } from "~/lib/ref.ts";
-import type { Import_v2, ImportDefect_v2, Module_v2 } from "~/api.ts";
+import type { Import, ImportDefect as IImportDefect, Module } from "~/api.ts";
 
 import { ImportDefect } from "../defect/index.ts";
 
 import { Defects } from "./defects.ts";
 
-export class ImportDefects extends Defects<ImportDefect_v2> {
+export class ImportDefects extends Defects<IImportDefect> {
 	#imp;
 	#modRef;
 
-	constructor({ imp, modRef }: { imp: Import_v2; modRef: DefRef<Module_v2> }) {
+	constructor({ imp, modRef }: { imp: Import; modRef: DefRef<Module> }) {
 		super();
 
 		this.#imp = imp;

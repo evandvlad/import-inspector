@@ -6,7 +6,7 @@ import { createModuleLink } from "./module-link.ts";
 import { createModuleCode } from "./module-code.ts";
 
 export function createLintResult({ appContext }: { appContext: AppContext }) {
-	const { modDefects, impDefects } = appContext.v2;
+	const { modDefects, impDefects } = appContext;
 	const dict = Dict.empty<string[]>();
 
 	modDefects.byPath.forEach((defects, source) => {

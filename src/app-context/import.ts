@@ -1,10 +1,10 @@
 import { DefRefCached } from "~/lib/ref.ts";
-import type { Dict as IDict, Import_v2, Module_v2 } from "~/api.ts";
+import type { Dict as IDict, Import as IImport, Module } from "~/api.ts";
 import type { ImportRec, ImportResolution } from "~/values.ts";
 
 import { ImportDefects } from "./defects/index.ts";
 
-export class Import implements Import_v2 {
+export class Import implements IImport {
 	id;
 	defects;
 	locator;
@@ -20,7 +20,7 @@ export class Import implements Import_v2 {
 			modPath: string;
 			importRec: ImportRec;
 			resolution: ImportResolution | null;
-			modDict: IDict<Module_v2>;
+			modDict: IDict<Module>;
 		},
 	) {
 		this.id = crypto.randomUUID() as string;
@@ -42,7 +42,7 @@ export class Import implements Import_v2 {
 				: null
 		);
 
-		this.defects = new ImportDefects({ imp: this as Import_v2, modRef: this.#sourceModRef });
+		this.defects = new ImportDefects({ imp: this as IImport, modRef: this.#sourceModRef });
 	}
 
 	get sourceMod() {

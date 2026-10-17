@@ -1,4 +1,4 @@
-import type { AppContext, LineRange, Module_v2, TaskContextComponents } from "~/api.ts";
+import type { AppContext, LineRange, Module, TaskContextComponents } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 
 import { createModuleLink } from "./module-link.ts";
@@ -17,11 +17,11 @@ export class Components implements TaskContextComponents {
 		this.#settings = settings;
 	}
 
-	moduleLink(mod: Module_v2, lineRange?: LineRange) {
+	moduleLink(mod: Module, lineRange?: LineRange) {
 		return createModuleLink({ mod, lineRange });
 	}
 
-	moduleCode(mod: Module_v2, lineRange?: LineRange) {
+	moduleCode(mod: Module, lineRange?: LineRange) {
 		return createModuleCode({ mod, lineRange });
 	}
 

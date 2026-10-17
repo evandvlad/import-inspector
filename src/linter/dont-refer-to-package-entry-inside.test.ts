@@ -18,7 +18,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ mod }) => mod.path);
@@ -37,7 +37,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ mod }) => mod.path);
@@ -56,7 +56,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ mod }) => mod.path);
@@ -75,7 +75,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ mod }) => mod.path);
@@ -95,7 +95,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ mod }) => mod.path);
@@ -117,7 +117,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontReferToPackageEntryInside)
 			.map(({ mod }) => mod.path);
@@ -142,7 +142,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		dontReferToPackageEntryInside(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontReferToPackageEntryInside, [])
 			.map(({ mod }) => mod.path);

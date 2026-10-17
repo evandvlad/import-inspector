@@ -1,10 +1,10 @@
 import { concat, isAbsolute, shorten, unify } from "~/lib/upath.ts";
-import type { AppContextEnv_v2 } from "~/api.ts";
+import type { AppContextEnv } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
 import { components } from "~/htmlx/index.ts";
 
-export class Env implements AppContextEnv_v2 {
+export class Env implements AppContextEnv {
 	preset;
 	version;
 	basePath;

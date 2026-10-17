@@ -10,7 +10,7 @@ function ln(caption: string, content: string | number) {
 export function createSummary(
 	{ settings, appContext }: { settings: Settings; appContext: AppContext },
 ) {
-	const { summary, imps, mods } = appContext.v2;
+	const { summary, imps, mods } = appContext;
 	const dynamicImports = imps.dynamicById.size;
 	const staticImports = imps.staticById.size;
 

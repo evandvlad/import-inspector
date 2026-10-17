@@ -1,6 +1,6 @@
-import type { AppContextDefects_v2, Dict, Import_v2, ImportDefect_v2, Module_v2, ModuleDefect_v2 } from "~/api.ts";
+import type { AppContextDefects, Dict, Import, ImportDefect, Module, ModuleDefect } from "~/api.ts";
 
-export abstract class ContextDefects<T extends ImportDefect_v2 | ModuleDefect_v2> {
+export abstract class ContextDefects<T extends ImportDefect | ModuleDefect> {
 	get total() {
 		return this.byId.size;
 	}
@@ -63,21 +63,20 @@ export abstract class ContextDefects<T extends ImportDefect_v2 | ModuleDefect_v2
 	protected abstract removeDefect(defect: T): void;
 }
 
-export class ContextModuleDefects extends ContextDefects<ModuleDefect_v2>
-	implements AppContextDefects_v2<ModuleDefect_v2> {
+export class ContextModuleDefects extends ContextDefects<ModuleDefect> implements AppContextDefects<ModuleDefect> {
 	#modDict;
 
-	constructor({ modDict }: { modDict: Dict<Module_v2> }) {
+	constructor({ modDict }: { modDict: Dict<Module> }) {
 		super();
 		this.#modDict = modDict;
 	}
 
 	protected override createDictById() {
-		return this.#modDict.fold<ModuleDefect_v2>((acc, mod) => acc.merge(mod.defects.byRule.mapK(({ id }) => id)));
+		return this.#modDict.fold<ModuleDefect>((acc, mod) => acc.merge(mod.defects.byRule.mapK(({ id }) => id)));
 	}
 
 	protected override createDictByPath() {
-		return this.#modDict.fold<ModuleDefect_v2[]>((acc, mod) => {
+		return this.#modDict.fold<ModuleDefect[]>((acc, mod) => {
 			if (mod.defects.total > 0) {
 				acc.set(mod.path, mod.defects.byRule.toArray());
 			}
@@ -87,7 +86,7 @@ export class ContextModuleDefects extends ContextDefects<ModuleDefect_v2>
 	}
 
 	protected override createDictByRule() {
-		return this.#modDict.fold<ModuleDefect_v2[]>((acc, mod) => {
+		return this.#modDict.fold<ModuleDefect[]>((acc, mod) => {
 			mod.defects.byRule.forEach((defect) => {
 				acc.getOrInsert(defect.rule, []).push(defect);
 			});
@@ -96,26 +95,25 @@ export class ContextModuleDefects extends ContextDefects<ModuleDefect_v2>
 		});
 	}
 
-	protected override removeDefect(defect: ModuleDefect_v2) {
+	protected override removeDefect(defect: ModuleDefect) {
 		defect.mod.defects.remove(defect.rule);
 	}
 }
 
-export class ContextImportDefects extends ContextDefects<ImportDefect_v2>
-	implements AppContextDefects_v2<ImportDefect_v2> {
+export class ContextImportDefects extends ContextDefects<ImportDefect> implements AppContextDefects<ImportDefect> {
 	#impDict;
 
-	constructor({ impDict }: { impDict: Dict<Import_v2> }) {
+	constructor({ impDict }: { impDict: Dict<Import> }) {
 		super();
 		this.#impDict = impDict;
 	}
 
 	protected override createDictById() {
-		return this.#impDict.fold<ImportDefect_v2>((acc, imp) => acc.merge(imp.defects.byRule.mapK(({ id }) => id)));
+		return this.#impDict.fold<ImportDefect>((acc, imp) => acc.merge(imp.defects.byRule.mapK(({ id }) => id)));
 	}
 
 	protected override createDictByPath() {
-		return this.#impDict.fold<ImportDefect_v2[]>((acc, imp) => {
+		return this.#impDict.fold<ImportDefect[]>((acc, imp) => {
 			if (imp.defects.total > 0) {
 				acc.addOrReduce(imp.sourceMod.path, imp.defects.byRule.toArray(), (acc, value) => acc.concat(value));
 			}
@@ -125,7 +123,7 @@ export class ContextImportDefects extends ContextDefects<ImportDefect_v2>
 	}
 
 	protected override createDictByRule() {
-		return this.#impDict.fold<ImportDefect_v2[]>((acc, imp) => {
+		return this.#impDict.fold<ImportDefect[]>((acc, imp) => {
 			imp.defects.byRule.forEach((defect) => {
 				acc.getOrInsert(defect.rule, []).push(defect);
 			});
@@ -134,7 +132,7 @@ export class ContextImportDefects extends ContextDefects<ImportDefect_v2>
 		});
 	}
 
-	protected override removeDefect(defect: ImportDefect_v2) {
+	protected override removeDefect(defect: ImportDefect) {
 		defect.imp.defects.remove(defect.rule);
 	}
 }

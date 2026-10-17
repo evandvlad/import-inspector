@@ -237,47 +237,24 @@ export type File = {
 	getEntriesByLineRange: (lineRange: LineRange) => FileEntry[];
 };
 
-export type AppContext = {
-	v2: AppContext_v2;
-};
-
-export type TaskContextComponents = {
-	moduleCode: (mod: Module_v2, lineRange?: LineRange) => string;
-	moduleLink: (mod: Module_v2, lineRange?: LineRange) => string;
-	lintResult: () => string;
-	summary: () => string;
-};
-
-export type TaskContext = {
-	tuix: Tuix;
-	components: TaskContextComponents;
-	appContext: AppContext;
-
-	args: string[];
-
-	report: (report: Report) => Promise<void>;
-};
-
-/// app-context API v2
-
-export type ImportDefect_v2 = {
+export type ImportDefect = {
 	id: string;
 	rule: string;
 	info: string;
 	description: string;
-	imp: Import_v2;
-	mod: Module_v2;
+	imp: Import;
+	mod: Module;
 };
 
-export type ModuleDefect_v2 = {
+export type ModuleDefect = {
 	id: string;
 	rule: string;
 	info: string;
 	description: string;
-	mod: Module_v2;
+	mod: Module;
 };
 
-export interface Defects_v2<T extends ModuleDefect_v2 | ImportDefect_v2> {
+export interface Defects<T extends ModuleDefect | ImportDefect> {
 	total: number;
 	rules: string[];
 	byRule: ReadonlyDict<T>;
@@ -289,42 +266,42 @@ export interface Defects_v2<T extends ModuleDefect_v2 | ImportDefect_v2> {
 	removeAll: () => this;
 }
 
-export type ImportResolution_v2 = {
-	mod: Nullable<Module_v2>;
+export type ImportResolution = {
+	mod: Nullable<Module>;
 	isExternal: boolean;
 	isRelative: boolean;
 };
 
-export type Import_v2 = {
+export type Import = {
 	id: string;
 	locator: Nullable<string>;
 	location: Nullable<string>;
 	isDynamic: boolean;
-	resolution: Nullable<ImportResolution_v2>;
-	sourceMod: Module_v2;
+	resolution: Nullable<ImportResolution>;
+	sourceMod: Module;
 	fileLineRange: LineRange;
 	fileEntries: FileEntry[];
-	defects: Defects_v2<ImportDefect_v2>;
+	defects: Defects<ImportDefect>;
 };
 
-export type Imports_v2 = {
+export type Imports = {
 	total: number;
 	ids: string[];
 	has: (id: string) => boolean;
-	get: (id: string) => Import_v2;
-	find: (id: string) => Import_v2 | null;
-	byId: ReadonlyDict<Import_v2>;
-	localById: ReadonlyDict<Import_v2>;
-	fullResolvedById: ReadonlyDict<Import_v2>;
-	fullUnresolvedById: ReadonlyDict<Import_v2>;
-	localUnresolvedById: ReadonlyDict<Import_v2>;
-	dynamicById: ReadonlyDict<Import_v2>;
-	staticById: ReadonlyDict<Import_v2>;
-	externalById: ReadonlyDict<Import_v2>;
-	externalByLocator: ReadonlyDict<Import_v2[]>;
+	get: (id: string) => Import;
+	find: (id: string) => Import | null;
+	byId: ReadonlyDict<Import>;
+	localById: ReadonlyDict<Import>;
+	fullResolvedById: ReadonlyDict<Import>;
+	fullUnresolvedById: ReadonlyDict<Import>;
+	localUnresolvedById: ReadonlyDict<Import>;
+	dynamicById: ReadonlyDict<Import>;
+	staticById: ReadonlyDict<Import>;
+	externalById: ReadonlyDict<Import>;
+	externalByLocator: ReadonlyDict<Import[]>;
 };
 
-export interface ModuleTrait_v2 {
+export interface ModuleTrait {
 	total: number;
 	names: string[];
 	has: (name: string) => boolean;
@@ -332,7 +309,7 @@ export interface ModuleTrait_v2 {
 	remove: (name: string) => this;
 }
 
-export type PathableEntities_v2<T extends Module_v2 | Package_v2> = {
+export type PathableEntities<T extends Module | Package> = {
 	total: number;
 	paths: string[];
 	has: (path: string) => boolean;
@@ -341,52 +318,52 @@ export type PathableEntities_v2<T extends Module_v2 | Package_v2> = {
 	byPath: ReadonlyDict<T>;
 };
 
-export type Module_v2 = {
+export type Module = {
 	name: string;
 	lang: Lang;
 	path: string;
 	shortPath: string;
-	tags: ModuleTrait_v2;
-	frames: ModuleTrait_v2;
+	tags: ModuleTrait;
+	frames: ModuleTrait;
 	file: File;
-	pack: Nullable<Package_v2>;
+	pack: Nullable<Package>;
 	isInPack: boolean;
 	isPackEntry: boolean;
-	links: PathableEntities_v2<Module_v2>;
-	imps: Imports_v2;
-	defects: Defects_v2<ModuleDefect_v2>;
+	links: PathableEntities<Module>;
+	imps: Imports;
+	defects: Defects<ModuleDefect>;
 };
 
-export type Package_v2 = {
+export type Package = {
 	name: string;
 	path: string;
 	shortPath: string;
-	parent: Nullable<Package_v2>;
+	parent: Nullable<Package>;
 	hasParent: boolean;
-	children: PathableEntities_v2<Package_v2>;
-	ancestry: PathableEntities_v2<Package_v2>;
-	mods: PathableEntities_v2<Module_v2>;
+	children: PathableEntities<Package>;
+	ancestry: PathableEntities<Package>;
+	mods: PathableEntities<Module>;
 };
 
-export interface AppContextPackages_v2 extends PathableEntities_v2<Package_v2> {
-	roots: PathableEntities_v2<Package_v2>;
+export interface AppContextPackages extends PathableEntities<Package> {
+	roots: PathableEntities<Package>;
 }
 
-export type AppContextTags_v2 = {
+export type AppContextTags = {
 	total: number;
 	names: string[];
-	modBy: ReadonlyDict<PathableEntities_v2<Module_v2>>;
+	modBy: ReadonlyDict<PathableEntities<Module>>;
 	has: (name: string) => boolean;
 };
 
-export type AppContextFrames_v2 = {
+export type AppContextFrames = {
 	total: number;
 	names: string[];
-	modBy: ReadonlyDict<PathableEntities_v2<Module_v2>>;
+	modBy: ReadonlyDict<PathableEntities<Module>>;
 	has: (name: string) => boolean;
 };
 
-export interface AppContextDefects_v2<T extends ImportDefect_v2 | ModuleDefect_v2> {
+export interface AppContextDefects<T extends ImportDefect | ModuleDefect> {
 	total: number;
 	ids: string[];
 	rules: string[];
@@ -399,7 +376,7 @@ export interface AppContextDefects_v2<T extends ImportDefect_v2 | ModuleDefect_v
 	removeAll: () => this;
 }
 
-export type AppContextSummary_v2 = {
+export type AppContextSummary = {
 	tags: number;
 	frames: number;
 	packs: number;
@@ -410,7 +387,7 @@ export type AppContextSummary_v2 = {
 	totalDefects: number;
 };
 
-export type AppContextEnv_v2 = {
+export type AppContextEnv = {
 	version: string;
 	basePath: string;
 	preset: ConfigPreset;
@@ -420,14 +397,31 @@ export type AppContextEnv_v2 = {
 	editorUrl: (path: string, line?: number) => string;
 };
 
-export type AppContext_v2 = {
-	env: AppContextEnv_v2;
-	mods: PathableEntities_v2<Module_v2>;
-	imps: Imports_v2;
-	packs: AppContextPackages_v2;
-	tags: AppContextTags_v2;
-	frames: AppContextFrames_v2;
-	summary: AppContextSummary_v2;
-	impDefects: AppContextDefects_v2<ImportDefect_v2>;
-	modDefects: AppContextDefects_v2<ModuleDefect_v2>;
+export type AppContext = {
+	env: AppContextEnv;
+	mods: PathableEntities<Module>;
+	imps: Imports;
+	packs: AppContextPackages;
+	tags: AppContextTags;
+	frames: AppContextFrames;
+	summary: AppContextSummary;
+	impDefects: AppContextDefects<ImportDefect>;
+	modDefects: AppContextDefects<ModuleDefect>;
+};
+
+export type TaskContextComponents = {
+	moduleCode: (mod: Module, lineRange?: LineRange) => string;
+	moduleLink: (mod: Module, lineRange?: LineRange) => string;
+	lintResult: () => string;
+	summary: () => string;
+};
+
+export type TaskContext = {
+	tuix: Tuix;
+	components: TaskContextComponents;
+	appContext: AppContext;
+
+	args: string[];
+
+	report: (report: Report) => Promise<void>;
 };

@@ -1,8 +1,8 @@
 import { assert } from "~/lib/err.ts";
 import { DefRefCached } from "~/lib/ref.ts";
-import type { Dict, Module_v2, Package_v2, PathableEntities_v2 } from "~/api.ts";
+import type { Dict, Module, Package, PathableEntities as IPathableEntities } from "~/api.ts";
 
-export class PathableEntities<T extends Module_v2 | Package_v2> implements PathableEntities_v2<T> {
+export class PathableEntities<T extends Module | Package> implements IPathableEntities<T> {
 	#byPathRef;
 
 	constructor({ dict }: { dict: Dict<T> }) {

@@ -1,8 +1,8 @@
 import { assert } from "~/lib/err.ts";
 import { DefRefCached } from "~/lib/ref.ts";
-import type { Dict as IDict, Import_v2, Imports_v2 } from "~/api.ts";
+import type { Dict as IDict, Import, Imports as IImports } from "~/api.ts";
 
-export class Imports implements Imports_v2 {
+export class Imports implements IImports {
 	total;
 	ids;
 	byId;
@@ -16,7 +16,7 @@ export class Imports implements Imports_v2 {
 	#externalByIdRef;
 	#externalByLocatorRef;
 
-	constructor({ dict }: { dict: IDict<Import_v2> }) {
+	constructor({ dict }: { dict: IDict<Import> }) {
 		this.total = dict.size;
 		this.ids = dict.toKeys();
 		this.byId = dict;

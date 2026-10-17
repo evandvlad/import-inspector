@@ -1,6 +1,6 @@
-import type { ModuleTrait_v2 } from "~/api.ts";
+import type { ModuleTrait as IModuleTrait } from "~/api.ts";
 
-export class ModuleTrait implements ModuleTrait_v2 {
+export class ModuleTrait implements IModuleTrait {
 	#nameSet;
 
 	constructor() {

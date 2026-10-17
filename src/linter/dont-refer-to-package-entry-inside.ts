@@ -1,8 +1,8 @@
 import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontReferToPackageEntryInside: LintFunction = (appContext) => {
-	appContext.v2.imps.fullResolvedById
+export const dontReferToPackageEntryInside: LintFunction = ({ imps }) => {
+	imps.fullResolvedById
 		.filter(({ resolution, sourceMod }) => {
 			const importedMod = resolution!.mod!;
 

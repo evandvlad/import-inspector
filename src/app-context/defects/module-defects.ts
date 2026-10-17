@@ -1,13 +1,13 @@
-import type { Module_v2, ModuleDefect_v2 } from "~/api.ts";
+import type { Module, ModuleDefect as IModuleDefect } from "~/api.ts";
 
 import { ModuleDefect } from "../defect/index.ts";
 
 import { Defects } from "./defects.ts";
 
-export class ModuleDefects extends Defects<ModuleDefect_v2> {
+export class ModuleDefects extends Defects<IModuleDefect> {
 	#mod;
 
-	constructor({ mod }: { mod: Module_v2 }) {
+	constructor({ mod }: { mod: Module }) {
 		super();
 
 		this.#mod = mod;

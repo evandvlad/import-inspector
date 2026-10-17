@@ -2,7 +2,7 @@ import { type AppContext, Tag } from "~/api.ts";
 import { isDeclarationFile, isEntryPointFile, isIndependentFile, isTestFile } from "~/project-specifics.ts";
 
 export function setTags({ appContext }: { appContext: AppContext }) {
-	appContext.v2.mods.byPath.forEach((mod, path) => {
+	appContext.mods.byPath.forEach((mod, path) => {
 		if (isEntryPointFile(path)) {
 			mod.tags.add(Tag.EntryPoint);
 		}

@@ -2,9 +2,8 @@ import { Dict } from "~/lib/dict.ts";
 import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontJumpThroughPackageEntry: LintFunction = (appContext) => {
-	appContext.v2.imps.fullResolvedById.filter(({ sourceMod, resolution }) => {
-		const { packs } = appContext.v2;
+export const dontJumpThroughPackageEntry: LintFunction = ({ imps, packs }) => {
+	imps.fullResolvedById.filter(({ sourceMod, resolution }) => {
 		const roots = packs.roots.byPath.slice();
 		const importedMod = resolution!.mod!;
 

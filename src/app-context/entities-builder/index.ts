@@ -1,5 +1,11 @@
 import { Dict } from "~/lib/dict.ts";
-import type { Dict as IDict, Import_v2, Imports_v2, Module_v2, Package_v2 } from "~/api.ts";
+import type {
+	Dict as IDict,
+	Import as IImport,
+	Imports as IImports,
+	Module as IModule,
+	Package as IPackage,
+} from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
 
@@ -35,9 +41,9 @@ class EntitiesBuilder {
 			packageEntryPointDetector: this.#packageEntryPointDetector,
 		});
 
-		this.#impDict = Dict.empty<Import_v2>();
-		this.#modDict = Dict.empty<Module_v2>();
-		this.#packDict = Dict.empty<Package_v2>();
+		this.#impDict = Dict.empty<IImport>();
+		this.#modDict = Dict.empty<IModule>();
+		this.#packDict = Dict.empty<IPackage>();
 	}
 
 	build() {
@@ -57,10 +63,10 @@ class EntitiesBuilder {
 		const importResolver = new ImportResolver({ settings: this.#settings, pathRecProvider: this.#pathRecProvider });
 
 		const linkPathsDict = Dict.empty<string[]>();
-		const impsDict = Dict.empty<Imports_v2>();
+		const impsDict = Dict.empty<IImports>();
 
 		this.#parsingResult.forEach(({ path, importRecs }) => {
-			const impDict = Dict.empty<Import_v2>();
+			const impDict = Dict.empty<IImport>();
 
 			importRecs.forEach((importRec) => {
 				const resolution = importResolver.resolve({ path, importRec });
@@ -80,8 +86,8 @@ class EntitiesBuilder {
 		return { linkPathsDict, impsDict };
 	}
 
-	#prepareMods({ impsDict, linkPathsDict }: { impsDict: Dict<Imports_v2>; linkPathsDict: Dict<string[]> }) {
-		const packsDict = Dict.empty<Dict<Module_v2>>();
+	#prepareMods({ impsDict, linkPathsDict }: { impsDict: Dict<IImports>; linkPathsDict: Dict<string[]> }) {
+		const packsDict = Dict.empty<Dict<IModule>>();
 
 		this.#parsingResult.forEach(({ path, file }) => {
 			const { baseName, shortPath } = this.#pathRecProvider.getFilePathRec(path);
@@ -114,7 +120,7 @@ class EntitiesBuilder {
 		return { packsDict };
 	}
 
-	#preparePacks({ packsDict }: { packsDict: Dict<Dict<Module_v2>> }) {
+	#preparePacks({ packsDict }: { packsDict: Dict<Dict<IModule>> }) {
 		packsDict.forEach((modDict, path) => {
 			const { name, shortPath, parentPath } = this.#pathRecProvider.getDirPathRec(path);
 

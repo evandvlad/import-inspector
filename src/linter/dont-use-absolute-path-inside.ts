@@ -1,8 +1,8 @@
 import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
-export const dontUseAbsolutePathInside: LintFunction = (appContext) => {
-	appContext.v2.imps.fullResolvedById
+export const dontUseAbsolutePathInside: LintFunction = ({ imps }) => {
+	imps.fullResolvedById
 		.filter(({ resolution }) => !resolution!.isRelative)
 		.filter(({ sourceMod, resolution }) => {
 			const importedMod = resolution!.mod!;

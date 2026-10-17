@@ -20,7 +20,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
 			.map(({ mod }) => mod.path);
@@ -42,7 +42,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
 			.map(({ mod }) => mod.path);
@@ -64,7 +64,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
 			.map(({ mod }) => mod.path);
@@ -87,7 +87,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.get(ImportLintRule.DontJumpThroughPackageEntry)
 			.map(({ mod }) => mod.path);
@@ -108,7 +108,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ mod }) => mod.path);
@@ -130,7 +130,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ mod }) => mod.path);
@@ -153,7 +153,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ mod }) => mod.path);
@@ -173,7 +173,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ mod }) => mod.path);
@@ -194,7 +194,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		dontJumpThroughPackageEntry(appContext);
 
-		const paths = appContext.v2.impDefects
+		const paths = appContext.impDefects
 			.byRule
 			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, [])
 			.map(({ mod }) => mod.path);

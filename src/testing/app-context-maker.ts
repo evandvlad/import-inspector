@@ -2,7 +2,7 @@ import { Dict } from "~/lib/dict.ts";
 import { parseFile } from "~/file-parser/index.ts";
 import { setTags } from "~/tagger/index.ts";
 import { lint } from "~/linter/index.ts";
-import { createAppContext } from "~/app-context/index.ts";
+import { AppContext } from "~/app-context/index.ts";
 
 import { createSettings } from "./settings-maker.ts";
 
@@ -26,7 +26,7 @@ export async function createAndFillAppContext({ files, aliases }: {
 	);
 
 	const parsingResult = Dict.fromArray(parsingResultList, ({ path }) => path);
-	const appContext = createAppContext({ settings, parsingResult });
+	const appContext = new AppContext({ settings, parsingResult });
 
 	setTags({ appContext });
 	lint({ appContext, settings });

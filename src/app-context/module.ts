@@ -1,13 +1,13 @@
 import { isNull } from "~/lib/vtype.ts";
 import { DefRefCached } from "~/lib/ref.ts";
-import type { Dict, File, Imports_v2, Module_v2, Package_v2 } from "~/api.ts";
+import type { Dict, File, Imports, Module as IModule, Package } from "~/api.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
 import { ModuleTrait } from "./module-trait.ts";
 import { PathableEntities } from "./pathable-entities.ts";
 import { ModuleDefects } from "./defects/index.ts";
 
-export class Module implements Module_v2 {
+export class Module implements IModule {
 	name;
 	path;
 	lang;
@@ -27,13 +27,13 @@ export class Module implements Module_v2 {
 			name: string;
 			path: string;
 			shortPath: string;
-			imps: Imports_v2;
+			imps: Imports;
 			linkPaths: string[];
 			file: File;
 			packPath: string | null;
 			isPackEntry: boolean;
-			modDict: Dict<Module_v2>;
-			packDict: Dict<Package_v2>;
+			modDict: Dict<IModule>;
+			packDict: Dict<Package>;
 		},
 	) {
 		this.name = name;

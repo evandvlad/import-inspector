@@ -1,8 +1,8 @@
 import { assert } from "~/lib/err.ts";
 import { Dict } from "~/lib/dict.ts";
-import type { Defects_v2, ImportDefect_v2, ModuleDefect_v2 } from "~/api.ts";
+import type { Defects as IDefects, ImportDefect, ModuleDefect } from "~/api.ts";
 
-export abstract class Defects<T extends ImportDefect_v2 | ModuleDefect_v2> implements Defects_v2<T> {
+export abstract class Defects<T extends ImportDefect | ModuleDefect> implements IDefects<T> {
 	byRule;
 
 	constructor() {
