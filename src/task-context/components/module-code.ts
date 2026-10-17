@@ -1,14 +1,10 @@
 import { tuix } from "~/tuix/index.ts";
-import type { AppContext, LineRange } from "~/api.ts";
+import type { LineRange, Module_v2 } from "~/api.ts";
 
 export function createModuleCode(
-	{ appContext, path, lineRange }: { appContext: AppContext; path: string; lineRange?: LineRange },
+	{ mod, lineRange }: { mod: Module_v2; lineRange?: LineRange },
 ) {
-	const { env, modules } = appContext.v1;
-
-	const fullPath = env.fullPath(path);
-	const { file } = modules.get(fullPath);
-
+	const { file } = mod;
 	const content = lineRange ? file.getContentByLineRange(lineRange) : file.value;
 	const startLine = lineRange ? lineRange[0] : 1;
 

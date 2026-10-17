@@ -6,40 +6,43 @@ import { createModuleLink } from "./module-link.ts";
 import { createModuleCode } from "./module-code.ts";
 
 export function createLintResult({ appContext }: { appContext: AppContext }) {
-	const { modules, importDefects, moduleDefects } = appContext.v1;
+	const { modDefects, impDefects } = appContext.v2;
 	const dict = Dict.empty<string[]>();
 
-	moduleDefects.bySource.forEach((defects, source) => {
-		const content = defects.reduce((acc, { info }) => {
-			const link = tuix.text(createModuleLink({ appContext, path: source }), { bold: true, color: "blue" });
-			const ruleInfo = [tuix.text("rule (module):", { dim: true }), info].join(" ");
-			const content = tuix.lines([link, ruleInfo, ""]);
+	modDefects.byPath.forEach((defects, source) => {
+		const content = defects.reduce((acc, { info, mod }) => {
+			const link = tuix.text(createModuleLink({ mod }), {
+				bold: true,
+				color: "blue",
+			});
 
-			return acc + content;
+			const ruleInfo = [tuix.text("rule (module):", { dim: true }), info].join(" ");
+
+			return acc + tuix.lines([link, ruleInfo, "", ""]);
 		}, "");
 
 		dict.getOrInsert(source, []).push(content);
 	});
 
-	importDefects.bySource.forEach((defects, source) => {
-		const content = defects.reduce((acc, { source, resolved, posSpan, info }) => {
-			const { file } = modules.get(source);
-			const lineRange = file.getLineRange(posSpan);
+	impDefects.byPath.forEach((defects, source) => {
+		const content = defects.reduce((acc, { mod, imp, info }) => {
+			const lineRange = imp.fileLineRange;
 
-			const link = tuix.text(createModuleLink({ appContext, path: source, lineRange }), {
+			const link = tuix.text(createModuleLink({ mod, lineRange }), {
 				bold: true,
 				color: "blue",
 			});
 
-			const moduleLink = resolved ? createModuleLink({ appContext, path: resolved }) : " ? ";
+			const moduleLink = imp.resolution?.mod ? createModuleLink({ mod: imp.resolution.mod }) : " ? ";
 
 			const ruleInfo = [tuix.text("rule (import):", { dim: true }), info].join(" ");
 			const importedModule = [tuix.text("imported module:", { dim: true }), moduleLink].join(" ");
-			const codeLine = tuix.text(createModuleCode({ appContext, path: source, lineRange }), { color: "gray" });
 
-			const content = tuix.lines([link, ruleInfo, importedModule, "", codeLine, ""]);
+			const codeLine = tuix.text(createModuleCode({ mod, lineRange }), {
+				color: "gray",
+			});
 
-			return acc + content;
+			return acc + tuix.lines([link, ruleInfo, importedModule, "", codeLine, "", ""]);
 		}, "");
 
 		dict.getOrInsert(source, []).push(content);

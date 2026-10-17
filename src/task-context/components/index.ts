@@ -18,11 +18,11 @@ export class Components implements TaskContextComponents {
 	}
 
 	moduleLink(mod: Module_v2, lineRange?: LineRange) {
-		return createModuleLink({ appContext: this.#appContext, path: mod.path, lineRange });
+		return createModuleLink({ mod, lineRange });
 	}
 
 	moduleCode(mod: Module_v2, lineRange?: LineRange) {
-		return createModuleCode({ appContext: this.#appContext, path: mod.path, lineRange });
+		return createModuleCode({ mod, lineRange });
 	}
 
 	lintResult() {

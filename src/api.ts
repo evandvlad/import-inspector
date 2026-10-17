@@ -581,7 +581,8 @@ export type AppContextEnv_v2 = {
 	basePath: string;
 	preset: ConfigPreset;
 	htmlxc: Htmlxc;
-	toFullPath: (pathOrShortPath: string) => string | null;
+	toShortPath: (pathOrShortPath: string) => string;
+	toFullPath: (pathOrShortPath: string) => string;
 	editorUrl: (path: string, line?: number) => string;
 };
 

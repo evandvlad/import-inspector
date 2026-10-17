@@ -24,7 +24,7 @@ export class AppContext implements AppContext_v2 {
 	constructor({ settings, parsingResult }: { settings: Settings; parsingResult: Dict<FileParsingResult> }) {
 		const { basePath, impDict, modDict, packDict } = buildEntities({ settings, parsingResult });
 
-		this.env = new Env({ basePath, modDict, settings });
+		this.env = new Env({ basePath, settings });
 		this.mods = new PathableEntities({ dict: modDict });
 		this.imps = new Imports({ dict: impDict });
 		this.packs = new Packages({ dict: packDict });

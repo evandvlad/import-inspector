@@ -1,13 +1,8 @@
 import { tuix } from "~/tuix/index.ts";
-import type { AppContext, LineRange } from "~/api.ts";
+import type { LineRange, Module_v2 } from "~/api.ts";
 
 export function createModuleLink(
-	{ appContext, path, lineRange }: { appContext: AppContext; path: string; lineRange?: LineRange },
+	{ mod, lineRange }: { mod: Module_v2; lineRange?: LineRange },
 ) {
-	const { env } = appContext.v1;
-
-	const fullPath = env.fullPath(path);
-	const shortPath = env.shortPath(fullPath);
-
-	return tuix.link(fullPath, { text: shortPath, line: lineRange ? lineRange[0] : undefined });
+	return tuix.link(mod.path, { text: mod.shortPath, line: lineRange ? lineRange[0] : undefined });
 }

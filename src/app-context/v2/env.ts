@@ -1,5 +1,5 @@
-import { assert } from "~/lib/err.ts";
-import type { AppContextEnv_v2, Dict, Module_v2 } from "~/api.ts";
+import { concat, isAbsolute, shorten, unify } from "~/lib/upath.ts";
+import type { AppContextEnv_v2 } from "~/api.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
 import { components } from "~/htmlx/index.ts";
@@ -10,26 +10,31 @@ export class Env implements AppContextEnv_v2 {
 	basePath;
 	htmlxc;
 
-	#modDict;
-
-	constructor({ basePath, settings, modDict }: { basePath: string; settings: Settings; modDict: Dict<Module_v2> }) {
+	constructor({ basePath, settings }: { basePath: string; settings: Settings }) {
 		this.basePath = basePath;
 		this.version = version;
 		this.htmlxc = components;
 		this.preset = settings.preset;
+	}
 
-		this.#modDict = modDict;
+	toShortPath(pathOrShortPath: string) {
+		const path = unify(pathOrShortPath);
+
+		if (!isAbsolute(path)) {
+			return path;
+		}
+
+		return shorten(path, this.basePath);
 	}
 
 	toFullPath(pathOrShortPath: string) {
-		if (this.#modDict.has(pathOrShortPath)) {
-			return pathOrShortPath;
+		const path = unify(pathOrShortPath);
+
+		if (isAbsolute(path)) {
+			return path;
 		}
 
-		const mod = this.#modDict.find(({ shortPath }) => shortPath === pathOrShortPath);
-		assert(mod, `Can't get full path for '${pathOrShortPath}.' It might be outside scope '${this.basePath}'.`);
-
-		return mod.path;
+		return concat([this.basePath, path]);
 	}
 
 	editorUrl(path: string, line?: number) {
