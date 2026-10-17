@@ -408,8 +408,8 @@ export type AppContext = {
 };
 
 export type TaskContextComponents = {
-	moduleCode: (path: string, lineRange?: LineRange) => string;
-	moduleLink: (path: string, lineRange?: LineRange) => string;
+	moduleCode: (mod: Module_v2, lineRange?: LineRange) => string;
+	moduleLink: (mod: Module_v2, lineRange?: LineRange) => string;
 	lintResult: () => string;
 	summary: () => string;
 };
@@ -487,7 +487,7 @@ export type Imports_v2 = {
 	dynamicById: ReadonlyDict<Import_v2>;
 	staticById: ReadonlyDict<Import_v2>;
 	externalById: ReadonlyDict<Import_v2>;
-	externalByLocator: ReadonlyDict<ReadonlyDict<Import_v2>>;
+	externalByLocator: ReadonlyDict<Import_v2[]>;
 };
 
 export interface ModuleTrait_v2 {

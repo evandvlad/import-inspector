@@ -1,4 +1,4 @@
-import { isNull } from "~/lib/vtype.ts";
+import { Dict } from "~/lib/dict.ts";
 import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
@@ -51,32 +51,30 @@ export const dontJumpThroughPackageEntry: LintFunction = (appContext) => {
 		});
 
 	appContext.v2.imps.fullResolvedById.filter(({ sourceMod, resolution }) => {
+		const { packs } = appContext.v2;
+		const roots = packs.roots.byPath.slice();
 		const importedMod = resolution!.mod!;
 
 		if (!importedMod.pack) {
 			return false;
 		}
 
-		const isImportedFromSameOrAncestorPackage = !isNull(sourceMod.pack) &&
-			(sourceMod.pack === importedMod.pack || sourceMod.pack.ancestry.has(importedMod.pack.path));
+		const sourcePackAncestryWithSelf =
+			sourceMod.pack?.ancestry.byPath.slice().set(sourceMod.pack.path, sourceMod.pack) ?? Dict.empty();
 
-		if (isImportedFromSameOrAncestorPackage) {
+		if (sourcePackAncestryWithSelf.has(importedMod.pack.path)) {
 			return false;
 		}
 
-		if (isNull(sourceMod.pack)) {
-			return !(appContext.v2.packs.roots.has(importedMod.pack.path) && importedMod.isPackEntry);
+		if (!sourceMod.pack) {
+			return !(roots.has(importedMod.pack.path) && importedMod.isPackEntry);
 		}
 
-		const ancestryBranchWithSelf = sourceMod.pack.ancestry.byPath.slice()
-			.set(sourceMod.pack.path, sourceMod.pack);
-
-		const surroundingPacks = ancestryBranchWithSelf
-			.concat(appContext.v2.packs.roots.byPath.slice())
-			.fold((acc, pack) => acc.merge(pack.children.byPath));
+		const surroundingPacks = sourcePackAncestryWithSelf
+			.reduce((acc, pack) => acc.merge(pack.children.byPath.slice()), roots);
 
 		const allowedPackageSet = (new Set(surroundingPacks.toKeys())).difference(
-			new Set(ancestryBranchWithSelf.toKeys()),
+			new Set(sourcePackAncestryWithSelf.toKeys()),
 		);
 
 		return !(allowedPackageSet.has(importedMod.pack.path) && importedMod.isPackEntry);

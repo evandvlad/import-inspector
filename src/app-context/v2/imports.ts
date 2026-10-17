@@ -1,7 +1,6 @@
 import { assert } from "~/lib/err.ts";
-import { Dict } from "~/lib/dict.ts";
 import { DefRefCached } from "~/lib/ref.ts";
-import type { Dict as IDict, Import_v2, Imports_v2, ReadonlyDict } from "~/api.ts";
+import type { Dict as IDict, Import_v2, Imports_v2 } from "~/api.ts";
 
 export class Imports implements Imports_v2 {
 	total;
@@ -39,7 +38,7 @@ export class Imports implements Imports_v2 {
 		);
 
 		this.#localUnresolvedByIdRef = new DefRefCached(() =>
-			dict.filter(({ resolution }) => resolution && !resolution.mod)
+			this.localById.filter(({ resolution }) => !resolution!.mod)
 		);
 
 		this.#dynamicByIdRef = new DefRefCached(() => dict.filter(({ isDynamic }) => isDynamic));
@@ -53,7 +52,6 @@ export class Imports implements Imports_v2 {
 			this.#externalByIdRef.value
 				.group(({ locator }) => String(locator))
 				.sortK((a, b) => a.localeCompare(b))
-				.map<ReadonlyDict<Import_v2>>((imports) => Dict.fromArray(imports, ({ id }) => id))
 		);
 	}
 

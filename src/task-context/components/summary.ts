@@ -10,11 +10,11 @@ function ln(caption: string, content: string | number) {
 export function createSummary(
 	{ settings, appContext }: { settings: Settings; appContext: AppContext },
 ) {
-	const { summary, imports, modules } = appContext.v1;
-	const dynamicImports = imports.dynamic.size;
-	const staticImports = imports.static.size;
+	const { summary, imps, mods } = appContext.v2;
+	const dynamicImports = imps.dynamicById.size;
+	const staticImports = imps.staticById.size;
 
-	const modulesInfo = modules
+	const modulesInfo = mods.byPath
 		.group(({ lang }) => lang)
 		.map((items, lang) => `${lang}: ${items.length}`)
 		.toArray()
@@ -31,11 +31,11 @@ export function createSummary(
 		"-".repeat(hrWidth),
 		ln("Tags", summary.tags),
 		ln("Frames", summary.frames),
-		ln("Packages", summary.packages),
-		ln("Modules", `${summary.modules} (${modulesInfo})`),
-		ln("Imports", `${summary.imports} (static: ${staticImports}, dynamic: ${dynamicImports})`),
-		ln("Defects", `${summary.totalDefects} (imports: ${summary.importDefects}, modules: ${summary.moduleDefects})`),
-		ln("Unresolved imports", imports.fullUnresolved.size),
+		ln("Packages", summary.packs),
+		ln("Modules", `${summary.mods} (${modulesInfo})`),
+		ln("Imports", `${summary.imps} (static: ${staticImports}, dynamic: ${dynamicImports})`),
+		ln("Defects", `${summary.totalDefects} (imports: ${summary.impDefects}, modules: ${summary.modDefects})`),
+		ln("Unresolved imports", imps.fullUnresolvedById.size),
 	];
 
 	if (settings.reportPaths.length > 0) {
