@@ -1,23 +1,23 @@
-import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
 export const dontReferToPackageEntryInside: LintFunction = ({ imps }) => {
 	imps.fullResolvedById
 		.filter(({ resolution, sourceMod }) => {
 			const importedMod = resolution!.mod!;
+			const importedPack = importedMod.pack;
+			const sourcePack = sourceMod.pack;
 
 			// Only inspect package entry points
-			if (!(importedMod.pack && importedMod.isPackEntry)) {
+			if (!(importedPack && importedMod.isPackEntry)) {
 				return false;
 			}
 
-			if (!sourceMod.pack) {
+			if (!sourcePack) {
 				return false;
 			}
 
-			return sourceMod.pack === importedMod.pack ||
-				sourceMod.pack.ancestry.has(importedMod.pack.path);
+			return sourcePack === importedPack || sourcePack.ancestry.contains(importedPack);
 		}).forEach((imp) => {
-			imp.defects.add(ImportLintRule.DontReferToPackageEntryInside);
+			imp.defects.add("don't-refer-to-package-entry-inside");
 		});
 };

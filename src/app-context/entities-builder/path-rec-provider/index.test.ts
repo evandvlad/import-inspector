@@ -13,54 +13,54 @@ describe("path-rec-provider", () => {
 		],
 	});
 
-	it("find path rec", () => {
+	it("findPathRec", () => {
 		expect(provider.findPathRec("C:/foo/bar/baz.ts")).not.toBeNull();
 		expect(provider.findPathRec("C:/foo/bar/baz/qux")).not.toBeNull();
 		expect(provider.findPathRec("C:/foo/bar/baz/unknown")).toBeNull();
 		expect(provider.findPathRec("C:/foo/bar/baz/unknown/unknown/unknown")).toBeNull();
 	});
 
-	it("get path rec", () => {
+	it("getPathRec", () => {
 		expect(provider.getPathRec("C:/foo/bar/baz.ts")).not.toBeNull();
 
 		expect(() => {
 			provider.getPathRec("C:/foo/bar/baz/unknown");
-		}).toThrow("Can't find path rec by path 'C:/foo/bar/baz/unknown'.");
+		}).toThrow("Can't find entry by path 'C:/foo/bar/baz/unknown'.");
 	});
 
-	it("find file path rec", () => {
+	it("findFilePathRec", () => {
 		expect(provider.findFilePathRec("C:/foo/bar/baz/quux.js")).not.toBeNull();
-		expect(provider.findFilePathRec("C:/foo/bar.ts")).toBeNull();
+		expect(provider.findFilePathRec("C:/foo/bar/baz/unknown.ts")).toBeNull();
 	});
 
-	it("get file path rec", () => {
+	it("getFilePathRec", () => {
 		expect(provider.getFilePathRec("C:/foo/bar/baz/quux.js")).not.toBeNull();
 
 		expect(() => {
 			provider.getFilePathRec("C:/foo/bar/baz");
-		}).toThrow("Can't find file path rec by path 'C:/foo/bar/baz'.");
+		}).toThrow("Can't find file entry by path 'C:/foo/bar/baz'.");
 	});
 
 	it("can't find dir rec by file path", () => {
 		expect(provider.findFilePathRec("C:/foo/bar/baz")).toBeNull();
 	});
 
-	it("find dir path rec", () => {
+	it("findDirPathRec", () => {
 		expect(provider.findDirPathRec("C:/foo/bar/baz")).not.toBeNull();
 		expect(provider.findDirPathRec("C:/foo/bar/baz/")).not.toBeNull();
 		expect(provider.findDirPathRec("C:/foo/bar/unknown")).toBeNull();
 	});
 
 	it("can't find file rec by dir path", () => {
-		expect(provider.findDirPathRec("C:/foo/bar.ts")).toBeNull();
+		expect(provider.findDirPathRec("C:/foo/bar/baz.ts")).toBeNull();
 	});
 
-	it("get dir path rec", () => {
+	it("getDirPathRec", () => {
 		expect(provider.getDirPathRec("C:/foo/bar/baz")).not.toBeNull();
 
 		expect(() => {
 			provider.getDirPathRec("C:/foo/bar/baz/unknown");
-		}).toThrow("Can't find dir path rec by path 'C:/foo/bar/baz/unknown'.");
+		}).toThrow("Can't find dir entry by path 'C:/foo/bar/baz/unknown'.");
 	});
 
 	it("find file or dir path rec", () => {
@@ -83,7 +83,7 @@ describe("path-rec-provider", () => {
 	it("throws error if fewer than 2 paths are provided", () => {
 		expect(() => {
 			new PathRecProvider({ filePaths: [] });
-		}).toThrow("More than one file path is required for file processing, but 0 were given.");
+		}).toThrow("At least 2 file paths are required, but got 0.");
 	});
 
 	it("createUpWalker", () => {

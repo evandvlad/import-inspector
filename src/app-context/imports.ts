@@ -1,6 +1,5 @@
 import { assert } from "~/lib/err.ts";
-import type { Dict as IDict, Import, Imports as IImports, Module } from "~/api.ts";
-import { Dict } from "~/lib/dict.ts";
+import type { Dict as IDict, Import, Imports as IImports, Module } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
@@ -93,8 +92,6 @@ export class Imports implements IImports {
 	}
 
 	#mapByLocator(dict: IDict<Import>) {
-		return dict.group(({ locator }) => String(locator))
-			.sortK((a, b) => a.localeCompare(b))
-			.map<IDict<Import>>((arr) => Dict.fromArray(arr, ({ id }) => id));
+		return dict.group(({ locator }) => String(locator)).sortK((a, b) => a.localeCompare(b));
 	}
 }

@@ -1,5 +1,6 @@
+import { remapErr } from "~/lib/err.ts";
 import { concat, isAbsolute, shorten, unify } from "~/lib/upath.ts";
-import type { AppContextEnv } from "~/api.ts";
+import type { AppContextEnv } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 import { version } from "~/values.ts";
 import { components } from "~/htmlx/index.ts";
@@ -24,7 +25,14 @@ export class Env implements AppContextEnv {
 			return path;
 		}
 
-		return shorten(path, this.basePath);
+		try {
+			return shorten(path, this.basePath);
+		} catch (e) {
+			throw remapErr(
+				e,
+				`Failed to get the short path for '${pathOrShortPath}'. Check that the path is within the base path '${this.basePath}'.`,
+			);
+		}
 	}
 
 	toFullPath(pathOrShortPath: string) {
@@ -34,7 +42,7 @@ export class Env implements AppContextEnv {
 			return path;
 		}
 
-		return concat([this.basePath, path]);
+		return concat(this.basePath, path);
 	}
 
 	editorUrl(path: string, line?: number) {

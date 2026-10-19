@@ -1,4 +1,4 @@
-import type { AppContextPackages, Dict, Package } from "~/api.ts";
+import type { AppContextPackages, Dict, Package } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 

@@ -1,11 +1,10 @@
 import { isNull } from "~/lib/vtype.ts";
-import type { Dict, File, Imports, Module as IModule, Package } from "~/api.ts";
+import type { Dict, File, Imports, Module as IModule, Package } from "~/api.d.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
 import { Tags } from "./tags.ts";
 import { Frames } from "./frames.ts";
-import { ModuleDefects } from "./defects/index.ts";
-
+import { ModuleDefects } from "./module-defects.ts";
 import { cache } from "./tag-based-cache.ts";
 
 export class Module implements IModule {

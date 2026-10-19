@@ -2,29 +2,29 @@ import { assert, isErr, remapErr } from "~/lib/err.ts";
 import { fileExists, readFile, writeFile } from "~/lib/fs.ts";
 import { hasProp, isObject, isString } from "~/lib/vtype.ts";
 import { tab } from "~/lib/text.ts";
-import type { Config, ConfigPreset, SettingsModule } from "~/api.ts";
+import type { Config, ConfigPreset, SettingsModule } from "~/api.d.ts";
 import { configFilePath } from "~/values.ts";
 
 function assertConfigData(data: unknown): asserts data is Config {
 	assert(
 		isObject(data) && hasProp(data, "presets") && isObject(data.presets),
-		"Config data is in unpropriate format.",
+		"Config data is in invalid format.",
 	);
 
 	for (const [name, preset] of Object.entries(data.presets)) {
 		assert(
 			name === preset.name,
-			`'name' property for preset '${name}' must be '${name}' but '${preset.name}' was given.`,
+			`Preset name mismatch: expected '${name}', got '${preset.name}'.`,
 		);
 
 		assert(
 			isString(preset.settingsPath),
-			`'settingsPath' property for preset '${preset.name}' must be string.`,
+			`'settingsPath' property for preset '${preset.name}' must be a string.`,
 		);
 
 		assert(
 			isString(preset.projectPath),
-			`'projectPath' property for preset '${preset.name}' must be string.`,
+			`'projectPath' property for preset '${preset.name}' must be a string.`,
 		);
 	}
 }
@@ -42,7 +42,7 @@ export async function loadConfig() {
 		assertConfigData(data);
 		return data;
 	} catch (e) {
-		const messages = [`Can't process config file. Check file: ${configFilePath}.`];
+		const messages = [`Failed to parse config file '${configFilePath}'.`];
 
 		if (isErr(e)) {
 			messages.push(e.message);
@@ -59,7 +59,7 @@ export async function loadSettings(preset: ConfigPreset) {
 		const settingsModule: SettingsModule = await import(settingsPath);
 		return settingsModule.default(preset);
 	} catch (e) {
-		throw remapErr(e, `Can't dynamically import settings file '${settingsPath}'. Preset name is '${name}.'`);
+		throw remapErr(e, `Failed to import settings file '${settingsPath}' for preset '${name}'.`);
 	}
 }
 

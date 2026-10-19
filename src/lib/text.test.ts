@@ -1,17 +1,17 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { dedent, fromLines, normalizeBr, sanitizeForHtml, toLines } from "./text.ts";
+import { fromLines, normalizeBr, sanitizeForHtml, toLines, trimAllLines } from "./text.ts";
 
 describe("text", () => {
-	it("dedent", () => {
-		expect(dedent(`
+	it("trimAllLines", () => {
+		expect(trimAllLines(`
 			foo
 			bar
 			baz
 		`)).toBe("foo\nbar\nbaz");
 
-		expect(dedent(`
+		expect(trimAllLines(`
 
 			foo
 				bar

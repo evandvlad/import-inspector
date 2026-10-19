@@ -5,7 +5,7 @@ import type {
 	Imports as IImports,
 	Module as IModule,
 	Package as IPackage,
-} from "~/api.ts";
+} from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
 

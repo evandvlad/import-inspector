@@ -159,7 +159,7 @@ describe("vtype", () => {
 		expect(isUndefined(undefined)).toBe(true);
 	});
 
-	it("has prop", () => {
+	it("hasProp", () => {
 		expect(hasProp({}, "foo")).toBe(false);
 
 		expect(hasProp({ foo: "bar" }, "foo")).toBe(true);

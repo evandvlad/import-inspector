@@ -1,13 +1,13 @@
 import { type CompoundValue, getCompoundValueType, isCompoundValue, type SimpleValue, toJson } from "~/lib/json.ts";
 import { sanitizeForHtml } from "~/lib/text.ts";
-import type { Htmlxc } from "~/api.ts";
+import type { Htmlxc } from "~/api.d.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 
 function formatSimpleValueToHtml({ key, value }: { key: string; value: SimpleValue }) {
 	return `
 		<div class="data__item">
-			<span class="data__item-key">${key}:</span>
+			<span class="data__item-key">${sanitizeForHtml(key)}:</span>
 			<span>${sanitizeForHtml(String(value))}</span>
 		</div>
 	`;
@@ -19,7 +19,7 @@ function formatCompoundValueToHtml({ key, value }: { key: string; value: Compoun
 	return `
 		<details class="data__item">
 			<summary class="data__item-key data__item-key--compound-value">
-				${key}: ${getCompoundValueType(value)}(${size})
+				${sanitizeForHtml(key)}: ${getCompoundValueType(value)}(${size})
 			</summary>
 			<div>
 				${size > 0 ? formatToHtml(value) : `<div class="data__empty-value">Empty</div>`}
@@ -44,7 +44,7 @@ function getContent(value: unknown) {
 	const json = toJson(value);
 
 	if (!isCompoundValue(json)) {
-		return `${json}`;
+		return sanitizeForHtml(String(json));
 	}
 
 	if (Object.keys(json).length === 0) {

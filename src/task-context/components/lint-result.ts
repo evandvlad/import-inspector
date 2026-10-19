@@ -1,6 +1,6 @@
 import { tuix } from "~/tuix/index.ts";
 import { Dict } from "~/lib/dict.ts";
-import type { AppContext } from "~/api.ts";
+import type { AppContext } from "~/api.d.ts";
 
 import { createModuleLink } from "./module-link.ts";
 import { createModuleCode } from "./module-code.ts";
@@ -18,7 +18,7 @@ export function createLintResult({ appContext }: { appContext: AppContext }) {
 
 			const ruleInfo = [tuix.text("rule (module):", { dim: true }), info].join(" ");
 
-			return acc + tuix.lines([link, ruleInfo, "", ""]);
+			return [acc, tuix.lines([link, ruleInfo, "", ""])].join("");
 		}, "");
 
 		dict.getOrInsert(source, []).push(content);
@@ -42,7 +42,7 @@ export function createLintResult({ appContext }: { appContext: AppContext }) {
 				color: "gray",
 			});
 
-			return acc + tuix.lines([link, ruleInfo, importedModule, "", codeLine, "", ""]);
+			return [acc, tuix.lines([link, ruleInfo, importedModule, "", codeLine, "", ""])].join("");
 		}, "");
 
 		dict.getOrInsert(source, []).push(content);

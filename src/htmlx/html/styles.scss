@@ -194,7 +194,7 @@ body {
 		--label-background-color: var(--color-primary-light);
 	}
 
-	&:open > &__label {
+	&[open] > &__label {
 		margin-bottom: $indent-v;
 
 		&::before {

@@ -1,9 +1,7 @@
 import { dirname, join } from "~/lib/upath.ts";
 import type { Settings } from "~/settings.ts";
 import { getImportPathSuffixCandidates } from "~/project-specifics.ts";
-import type { ImportRec } from "~/values.ts";
-
-import type { ImportResolution } from "../values.ts";
+import type { ImportRec, ImportResolutionData } from "~/values.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 
@@ -25,7 +23,7 @@ export class ImportResolver {
 		this.#aliases = this.#createAliases(settings);
 	}
 
-	resolve({ path, importRec }: { path: string; importRec: ImportRec }): ImportResolution | null {
+	resolve({ path, importRec }: { path: string; importRec: ImportRec }): ImportResolutionData | null {
 		return importRec.locator ? this.#resolve({ path, importRec }) : null;
 	}
 

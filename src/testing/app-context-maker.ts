@@ -29,7 +29,7 @@ export async function createAndFillAppContext({ files, aliases }: {
 	const appContext = new AppContext({ settings, parsingResult });
 
 	setTags({ appContext });
-	lint({ appContext, settings });
+	await lint({ appContext, settings });
 
 	return appContext;
 }

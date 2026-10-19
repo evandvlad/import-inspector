@@ -1,10 +1,8 @@
 import { assert } from "~/lib/err.ts";
 import { Settings } from "~/settings.ts";
-import type { Config as IConfig, ConfigPreset } from "~/api.ts";
+import type { Config as IConfig, ConfigPreset } from "~/api.d.ts";
 
 import { loadConfig, loadSettings, saveConfig } from "./config-service.ts";
-
-const emptyConfigData: IConfig = { presets: {} };
 
 export class Config {
 	data;
@@ -15,6 +13,8 @@ export class Config {
 	}
 
 	static async create() {
+		const emptyConfigData: IConfig = { presets: {} };
+
 		await saveConfig(emptyConfigData);
 		return new this(emptyConfigData);
 	}
@@ -35,7 +35,7 @@ export class Config {
 
 	getPreset(name: string) {
 		const preset = this.#findPreset(name);
-		assert(preset, `Can't find preset with name '${name}'.`);
+		assert(preset, `Can't find preset '${name}'. Available presets: '${this.presetNames.join(", ")}'.`);
 		return preset;
 	}
 

@@ -2,6 +2,8 @@ type Rec<T> = Record<string, T>;
 type Entry<T> = [key: string, value: T];
 type Nullable<T> = T | null;
 type MaybePromise<T> = T | Promise<T>;
+type Collection<T> = Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>;
+type DictReducer<T, U = T> = (acc: U, value: T, key: string) => U;
 
 export interface Dict<T> {
 	size: number;
@@ -13,8 +15,9 @@ export interface Dict<T> {
 	getOrDefault: <U = undefined>(key: string, defaultValue: U) => T | U;
 	getOrInsert: (key: string, value: T) => T;
 	getOrInsertComputed: (key: string, compute: () => T) => T;
-	addOrReduce: (key: string, value: T, reducer: (cur: T, value: T, key: string) => T) => this;
+	addOrReduce: (key: string, value: T, reducer: DictReducer<T>) => this;
 	find: (callback: (value: T, key: string) => unknown) => T | undefined;
+	findK: (callback: (value: T, key: string) => unknown) => string | undefined;
 	findE: (callback: (value: T, key: string) => unknown) => Entry<T> | undefined;
 	forEach: (callback: (value: T, key: string) => void) => this;
 	filter: (callback: (value: T, key: string) => unknown) => Dict<T>;
@@ -25,20 +28,15 @@ export interface Dict<T> {
 	mapE: <U>(callback: (value: T, key: string) => Entry<U>) => Dict<U>;
 	slice: (start?: number, end?: number) => Dict<T>;
 	some: (callback: (value: T, key: string) => unknown) => boolean;
+	contains: (value: T) => boolean;
 	every: (callback: (value: T, key: string) => unknown) => boolean;
 	sortK: (callback?: (key1: string, key2: string) => number) => Dict<T>;
 	sortE: (callback: (entry1: Entry<T>, entry2: Entry<T>) => number) => Dict<T>;
-	reduce: <U>(callback: (acc: U, value: T, key: string) => U, init: U) => U;
-	fold: <U>(callback: (acc: Dict<U>, value: T, key: string) => Dict<U>) => Dict<U>;
-	group: (callback: (value: T, key: string) => string) => Dict<T[]>;
-	merge: (
-		collection: Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>,
-		reducer?: (acc: T, value: T, key: string) => T,
-	) => this;
-	concat: (
-		collection: Dict<T> | Rec<T> | Map<string, T> | Array<Entry<T>>,
-		reducer?: (acc: T, value: T, key: string) => T,
-	) => Dict<T>;
+	reduce: <U>(callback: DictReducer<T, U>, init: U) => U;
+	fold: <U>(callback: DictReducer<T, Dict<U>>) => Dict<U>;
+	group: (callback: (value: T, key: string) => string) => Dict<Dict<T>>;
+	merge: (collection: Collection<T>, reducer?: DictReducer<T>) => this;
+	concat: (collection: Collection<T>, reducer?: DictReducer<T>) => Dict<T>;
 	keys: () => MapIterator<string>;
 	values: () => MapIterator<T>;
 	entries: () => MapIterator<Entry<T>>;
@@ -50,9 +48,7 @@ export interface Dict<T> {
 	toJSON: () => Rec<T>;
 }
 
-export const langs = ["ts", "js"] as const;
-
-export type Lang = typeof langs[number];
+export type Lang = "ts" | "js";
 
 export type Span = {
 	start: number;
@@ -60,24 +56,6 @@ export type Span = {
 };
 
 export type LineRange = [line: number] | [startLine: number, endLine: number];
-
-export enum Tag {
-	Test = "test",
-	EntryPoint = "entry-point",
-	Declaration = "declaration",
-	Independent = "independent",
-}
-
-export enum ImportLintRule {
-	DontReferToPackageEntryInside = "don't-refer-to-package-entry-inside",
-	DontJumpThroughPackageEntry = "don't-jump-through-package-entry",
-	DontUseAbsolutePathInside = "don't-use-absolute-path-inside",
-	DontImportEntryFile = "don't-import-entry-file",
-}
-
-export enum ModuleLintRule {
-	DontLeaveUnusedModule = "don't-leave-unused-module",
-}
 
 export type HtmlxcBaseOptions = {
 	classes?: string[];
@@ -134,22 +112,22 @@ export type Tuix = {
 };
 
 export type RootEntry = {
-	// absolute path
+	// Absolute path
 	path: string;
 	alias?: string;
 };
 
 export type Report = {
-	// absolute path
+	// Absolute path
 	path: string;
 	provide: (appContext: AppContext) => MaybePromise<string>;
 };
 
 export type ConfigPreset = {
 	name: string;
-	// absolute path
+	// Absolute path
 	settingsPath: string;
-	// absolute path
+	// Absolute path
 	projectPath: string;
 };
 
@@ -169,7 +147,7 @@ export type UnresolvedDynamicImportData = {
 
 export type CorrectUnresolvedDynamicImports = (
 	params: UnresolvedDynamicImportData,
-	// result - array of import locators
+	// Returns an array of import locators
 ) => Promise<string[]>;
 
 export type PreLint = (appContext: AppContext) => MaybePromise<void>;
@@ -222,13 +200,15 @@ export type ModuleDefect = {
 	defects: Defects<ModuleDefect>;
 };
 
-export interface Defects<T extends ModuleDefect | ImportDefect> {
+export type Defect = ModuleDefect | ImportDefect;
+
+export interface Defects<T extends Defect> {
 	size: number;
 	rules: string[];
 	byRule: Dict<T>;
 	has: (rule: string) => boolean;
 	get: (rule: string) => T;
-	find: (rule: string) => T | null;
+	find: (rule: string) => Nullable<T>;
 	add: (rule: string, description?: string) => this;
 	remove: (rule: string) => this;
 	removeAll: () => this;
@@ -268,10 +248,10 @@ export type Imports = {
 	externalByLocator: Dict<Dict<Import>>;
 	has: (id: string) => boolean;
 	get: (id: string) => Import;
-	find: (id: string) => Import | null;
+	find: (id: string) => Nullable<Import>;
 	hasForMod: (mod: Module) => boolean;
 	getForMod: (mod: Module) => Dict<Import>;
-	findForMod: (mod: Module) => Import | null;
+	findForMod: (mod: Module) => Nullable<Import>;
 };
 
 export interface ModuleTrait {
@@ -337,10 +317,10 @@ export type AppContextFrames = {
 	byName: Dict<AppContextFrame>;
 	has: (name: string) => boolean;
 	get: (path: string) => AppContextFrame;
-	find: (path: string) => AppContextFrame | null;
+	find: (path: string) => Nullable<AppContextFrame>;
 };
 
-export interface AppContextDefects<T extends ImportDefect | ModuleDefect> {
+export interface AppContextDefects<T extends Defect> {
 	size: number;
 	ids: string[];
 	rules: string[];

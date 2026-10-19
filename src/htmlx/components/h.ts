@@ -1,4 +1,4 @@
-import type { Htmlxc } from "~/api.ts";
+import type { Htmlxc } from "~/api.d.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 

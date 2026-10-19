@@ -1,6 +1,6 @@
 import { blue, bold as makeBold, dim as makeDim, gray, magenta, white } from "@std/fmt/colors";
 
-import type { TuixColor } from "~/api.ts";
+import type { TuixColor } from "~/api.d.ts";
 
 const colors: Record<TuixColor, (value: string) => string> = {
 	gray,

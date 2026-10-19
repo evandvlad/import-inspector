@@ -9,7 +9,7 @@ export async function runProgramWorkflow(
 	{ worker, preset = defaultConfigPresetName }: { worker: Worker; preset?: string },
 ) {
 	const config = await Config.load();
-	assert(config, `Workflow is not configured yet. Use '${CommandName.Configure}' command to do that easily.`);
+	assert(config, `No presets configured. Run '${CommandName.Configure}' to set up a preset.`);
 
 	const settings = await config.loadSettings(preset);
 	const exitCode = await worker({ settings });

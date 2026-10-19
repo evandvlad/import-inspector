@@ -17,7 +17,7 @@ function extractChildPath({ path, descendantPath }: { path: string; descendantPa
 	const pathPartsLength = split(path).length;
 	const descendantPathParts = split(descendantPath);
 
-	return concat(descendantPathParts.slice(0, pathPartsLength + 1));
+	return concat(...descendantPathParts.slice(0, pathPartsLength + 1));
 }
 
 function createNode({ parent, path }: { parent: Node | null; path: string }): Node {

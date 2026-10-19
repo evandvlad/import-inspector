@@ -1,6 +1,6 @@
 import { isNull } from "~/lib/vtype.ts";
 import { Dict } from "~/lib/dict.ts";
-import type { Dict as IDict, Module, Package as IPackage } from "~/api.ts";
+import type { Dict as IDict, Module, Package as IPackage } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 

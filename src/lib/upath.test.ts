@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { concat, isAbsolute, shorten, split, stripEnd, stripStart, unify } from "./upath.ts";
+import { concat, isAbsolute, isSubpathOf, shorten, split, stripEnd, stripStart, unify } from "./upath.ts";
 
 describe("upath", () => {
 	it("unify", () => {
@@ -38,12 +38,22 @@ describe("upath", () => {
 	});
 
 	it("concat", () => {
-		expect(concat(["C:", "foo", "bar.d.ts"])).toBe("C:/foo/bar.d.ts");
+		expect(concat("C:", "foo", "bar.d.ts")).toBe("C:/foo/bar.d.ts");
 	});
 
 	it("shorten", () => {
 		expect(shorten("C:/foo/bar/baz", "C:/foo")).toBe("bar/baz");
 		expect(shorten("C:/foo/bar/baz", "C:/foo/")).toBe("bar/baz");
-		expect(shorten("C:/foo/bar/baz", "C:/foo/bar/baz")).toBe("");
+		expect(shorten("C:/foo/bar/baz/", "C:/foo/bar/baz")).toBe("");
+	});
+
+	it("isSubpathOf", () => {
+		expect(isSubpathOf("C:/foo/bar/baz", "C:/foo")).toBe(true);
+		expect(isSubpathOf("C:/foo/", "C:/foo")).toBe(true);
+		expect(isSubpathOf("C:/foo/", "C:/foo/")).toBe(true);
+
+		expect(isSubpathOf("C:/fo", "C:/foo")).toBe(false);
+		expect(isSubpathOf("C:/fooooo", "C:/foo")).toBe(false);
+		expect(isSubpathOf("C:/bar/baz/qux", "C:/foo")).toBe(false);
 	});
 });

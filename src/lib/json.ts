@@ -29,7 +29,7 @@ export function toJson(data: unknown): Value {
 	try {
 		return JSON.parse(JSON.stringify(data));
 	} catch (e) {
-		throw remapErr(e, `Parsing json failed: ${e?.toString()} ?? "Unknown error"`);
+		throw remapErr(e, `Failed to convert data to JSON: ${e?.toString() ?? "Unknown error"}`);
 	}
 }
 

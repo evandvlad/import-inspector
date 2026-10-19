@@ -1,5 +1,5 @@
 import { tuix } from "~/tuix/index.ts";
-import type { LineRange, Module } from "~/api.ts";
+import type { LineRange, Module } from "~/api.d.ts";
 
 export function createModuleLink(
 	{ mod, lineRange }: { mod: Module; lineRange?: LineRange },

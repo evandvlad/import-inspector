@@ -9,7 +9,7 @@ export async function parseFile({ path, content }: { path: string; content: stri
 	const options = getParserOptions(path);
 
 	const { program, errors } = await parse(path, content, options).catch(
-		rethrowErr(`Error occurred while parsing file '${path}'.`),
+		rethrowErr(`Failed to parse file '${path}'.`),
 	);
 
 	if (errors.length > 0) {
@@ -17,7 +17,7 @@ export async function parseFile({ path, content }: { path: string; content: stri
 
 		if (error) {
 			const detail = [error.message, error.codeframe ?? ""].join("");
-			throw new Err(`Error occurred while parsing file '${path}'. ${detail}`);
+			throw new Err(`Failed to parse file '${path}'. ${detail}`);
 		}
 	}
 

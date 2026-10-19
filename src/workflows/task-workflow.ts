@@ -1,6 +1,5 @@
-import type { AppContext } from "~/api.ts";
-
 import { assert } from "~/lib/err.ts";
+import type { AppContext } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 import { TaskContext } from "~/task-context/index.ts";
 
@@ -14,7 +13,7 @@ export async function runTaskWorkflow(
 ) {
 	const taskHandler = settings.findTask(name);
 
-	assert(taskHandler, `Can't find task '${name}.'.`);
+	assert(taskHandler, `Can't find task '${name}'.`);
 
 	const taskContext = new TaskContext({ appContext, settings, args });
 

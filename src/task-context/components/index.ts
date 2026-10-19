@@ -1,4 +1,4 @@
-import type { AppContext, LineRange, Module, TaskContextComponents } from "~/api.ts";
+import type { AppContext, LineRange, Module, TaskContextComponents } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 
 import { createModuleLink } from "./module-link.ts";
@@ -10,9 +10,7 @@ export class Components implements TaskContextComponents {
 	#appContext;
 	#settings;
 
-	constructor(
-		{ appContext, settings }: { appContext: AppContext; settings: Settings },
-	) {
+	constructor({ appContext, settings }: { appContext: AppContext; settings: Settings }) {
 		this.#appContext = appContext;
 		this.#settings = settings;
 	}
@@ -30,9 +28,6 @@ export class Components implements TaskContextComponents {
 	}
 
 	summary() {
-		return createSummary({
-			appContext: this.#appContext,
-			settings: this.#settings,
-		});
+		return createSummary({ appContext: this.#appContext, settings: this.#settings });
 	}
 }

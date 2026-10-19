@@ -1,5 +1,5 @@
 import { Dict } from "~/lib/dict.ts";
-import type { AppContextTags, Dict as IDict, Module } from "~/api.ts";
+import type { AppContextTags, Dict as IDict, Module } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 

@@ -40,15 +40,15 @@ export function extractImportRecs({ program }: { program: Program }) {
 	}
 
 	const visitor = new Visitor({
-		// dynamic import
+		// Dynamic import
 		ImportExpression(node) {
 			recs.push(createImportRec({ node, isDynamic: true, locator: extractLocatorFromDynamicImport(node) }));
 		},
-		// static import
+		// Static import
 		ImportDeclaration(node) {
 			recs.push(createImportRec({ node, locator: node.source.value }));
 		},
-		// named re-export if source exists
+		// Named re-export if source exists
 		ExportNamedDeclaration(node) {
 			if (!node.source) {
 				return;
@@ -56,7 +56,7 @@ export function extractImportRecs({ program }: { program: Program }) {
 
 			recs.push(createImportRec({ node, locator: node.source.value }));
 		},
-		// full re-export via *
+		// Full re-export via *
 		ExportAllDeclaration(node) {
 			recs.push(createImportRec({ node, locator: node.source.value }));
 		},

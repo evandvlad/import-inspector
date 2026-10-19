@@ -28,7 +28,7 @@ Array.from(document.querySelectorAll("[data-js-flist]")).forEach((container) => 
 
 Array.from(document.querySelectorAll("[data-js-tabs]")).forEach((container) => {
 	const id = container.getAttribute("data-js-tabs");
-	const linkElements = Array.from(container.querySelectorAll(`[data-js-tabs-link="${id}"`));
+	const linkElements = Array.from(container.querySelectorAll(`[data-js-tabs-link="${id}"]`));
 	const contentElements = Array.from(container.querySelectorAll(`[data-js-tabs-content="${id}"]`));
 	const len = linkElements.length;
 	const activeAttrName = "data-state-active";

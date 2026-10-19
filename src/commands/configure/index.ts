@@ -17,13 +17,13 @@ async function loopUntilQuit(handler: () => Promise<void>) {
 		return;
 	}
 
-	loopUntilQuit(handler);
+	await loopUntilQuit(handler);
 }
 
 export const configure: Command = async () => {
 	let config = await Config.load();
 
-	loopUntilQuit(async () => {
+	await loopUntilQuit(async () => {
 		tuix.clear();
 
 		if (!config) {

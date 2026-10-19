@@ -96,7 +96,7 @@ describe("dict", () => {
 		expect(dict.size).toBe(3);
 	});
 
-	it("addOrReducer", () => {
+	it("addOrReduce", () => {
 		const dict = Dict.fromRec({ foo: 1, bar: 1 });
 
 		const reducer = (acc: number, value: number) => acc + value;
@@ -183,6 +183,18 @@ describe("dict", () => {
 		expect(dict.some((value) => value > 20)).toBe(false);
 	});
 
+	it("contains", () => {
+		const foo = {};
+		const bar = {};
+		const quux = {};
+
+		const dict = Dict.fromRec({ foo, bar, baz: foo });
+
+		expect(dict.contains(foo)).toBe(true);
+		expect(dict.contains(bar)).toBe(true);
+		expect(dict.contains(quux)).toBe(false);
+	});
+
 	it("sortK/sortE", () => {
 		const dict = Dict.fromRec({ foo: 1, bar: 2, baz: 3 });
 
@@ -225,19 +237,10 @@ describe("dict", () => {
 		const dict = Dict.fromRec({ foo: 1, bar: 2, baz: 3, qux: 4, quux: 5 });
 
 		const newDict1 = dict.group((value) => value > 3 ? ">3" : "<=3");
-
-		expect(newDict1.toRec()).toEqual({
-			"<=3": [1, 2, 3],
-			">3": [4, 5],
-		});
+		expect(JSON.stringify(newDict1)).toEqual('{"<=3":{"foo":1,"bar":2,"baz":3},">3":{"qux":4,"quux":5}}');
 
 		const newDict2 = dict.group((_, key) => key.startsWith("b") ? "b" : key.startsWith("q") ? "q" : "others");
-
-		expect(newDict2.toRec()).toEqual({
-			"others": [1],
-			"b": [2, 3],
-			"q": [4, 5],
-		});
+		expect(JSON.stringify(newDict2)).toEqual('{"others":{"foo":1},"b":{"bar":2,"baz":3},"q":{"qux":4,"quux":5}}');
 	});
 
 	it("iterators", () => {

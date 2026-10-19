@@ -2,7 +2,7 @@ import { Config } from "~/config/index.ts";
 import { tuix } from "~/tuix/index.ts";
 
 export async function createConfig() {
-	tuix.print("Workflow is not configured yet.");
+	tuix.print("No presets configured.");
 
 	if (!tuix.confirm("Create config?")) {
 		return null;
@@ -10,7 +10,7 @@ export async function createConfig() {
 
 	const config = await Config.create();
 
-	tuix.print(`Config was created.`);
+	tuix.print("Config was created.");
 
 	return config;
 }

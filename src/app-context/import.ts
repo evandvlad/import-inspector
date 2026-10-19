@@ -1,8 +1,7 @@
-import type { Dict as IDict, Import as IImport, Module } from "~/api.ts";
-import type { ImportRec } from "~/values.ts";
+import type { Dict as IDict, Import as IImport, Module } from "~/api.d.ts";
+import type { ImportRec, ImportResolutionData } from "~/values.ts";
 
-import type { ImportResolution } from "./values.ts";
-import { ImportDefects } from "./defects/index.ts";
+import { ImportDefects } from "./import-defects.ts";
 import { cache } from "./tag-based-cache.ts";
 
 export class Import implements IImport {
@@ -20,11 +19,11 @@ export class Import implements IImport {
 		{ modPath, importRec, resolution, modDict }: {
 			modPath: string;
 			importRec: ImportRec;
-			resolution: ImportResolution | null;
+			resolution: ImportResolutionData | null;
 			modDict: IDict<Module>;
 		},
 	) {
-		this.id = crypto.randomUUID() as string;
+		this.id = crypto.randomUUID();
 		this.locator = importRec.locator;
 		this.isDynamic = importRec.isDynamic;
 		this.location = resolution?.path ?? this.locator;

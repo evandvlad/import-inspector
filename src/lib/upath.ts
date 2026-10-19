@@ -11,7 +11,7 @@ export function isAbsolute(path: string) {
 		return true;
 	}
 
-	if (/^[A-Z]:\//.test(path)) {
+	if (/^[A-Za-z]:\//.test(path)) {
 		return true;
 	}
 
@@ -26,7 +26,7 @@ export function stripEnd(path: string) {
 	return path.endsWith("/") ? path.slice(0, -1) : path;
 }
 
-export function concat(parts: string[]) {
+export function concat(...parts: string[]) {
 	return parts.join("/");
 }
 
@@ -36,9 +36,13 @@ export function split(path: string) {
 
 export function shorten(path: string, base: string) {
 	assert(
-		path.length >= base.length && path.startsWith(base),
-		`Can't shorten path '${path}' with base '${base}'. There is invariant violation.`,
+		isSubpathOf(path, base),
+		`Can't shorten path '${path}' with base '${base}'. There is an invariant violation.`,
 	);
 
 	return stripStart(path.slice(base.length));
+}
+
+export function isSubpathOf(path: string, base: string) {
+	return path.startsWith(base.endsWith("/") ? base : `${base}/`);
 }

@@ -26,6 +26,6 @@ export function normalizeBr(value: string) {
 	return value.replaceAll(CRLF, br);
 }
 
-export function dedent(value: string) {
+export function trimAllLines(value: string) {
 	return toLines(value.trim()).map((line) => line.trim()).join(br);
 }

@@ -1,6 +1,6 @@
 import { expandGlob } from "@std/fs";
 
-import { joinGlobs } from "~/lib/upath.ts";
+import { joinGlobs, unify } from "~/lib/upath.ts";
 import { readFile } from "~/lib/fs.ts";
 import { Dict } from "~/lib/dict.ts";
 import type { Settings } from "~/settings.ts";
@@ -16,9 +16,11 @@ export async function collectFiles({ settings }: { settings: Settings }) {
 
 	for (const glob of globs) {
 		for await (const { path } of expandGlob(glob)) {
-			if (!files.has(path)) {
-				const content = await readFile(path);
-				files.set(path, content);
+			const unifiedPath = unify(path);
+
+			if (!files.has(unifiedPath)) {
+				const content = await readFile(unifiedPath);
+				files.set(unifiedPath, content);
 			}
 		}
 	}

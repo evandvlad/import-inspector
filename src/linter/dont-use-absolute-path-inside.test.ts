@@ -2,12 +2,11 @@ import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
 import { createAndFillAppContext } from "~/testing/app-context-maker.ts";
-import { ImportLintRule } from "~/api.ts";
 
 import { dontUseAbsolutePathInside } from "./dont-use-absolute-path-inside.ts";
 
 describe("dont-use-absolute-path-inside", () => {
-	it("not ok for absolute import from same package", async () => {
+	it("not ok for absolute import from the same package", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -22,14 +21,14 @@ describe("dont-use-absolute-path-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontUseAbsolutePathInside)
+			.get("don't-use-absolute-path-inside")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(["C:/foo/baz/index.tsx"]);
 	});
 
-	it("not ok for absolute import from ancestor package", async () => {
+	it("not ok for absolute import from the ancestor package", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -45,7 +44,7 @@ describe("dont-use-absolute-path-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontUseAbsolutePathInside)
+			.get("don't-use-absolute-path-inside")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -66,7 +65,7 @@ describe("dont-use-absolute-path-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontUseAbsolutePathInside, undefined)
+			.getOrDefault("don't-use-absolute-path-inside", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -89,7 +88,7 @@ describe("dont-use-absolute-path-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontUseAbsolutePathInside, undefined)
+			.getOrDefault("don't-use-absolute-path-inside", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 

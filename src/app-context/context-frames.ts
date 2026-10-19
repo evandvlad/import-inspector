@@ -1,5 +1,5 @@
 import { assert } from "~/lib/err.ts";
-import type { AppContextFrame, AppContextFrames, Dict, Module } from "~/api.ts";
+import type { AppContextFrame, AppContextFrames, Dict, Module } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 import { ContextFrame } from "./context-frame.ts";

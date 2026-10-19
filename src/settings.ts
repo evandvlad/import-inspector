@@ -1,5 +1,5 @@
 import { unify } from "~/lib/upath.ts";
-import type { ConfigPreset, Settings as ISettings } from "~/api.ts";
+import type { ConfigPreset, Settings as ISettings } from "~/api.d.ts";
 
 export class Settings {
 	tasks;

@@ -1,4 +1,5 @@
-import type { Htmlxc } from "~/api.ts";
+import { sanitizeForHtml } from "~/lib/text.ts";
+import type { Htmlxc } from "~/api.d.ts";
 
 import { incId, stringifyCompAttrs } from "../helpers.ts";
 
@@ -10,7 +11,7 @@ export const flist: Htmlxc["flist"] = (items, options = {}) => {
 	const id = incId();
 
 	const content = items.map(({ value, content }) => `
-		<div data-js-flist-item="${id}" data-js-flist-value="${value}">
+		<div data-js-flist-item="${id}" data-js-flist-value="${sanitizeForHtml(value)}">
 			${content}
 		</div>
 	`).join("");

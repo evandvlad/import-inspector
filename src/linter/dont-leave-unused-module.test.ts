@@ -1,7 +1,6 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { ModuleLintRule } from "~/api.ts";
 import { createAndFillAppContext } from "~/testing/app-context-maker.ts";
 
 import { dontLeaveUnusedModule } from "./dont-leave-unused-module.ts";
@@ -21,7 +20,7 @@ describe("dont-leave-unused-module", () => {
 
 		const paths = appContext.modDefects
 			.byRule
-			.getOrDefault(ModuleLintRule.DontLeaveUnusedModule, undefined)
+			.getOrDefault("don't-leave-unused-module", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -41,7 +40,7 @@ describe("dont-leave-unused-module", () => {
 
 		const paths = appContext.modDefects
 			.byRule
-			.get(ModuleLintRule.DontLeaveUnusedModule)
+			.get("don't-leave-unused-module")
 			.map(({ mod }) => mod.path)
 			.toArray();
 

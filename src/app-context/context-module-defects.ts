@@ -1,5 +1,5 @@
 import { Dict } from "~/lib/dict.ts";
-import type { AppContextDefects, Dict as IDict, Module, ModuleDefect } from "~/api.ts";
+import type { AppContextDefects, Dict as IDict, Module, ModuleDefect } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
@@ -35,8 +35,7 @@ export class ContextModuleDefects implements AppContextDefects<ModuleDefect> {
 	get byRule() {
 		return this.#modDict.fold<IDict<ModuleDefect>>((acc, mod) => {
 			mod.defects.byRule.forEach((defect) => {
-				const dict = acc.getOrInsertComputed(defect.rule, () => Dict.empty());
-				dict.set(defect.mod.path, defect);
+				acc.getOrInsertComputed(defect.rule, () => Dict.empty()).set(defect.mod.path, defect);
 			});
 
 			return acc;

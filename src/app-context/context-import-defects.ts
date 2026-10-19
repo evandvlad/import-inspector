@@ -1,5 +1,5 @@
 import { Dict } from "~/lib/dict.ts";
-import type { AppContextDefects, Dict as IDict, Import, ImportDefect } from "~/api.ts";
+import type { AppContextDefects, Dict as IDict, Import, ImportDefect } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
@@ -35,8 +35,7 @@ export class ContextImportDefects implements AppContextDefects<ImportDefect> {
 	get byRule() {
 		return this.#impDict.fold<IDict<ImportDefect>>((acc, imp) => {
 			imp.defects.byRule.forEach((defect) => {
-				const dict = acc.getOrInsertComputed(defect.rule, () => Dict.empty());
-				dict.set(defect.id, defect);
+				acc.getOrInsertComputed(defect.rule, () => Dict.empty()).set(defect.id, defect);
 			});
 
 			return acc;
@@ -47,8 +46,9 @@ export class ContextImportDefects implements AppContextDefects<ImportDefect> {
 	get byPath() {
 		return this.#impDict.fold<IDict<ImportDefect>>((acc, imp) => {
 			if (imp.defects.size > 0) {
-				const dict = acc.getOrInsertComputed(imp.sourceMod.path, () => Dict.empty());
-				dict.merge(imp.defects.byRule.mapK(({ id }) => id));
+				acc.getOrInsertComputed(imp.sourceMod.path, () => Dict.empty()).merge(
+					imp.defects.byRule.mapK(({ id }) => id),
+				);
 			}
 
 			return acc;

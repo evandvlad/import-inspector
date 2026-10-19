@@ -109,7 +109,7 @@ describe("import-resolver", () => {
 	describe("import edge cases", () => {
 		it("import '.'", () => {
 			const pathRecProvider = new PathRecProvider({
-				filePaths: ["C:/foo/bar.tsx", "C:/foo/index.ts"],
+				filePaths: ["C:/index.ts", "C:/foo/bar/baz.tsx", "C:/foo/bar/index.ts"],
 			});
 
 			const resolver = new ImportResolver({ settings, pathRecProvider });
@@ -117,16 +117,16 @@ describe("import-resolver", () => {
 				locator: ".",
 			});
 
-			expect(resolver.resolve({ path: "C:/foo/bar.tsx", importRec })).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/bar/baz.tsx", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
-				path: "C:/foo/index.ts",
+				path: "C:/foo/bar/index.ts",
 			});
 		});
 
 		it("import '..'", () => {
 			const pathRecProvider = new PathRecProvider({
-				filePaths: ["C:/foo/bar/baz.js", "C:/foo/index.ts"],
+				filePaths: ["C:/index.ts", "C:/foo/bar/baz/qux.js", "C:/foo/bar/index.ts"],
 			});
 
 			const resolver = new ImportResolver({ settings, pathRecProvider });
@@ -134,10 +134,10 @@ describe("import-resolver", () => {
 				locator: "..",
 			});
 
-			expect(resolver.resolve({ path: "C:/foo/bar/baz.js", importRec })).toEqual({
+			expect(resolver.resolve({ path: "C:/foo/bar/baz/qux.js", importRec })).toEqual({
 				isExternal: false,
 				isRelative: true,
-				path: "C:/foo/index.ts",
+				path: "C:/foo/bar/index.ts",
 			});
 		});
 	});

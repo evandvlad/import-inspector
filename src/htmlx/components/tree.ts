@@ -1,4 +1,4 @@
-import type { Htmlxc, HtmlxcTreeItem } from "~/api.ts";
+import type { Htmlxc, HtmlxcTreeItem } from "~/api.d.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 

@@ -2,7 +2,6 @@ import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
 import { createAndFillAppContext } from "~/testing/app-context-maker.ts";
-import { ImportLintRule } from "~/api.ts";
 
 import { dontReferToPackageEntryInside } from "./dont-refer-to-package-entry-inside.ts";
 
@@ -20,7 +19,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontReferToPackageEntryInside)
+			.get("don't-refer-to-package-entry-inside")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -40,7 +39,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontReferToPackageEntryInside)
+			.get("don't-refer-to-package-entry-inside")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -60,7 +59,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontReferToPackageEntryInside)
+			.get("don't-refer-to-package-entry-inside")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -80,7 +79,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontReferToPackageEntryInside)
+			.get("don't-refer-to-package-entry-inside")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -101,7 +100,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontReferToPackageEntryInside)
+			.get("don't-refer-to-package-entry-inside")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -124,7 +123,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontReferToPackageEntryInside)
+			.get("don't-refer-to-package-entry-inside")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
@@ -150,7 +149,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontReferToPackageEntryInside, undefined)
+			.getOrDefault("don't-refer-to-package-entry-inside", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 

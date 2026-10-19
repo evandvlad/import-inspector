@@ -1,6 +1,6 @@
 import type { ParserOptions } from "oxc-parser";
 
-import type { Lang } from "~/api.ts";
+import type { Lang } from "~/api.d.ts";
 import { parse } from "~/lib/upath.ts";
 
 type FileExtInfo = {

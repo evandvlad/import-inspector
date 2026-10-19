@@ -1,4 +1,4 @@
-import type { Htmlxc } from "~/api.ts";
+import type { Htmlxc } from "~/api.d.ts";
 
 import { stringifyCompAttrs } from "../helpers.ts";
 
@@ -9,15 +9,13 @@ export const table: Htmlxc["table"] = (rows, options = {}) => {
 
 	const cols = rows[0].length;
 
-	const cells = rows.map((row, i) => {
-		const isOdd = i % 2 !== 0;
-
-		return row.map((value) => `
-			<div class="table__cell table__cell--cell-${isOdd ? "odd" : "even"}">
+	const cells = rows.map((row) =>
+		row.map((value) => `
+			<div class="table__cell">
 				${value}
 			</div>
-		`).join("");
-	}).join("");
+		`).join("")
+	).join("");
 
 	const attrs = stringifyCompAttrs({
 		classes: ["table"],

@@ -1,5 +1,5 @@
 import { Dict } from "~/lib/dict.ts";
-import type { AppContextFrame, Dict as IDict, Import, Module } from "~/api.ts";
+import type { AppContextFrame, Dict as IDict, Import, Module } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
@@ -15,20 +15,18 @@ export class ContextFrame implements AppContextFrame {
 
 	@cache("frames")
 	get mods() {
-		return this.#modDict.filter(({ frames }) => frames.has(this.name));
+		return this.#modDict.filter((mod) => this.#isModInFrame(mod));
 	}
 
 	@cache("frames")
 	get links() {
-		return this.mods.fold<Module>((acc, mod) =>
-			acc.merge(mod.links.filter(({ frames }) => !frames.has(this.name)))
-		);
+		return this.mods.fold<Module>((acc, mod) => acc.merge(mod.links.filter((link) => !this.#isModInFrame(link))));
 	}
 
 	@cache("frames")
 	get impsByLink() {
 		return this.links.map(({ imps }) =>
-			imps.fullResolvedById.filter(({ importedMod }) => importedMod!.frames.has(this.name))
+			imps.fullResolvedById.filter(({ importedMod }) => this.#isModInFrame(importedMod!))
 		);
 	}
 
@@ -38,7 +36,7 @@ export class ContextFrame implements AppContextFrame {
 			acc.set(
 				mod.path,
 				mod.links.fold<Import>((impsAcc, link) =>
-					link.frames.has(this.name) ? impsAcc : impsAcc.merge(link.imps.getForMod(mod))
+					this.#isModInFrame(link) ? impsAcc : impsAcc.merge(link.imps.getForMod(mod))
 				),
 			)
 		);
@@ -50,7 +48,7 @@ export class ContextFrame implements AppContextFrame {
 			imps.fullResolvedById.reduce((acc, { importedMod }) => {
 				const impMod = importedMod!;
 
-				if (impMod.frames.has(this.name)) {
+				if (this.#isModInFrame(impMod)) {
 					return acc;
 				}
 
@@ -67,7 +65,7 @@ export class ContextFrame implements AppContextFrame {
 	@cache("frames")
 	get modsByOutFrame() {
 		return this.links.fold<IDict<Module>>((acc, link) => {
-			if (link.frames.has(this.name)) {
+			if (this.#isModInFrame(link)) {
 				return acc;
 			}
 
@@ -78,5 +76,9 @@ export class ContextFrame implements AppContextFrame {
 
 			return acc;
 		});
+	}
+
+	#isModInFrame(mod: Module) {
+		return mod.frames.has(this.name);
 	}
 }

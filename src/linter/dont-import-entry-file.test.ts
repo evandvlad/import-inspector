@@ -2,12 +2,11 @@ import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
 import { createAndFillAppContext } from "~/testing/app-context-maker.ts";
-import { ImportLintRule } from "~/api.ts";
 
 import { dontImportEntryFile } from "./dont-import-entry-file.ts";
 
 describe("dont-import-entry-file", () => {
-	it("not ok", async () => {
+	it("not ok when importing entry file", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -20,7 +19,7 @@ describe("dont-import-entry-file", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontImportEntryFile)
+			.get("don't-import-entry-file")
 			.map(({ mod }) => mod.path)
 			.toArray();
 

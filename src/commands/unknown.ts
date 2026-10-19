@@ -2,13 +2,10 @@ import { tuix } from "~/tuix/index.ts";
 import { type Command, CommandName } from "~/values.ts";
 
 export const unknown: Command = () => {
-	const message = [
-		tuix.text("Incorrect usage", { bold: true, color: "red" }),
-		`You can use ${
-			tuix.text(CommandName.Help, { color: "blue" })
-		} command (... ${CommandName.Help}) for your help.`,
-	];
+	tuix.eprint([
+		tuix.text("Unknown command", { bold: true, color: "red" }),
+		`Use the ${tuix.text(CommandName.Help, { color: "blue" })} command for usage info.`,
+	], { noColor: true });
 
-	tuix.eprint(message, { noColor: true });
 	Deno.exit(1);
 };

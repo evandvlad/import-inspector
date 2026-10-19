@@ -1,4 +1,4 @@
-import type { AppContext } from "~/api.ts";
+import type { AppContext } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 
 import { dontJumpThroughPackageEntry } from "./dont-jump-through-package-entry.ts";

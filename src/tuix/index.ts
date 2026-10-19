@@ -4,17 +4,19 @@ import { toFileUrl } from "@std/path";
 
 import { fromLines, tab, toLines } from "~/lib/text.ts";
 import { isNull, isString } from "~/lib/vtype.ts";
-import type { Tuix as ITuix, TuixSelectItem } from "~/api.ts";
+import type { Tuix as ITuix, TuixSelectItem } from "~/api.d.ts";
 
 import { text } from "./text.ts";
 import { prettifyData } from "./data-prettifier.ts";
 
-class Tuix implements ITuix {
+const cancelExitCode = 130;
+
+export const tuix = new class Tuix implements ITuix {
 	text = text;
 
 	link(path: string, options?: { text?: string; line?: number }) {
 		const { text = path, line } = options ?? {};
-		return `\x1b]8;;${toFileUrl(path)}${line ? `#${line}` : ""}\x1b\\${text}\x1b]8;;\x1b\\`;
+		return `\x1b]8;;${toFileUrl(path)}${line !== undefined ? `#${line}` : ""}\x1b\\${text}\x1b]8;;\x1b\\`;
 	}
 
 	lines(items: string[]) {
@@ -59,7 +61,7 @@ class Tuix implements ITuix {
 		const result = promptSelect<T>(label, items as Array<PromptEntry<T>>);
 
 		if (isNull(result)) {
-			Deno.exit();
+			Deno.exit(cancelExitCode);
 		}
 
 		return result as TuixSelectItem<T>;
@@ -70,7 +72,7 @@ class Tuix implements ITuix {
 		const result = prompt(label, value);
 
 		if (isNull(result)) {
-			Deno.exit();
+			Deno.exit(cancelExitCode);
 		}
 
 		return result;
@@ -93,15 +95,13 @@ class Tuix implements ITuix {
 		const { noColor = false } = options ?? {};
 
 		const val = isString(value) ? value : this.lines(value);
-		const text = noColor ? val : this.text(val, { color: "red" });
+		const txt = noColor ? val : this.text(val, { color: "red" });
 
-		console.error(text);
+		console.error(txt);
 	}
 
 	printData(data: unknown) {
 		const result = prettifyData(data);
 		this.print(result);
 	}
-}
-
-export const tuix = new Tuix();
+}();

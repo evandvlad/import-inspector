@@ -8,9 +8,7 @@ export class LazyAsyncBox<T> {
 
 	get promise() {
 		if (!this.#promise) {
-			this.#promise = new Promise<T>((resolve, reject) => {
-				this.#job().then(resolve, reject);
-			});
+			this.#promise = Promise.try(this.#job);
 		}
 
 		return this.#promise;

@@ -1,6 +1,6 @@
 import { copy, ensureFile, exists } from "@std/fs";
 
-import { remapErr } from "~/lib/err.ts";
+import { remapErr, rethrowErr } from "~/lib/err.ts";
 
 export async function writeFile(path: string, content: string) {
 	try {
@@ -34,7 +34,7 @@ export async function removeFile(path: string) {
 }
 
 export async function copyFile(source: string, dest: string) {
-	await copy(source, dest, { overwrite: true });
+	await copy(source, dest, { overwrite: true }).catch(rethrowErr(`Can't copy file '${source}' to '${dest}'.`));
 }
 
 export function fileExists(path: string) {

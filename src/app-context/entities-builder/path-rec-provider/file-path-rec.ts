@@ -4,7 +4,7 @@ import { fileExtNames } from "~/project-specifics.ts";
 
 import { PathRec } from "./path-rec.ts";
 
-const supportedExtNames = fileExtNames as unknown as string[];
+const supportedExtNames: string[] = Array.from(fileExtNames);
 
 export class FilePathRec extends PathRec {
 	readonly kind = "file";

@@ -1,7 +1,7 @@
 import { tuix } from "~/tuix/index.ts";
 import { version } from "~/values.ts";
 import type { Settings } from "~/settings.ts";
-import type { AppContext } from "~/api.ts";
+import type { AppContext } from "~/api.d.ts";
 
 function ln(caption: string, content: string | number) {
 	return `${tuix.text(caption, { bold: true })}: ${content}`;
@@ -11,12 +11,10 @@ export function createSummary(
 	{ settings, appContext }: { settings: Settings; appContext: AppContext },
 ) {
 	const { summary, imps, mods } = appContext;
-	const dynamicImports = imps.dynamicById.size;
-	const staticImports = imps.staticById.size;
 
 	const modulesInfo = mods
 		.group(({ lang }) => lang)
-		.map((items, lang) => `${lang}: ${items.length}`)
+		.map((items, lang) => `${lang}: ${items.size}`)
 		.toArray()
 		.join(", ");
 
@@ -33,7 +31,7 @@ export function createSummary(
 		ln("Frames", summary.frames),
 		ln("Packages", summary.packs),
 		ln("Modules", `${summary.mods} (${modulesInfo})`),
-		ln("Imports", `${summary.imps} (static: ${staticImports}, dynamic: ${dynamicImports})`),
+		ln("Imports", `${summary.imps} (static: ${imps.staticById.size}, dynamic: ${imps.dynamicById.size})`),
 		ln("Defects", `${summary.totalDefects} (imports: ${summary.impDefects}, modules: ${summary.modDefects})`),
 		ln("Unresolved imports", imps.fullUnresolvedById.size),
 	];

@@ -2,7 +2,7 @@ import { isAbsolute } from "@std/path";
 
 import { dirExists, fileExists } from "~/lib/fs.ts";
 import { tuix } from "~/tuix/index.ts";
-import type { ConfigPreset } from "~/api.ts";
+import type { ConfigPreset } from "~/api.d.ts";
 
 type InspectionResult = {
 	isValid: boolean;

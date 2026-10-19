@@ -1,11 +1,11 @@
 import { tuix } from "~/tuix/index.ts";
 
-import type { Action } from "../values.ts";
+import type { CommandConfigureAction } from "~/values.ts";
 
 export function selectAction({ presetNames }: { presetNames: string[] }) {
 	const hasPresets = presetNames.length > 0;
 
-	const items: Array<{ label: string; value: Action }> = [
+	const items: Array<{ label: string; value: CommandConfigureAction }> = [
 		{ label: "Show config", value: "show-config" },
 		{ label: "Add preset", value: "add-preset" },
 	];
@@ -17,7 +17,7 @@ export function selectAction({ presetNames }: { presetNames: string[] }) {
 		);
 	}
 
-	const { value } = tuix.select<Action>(
+	const { value } = tuix.select<CommandConfigureAction>(
 		items,
 		{ label: tuix.text("Select action", { bold: true, color: "blue" }) },
 	);

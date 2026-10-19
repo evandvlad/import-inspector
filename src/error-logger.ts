@@ -20,7 +20,7 @@ export class ErrorLogger {
 			const data = {
 				name: error.name,
 				message: error.message,
-				stack: error.stack,
+				stack: error.stack?.split("\n"),
 				cause: error.cause,
 			};
 

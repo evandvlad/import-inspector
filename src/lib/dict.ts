@@ -1,5 +1,5 @@
 import { assert } from "~/lib/err.ts";
-import type { Dict as IDict } from "~/api.ts";
+import type { Dict as IDict } from "~/api.d.ts";
 import { isArray, isMap } from "~/lib/vtype.ts";
 
 type Entry<T> = [key: string, value: T];
@@ -125,11 +125,13 @@ export class Dict<T> implements IDict<T> {
 	}
 
 	pick(keys: string[]) {
-		return this.filter((_, key) => keys.includes(key));
+		const keySet = new Set(keys);
+		return this.filter((_, key) => keySet.has(key));
 	}
 
 	omit(keys: string[]) {
-		return this.filter((_, key) => !keys.includes(key));
+		const keySet = new Set(keys);
+		return this.filter((_, key) => !keySet.has(key));
 	}
 
 	map<U>(callback: (value: T, key: string) => U) {
@@ -156,6 +158,10 @@ export class Dict<T> implements IDict<T> {
 		return this.toEntries().some(([key, value]) => callback(value, key));
 	}
 
+	contains(value: T) {
+		return this.some((val) => val === value);
+	}
+
 	every(callback: (value: T, key: string) => unknown) {
 		return this.toEntries().every(([key, value]) => callback(value, key));
 	}
@@ -178,11 +184,11 @@ export class Dict<T> implements IDict<T> {
 	}
 
 	group(callback: (value: T, key: string) => string) {
-		return this.reduce((acc, value, key) => {
+		return this.fold<IDict<T>>((acc, value, key) => {
 			const newKey = callback(value, key);
-			acc.getOrInsert(newKey, []).push(value);
+			acc.getOrInsertComputed(newKey, () => Dict.empty<T>()).set(key, value);
 			return acc;
-		}, Dict.empty<T[]>());
+		});
 	}
 
 	merge(collection: Collection<T>, reducer: Reducer<T> = (_, value) => value) {

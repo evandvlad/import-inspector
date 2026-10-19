@@ -1,3 +1,5 @@
+import { isSubpathOf } from "~/lib/upath.ts";
+
 import type { DirPathRec, PathRec, PathRecProvider } from "./path-rec-provider/index.ts";
 import type { PackageEntryPointDetector } from "./package-entry-point-detector.ts";
 
@@ -49,10 +51,11 @@ export class PackageFinder {
 						children.push(parentPath);
 						return parentPath;
 					})
-					.filter((path) =>
-						!children
-							.some((childPath) => path.length > childPath.length && path.startsWith(childPath))
-					);
+					.filter((path) => {
+						return !children.some((childPath) =>
+							path.length > childPath.length && isSubpathOf(path, childPath)
+						);
+					});
 			})
 			.toArray();
 	}

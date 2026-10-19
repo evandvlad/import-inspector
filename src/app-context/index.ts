@@ -1,4 +1,4 @@
-import type { AppContext as IAppContext, Dict } from "~/api.ts";
+import type { AppContext as IAppContext, Dict } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
 

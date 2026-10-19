@@ -3,10 +3,8 @@ import type { Config } from "~/config/index.ts";
 import { tuix } from "~/tuix/index.ts";
 
 export function showConfigData(config: Config) {
-	const message = [
-		`Config is located here: ${tuix.link(configFilePath)}`,
+	tuix.print([
+		`The config file is ${tuix.link(configFilePath)}`,
 		tuix.code(JSON.stringify(config.data, null, "  ")),
-	];
-
-	tuix.print(message);
+	]);
 }

@@ -1,4 +1,3 @@
-import { parse } from "~/lib/upath.ts";
 import { orderedPackageEntryPointNames } from "~/project-specifics.ts";
 
 import type { FilePathRec, PathRecProvider } from "./path-rec-provider/index.ts";
@@ -11,8 +10,8 @@ export class PackageEntryPointDetector {
 	}
 
 	isOneOf(path: string) {
-		const { name } = parse(path);
-		return orderedPackageEntryPointNames.includes(name);
+		const { baseName } = this.#pathRecProvider.getFilePathRec(path);
+		return orderedPackageEntryPointNames.includes(baseName);
 	}
 
 	selectFromChildren(path: string) {

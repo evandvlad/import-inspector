@@ -1,36 +1,32 @@
 import { Dict } from "~/lib/dict.ts";
-import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
 export const dontJumpThroughPackageEntry: LintFunction = ({ imps, packs }) => {
 	imps.fullResolvedById.filter(({ sourceMod, resolution }) => {
 		const roots = packs.roots.slice();
 		const importedMod = resolution!.mod!;
+		const importedPack = importedMod.pack;
+		const sourcePack = sourceMod.pack;
 
-		if (!importedMod.pack) {
+		if (!importedPack) {
 			return false;
 		}
 
-		const sourcePackAncestryWithSelf = sourceMod.pack?.ancestry.slice().set(sourceMod.pack.path, sourceMod.pack) ??
-			Dict.empty();
+		if (!sourcePack) {
+			return !(roots.contains(importedPack) && importedMod.isPackEntry);
+		}
 
-		if (sourcePackAncestryWithSelf.has(importedMod.pack.path)) {
+		const sourcePackAncestryWithSelf = sourcePack.ancestry.slice().set(sourcePack.path, sourcePack) ?? Dict.empty();
+
+		if (sourcePackAncestryWithSelf.contains(importedPack)) {
 			return false;
 		}
 
-		if (!sourceMod.pack) {
-			return !(roots.has(importedMod.pack.path) && importedMod.isPackEntry);
-		}
+		const surroundingPacks = sourcePackAncestryWithSelf.reduce((acc, pack) => acc.merge(pack.children), roots);
+		const allowedPacks = surroundingPacks.filter((pack) => !sourcePackAncestryWithSelf.contains(pack));
 
-		const surroundingPacks = sourcePackAncestryWithSelf
-			.reduce((acc, pack) => acc.merge(pack.children), roots);
-
-		const allowedPackageSet = (new Set(surroundingPacks.toKeys())).difference(
-			new Set(sourcePackAncestryWithSelf.toKeys()),
-		);
-
-		return !(allowedPackageSet.has(importedMod.pack.path) && importedMod.isPackEntry);
+		return !(allowedPacks.contains(importedPack) && importedMod.isPackEntry);
 	}).forEach((imp) => {
-		imp.defects.add(ImportLintRule.DontJumpThroughPackageEntry);
+		imp.defects.add("don't-jump-through-package-entry");
 	});
 };

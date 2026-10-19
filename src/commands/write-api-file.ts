@@ -3,11 +3,9 @@ import { parseArgs } from "@std/cli";
 
 import { assert } from "~/lib/err.ts";
 import { copyFile, fileExists } from "~/lib/fs.ts";
-import { dedent } from "~/lib/text.ts";
+import { trimAllLines } from "~/lib/text.ts";
 import { tuix } from "~/tuix/index.ts";
-import { type Command, typesFile } from "~/values.ts";
-
-const fileName = "api.ts";
+import { type Command, typesFile, typesFileName } from "~/values.ts";
 
 export const writeApiFile: Command = async ({ args }: { args: string[] }) => {
 	const cwd = Deno.cwd();
@@ -16,16 +14,15 @@ export const writeApiFile: Command = async ({ args }: { args: string[] }) => {
 	const path = String(_.at(0) ?? cwd);
 
 	const doesSourceFileExist = await fileExists(typesFile);
-
 	assert(doesSourceFileExist, `Can't find source file '${typesFile}'.`);
 
 	const absPath = isAbsolute(path) ? path : join(cwd, path);
-	const targetFilePath = join(absPath, fileName);
+	const targetFilePath = join(absPath, typesFileName);
 	const doesTargetFileExist = await fileExists(targetFilePath);
 
-	const confirmationMessage = dedent(`
-		File '${fileName}' will be written into '${absPath}' directory.
-		${doesTargetFileExist ? "This file already exists and will be overridden." : ""} Do you want to continue?
+	const confirmationMessage = trimAllLines(`
+		File '${typesFileName}' will be written into the '${absPath}' directory.
+		${doesTargetFileExist ? "This file already exists and will be overwritten." : ""} Do you want to continue?
 	`);
 
 	const isConfirmed = tuix.confirm(confirmationMessage);

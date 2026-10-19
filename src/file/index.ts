@@ -1,6 +1,6 @@
 import { fromLines, normalizeBr, toLines } from "~/lib/text.ts";
 import { isUndefined } from "~/lib/vtype.ts";
-import type { File as IFile, FileEntry, LineRange, Span } from "~/api.ts";
+import type { File as IFile, FileEntry, LineRange, Span } from "~/api.d.ts";
 
 function isInSpan({ start, end }: Span, value: number) {
 	return value >= start && value <= end;

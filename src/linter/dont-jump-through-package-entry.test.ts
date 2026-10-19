@@ -2,12 +2,11 @@ import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
 import { createAndFillAppContext } from "~/testing/app-context-maker.ts";
-import { ImportLintRule } from "~/api.ts";
 
 import { dontJumpThroughPackageEntry } from "./dont-jump-through-package-entry.ts";
 
 describe("dont-jump-through-package-entry", () => {
-	it("not ok for module imported from child package not via entry point", async () => {
+	it("not ok for the module imported from the child package not via entry point", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -22,14 +21,14 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontJumpThroughPackageEntry)
+			.get("don't-jump-through-package-entry")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
-	it("not ok for module imported from child package not via entry point #2 (source is in package)", async () => {
+	it("not ok for the module imported from the child package not via entry point #2 (source is in the package)", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -45,14 +44,14 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontJumpThroughPackageEntry)
+			.get("don't-jump-through-package-entry")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
-	it("not ok for module imported from descendant package", async () => {
+	it("not ok for the module imported from the descendant package", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -68,14 +67,14 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontJumpThroughPackageEntry)
+			.get("don't-jump-through-package-entry")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
-	it("not ok for module imported from descendant package #2 (source is in package)", async () => {
+	it("not ok for the module imported from the descendant package #2 (source is in the package)", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -92,14 +91,14 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.get(ImportLintRule.DontJumpThroughPackageEntry)
+			.get("don't-jump-through-package-entry")
 			.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
-	it("ok to import from child module via entry point", async () => {
+	it("ok to import from the child module via entry point", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -114,14 +113,14 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, undefined)
+			.getOrDefault("don't-jump-through-package-entry", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(undefined);
 	});
 
-	it("ok to import from parent module", async () => {
+	it("ok to import from the parent module", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -137,14 +136,14 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, undefined)
+			.getOrDefault("don't-jump-through-package-entry", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(undefined);
 	});
 
-	it("ok to import from ancestor module", async () => {
+	it("ok to import from the ancestor module", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -161,14 +160,14 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, undefined)
+			.getOrDefault("don't-jump-through-package-entry", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(undefined);
 	});
 
-	it("ok if both modules are not in packages", async () => {
+	it("ok if both modules are not in the packages", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -182,14 +181,14 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, undefined)
+			.getOrDefault("don't-jump-through-package-entry", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 
 		expect(paths).toEqual(undefined);
 	});
 
-	it("ok if both modules are in same package", async () => {
+	it("ok if both modules are in the same package", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -204,7 +203,7 @@ describe("dont-jump-through-package-entry", () => {
 
 		const paths = appContext.impDefects
 			.byRule
-			.getOrDefault(ImportLintRule.DontJumpThroughPackageEntry, undefined)
+			.getOrDefault("don't-jump-through-package-entry", undefined)
 			?.map(({ mod }) => mod.path)
 			.toArray();
 

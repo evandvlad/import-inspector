@@ -1,4 +1,4 @@
-import type { ModuleTrait } from "~/api.ts";
+import type { ModuleTrait } from "~/api.d.ts";
 
 import { clear } from "./tag-based-cache.ts";
 

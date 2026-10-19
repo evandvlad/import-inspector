@@ -1,4 +1,3 @@
-import { ImportLintRule } from "~/api.ts";
 import type { LintFunction } from "~/values.ts";
 
 export const dontUseAbsolutePathInside: LintFunction = ({ imps }) => {
@@ -6,20 +5,23 @@ export const dontUseAbsolutePathInside: LintFunction = ({ imps }) => {
 		.filter(({ resolution }) => !resolution!.isRelative)
 		.filter(({ sourceMod, resolution }) => {
 			const importedMod = resolution!.mod!;
+			const importedPack = importedMod.pack;
+			const sourcePack = sourceMod.pack;
 
-			if (sourceMod.pack && importedMod.pack) {
-				const isSamePackage = sourceMod.pack === importedMod.pack;
+			if (!(sourcePack && importedPack)) {
+				return false;
+			}
 
-				const isImportedFromSameOrAncestorPackage = isSamePackage ||
-					sourceMod.pack.ancestry.has(importedMod.pack.path);
+			if (sourcePack === importedPack) {
+				return true;
+			}
 
-				if (isImportedFromSameOrAncestorPackage) {
-					return true;
-				}
+			if (sourcePack.ancestry.contains(importedPack)) {
+				return true;
 			}
 
 			return false;
 		}).forEach((imp) => {
-			imp.defects.add(ImportLintRule.DontUseAbsolutePathInside);
+			imp.defects.add("don't-use-absolute-path-inside");
 		});
 };
