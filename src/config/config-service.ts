@@ -1,3 +1,5 @@
+import { toFileUrl } from "@std/path";
+
 import { assert, isErr, remapErr } from "~/lib/err.ts";
 import { fileExists, readFile, writeFile } from "~/lib/fs.ts";
 import { hasProp, isObject, isString } from "~/lib/vtype.ts";
@@ -56,7 +58,7 @@ export async function loadSettings(preset: ConfigPreset) {
 	const { name, settingsPath } = preset;
 
 	try {
-		const settingsModule: SettingsModule = await import(settingsPath);
+		const settingsModule: SettingsModule = await import(toFileUrl(settingsPath).toString());
 		return settingsModule.default(preset);
 	} catch (e) {
 		throw remapErr(e, `Failed to import settings file '${settingsPath}' for preset '${name}'.`);

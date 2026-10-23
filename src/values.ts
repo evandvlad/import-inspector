@@ -1,5 +1,4 @@
-import { join } from "@std/path";
-
+import { join, unify } from "~/lib/upath.ts";
 import { assert } from "~/lib/err.ts";
 import type { AppContext, File, Span } from "~/api.d.ts";
 
@@ -11,11 +10,11 @@ const homeDir = Deno.env.get(Deno.build.os === "windows" ? "USERPROFILE" : "HOME
 assert(homeDir, "Can't get home directory path.");
 
 export const version = denoJson.version;
-export const configDir = `${homeDir}/.config/import-inspector`;
+export const configDir = unify(`${homeDir}/.config/import-inspector`);
 export const configFilePath = `${configDir}/config.json`;
 export const errorLogFilePath = `${configDir}/error.log`;
 export const typesFileName = "api.d.ts";
-export const typesFile = join(dirname, typesFileName);
+export const typesFile = unify(join(dirname, typesFileName));
 export const defaultConfigPresetName = "default";
 
 export enum CommandName {

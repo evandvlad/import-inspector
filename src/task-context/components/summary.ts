@@ -1,5 +1,5 @@
 import { tuix } from "~/tuix/index.ts";
-import { version } from "~/values.ts";
+import { configFilePath, version } from "~/values.ts";
 import type { Settings } from "~/settings.ts";
 import type { AppContext } from "~/api.d.ts";
 
@@ -24,6 +24,7 @@ export function createSummary(
 		"=".repeat(hrWidth),
 		ln("Program version", version),
 		ln("Preset", settings.preset.name),
+		ln("Config", tuix.link(configFilePath)),
 		ln("Settings", tuix.link(settings.preset.settingsPath)),
 		ln("Project path", settings.preset.projectPath),
 		"-".repeat(hrWidth),

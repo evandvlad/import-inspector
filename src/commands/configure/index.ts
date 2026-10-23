@@ -28,7 +28,10 @@ export const configure: Command = async () => {
 
 		if (!config) {
 			config = await createConfig();
-			return;
+
+			if (!config) {
+				return;
+			}
 		}
 
 		const { presetNames } = config;
