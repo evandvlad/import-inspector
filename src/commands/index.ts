@@ -6,6 +6,7 @@ import { task } from "./task.ts";
 import { unknown } from "./unknown.ts";
 import { version } from "./version.ts";
 import { writeApiFile } from "./write-api-file.ts";
+import { listTasks } from "./list-tasks.ts";
 import { configure } from "./configure/index.ts";
 
 export const commands: Record<CommandName, Command> = {
@@ -14,6 +15,7 @@ export const commands: Record<CommandName, Command> = {
 	[CommandName.Help]: help,
 	[CommandName.Version]: version,
 	[CommandName.Configure]: configure,
+	[CommandName.ListTasks]: listTasks,
 	[CommandName.WriteApiFile]: writeApiFile,
 	[CommandName.Unknown]: unknown,
 };

@@ -1,7 +1,7 @@
 import { tuix } from "~/tuix/index.ts";
 import type { LineRange, Module } from "~/api.d.ts";
 
-export function createModuleCode(
+export function modCode(
 	{ mod, lineRange }: { mod: Module; lineRange?: LineRange },
 ) {
 	const { file } = mod;

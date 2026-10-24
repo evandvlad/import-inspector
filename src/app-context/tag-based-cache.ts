@@ -1,7 +1,9 @@
+import type { FnEmpty } from "~/lib/ts.ts";
+
 type Tag = "tags" | "frames" | "import-defects" | "module-defects";
 
 const pubSub = new class {
-	#subs = new Map<Tag, Array<() => void>>();
+	#subs = new Map<Tag, FnEmpty[]>();
 
 	pub(tags: Tag[]) {
 		tags.forEach((tag) => {
@@ -11,7 +13,7 @@ const pubSub = new class {
 		});
 	}
 
-	sub(tags: Tag[], callback: () => void) {
+	sub(tags: Tag[], callback: FnEmpty) {
 		tags.forEach((tag) => {
 			this.#subs.getOrInsert(tag, []).push(callback);
 		});

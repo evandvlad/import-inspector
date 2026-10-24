@@ -1,4 +1,5 @@
 import { basename, concat, split } from "~/lib/upath.ts";
+import type { Nullable } from "~/lib/ts.ts";
 
 import { DirPathRec } from "./dir-path-rec.ts";
 import { FilePathRec } from "./file-path-rec.ts";
@@ -6,7 +7,7 @@ import { FilePathRec } from "./file-path-rec.ts";
 export type Node = {
 	path: string;
 	name: string;
-	parent: Node | null;
+	parent: Nullable<Node>;
 	value: FilePathRec | DirPathRec;
 	children: Map</* name */ string, Node>;
 };
@@ -20,7 +21,7 @@ function extractChildPath({ path, descendantPath }: { path: string; descendantPa
 	return concat(...descendantPathParts.slice(0, pathPartsLength + 1));
 }
 
-function createNode({ parent, path }: { parent: Node | null; path: string }): Node {
+function createNode({ parent, path }: { parent: Nullable<Node>; path: string }): Node {
 	return {
 		path,
 		parent,

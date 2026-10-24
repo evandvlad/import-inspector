@@ -1,9 +1,10 @@
 import { assert } from "~/lib/err.ts";
-import { Config } from "~/config/index.ts";
+import type { MaybePromise } from "~/lib/ts.ts";
 import type { Settings } from "~/settings.ts";
+import { Config } from "~/config/index.ts";
 import { CommandName, defaultConfigPresetName } from "~/values.ts";
 
-type Worker = (params: { settings: Settings }) => Promise<number | void>;
+type Worker = (params: { settings: Settings }) => MaybePromise<number | void>;
 
 export async function runProgramWorkflow(
 	{ worker, preset = defaultConfigPresetName }: { worker: Worker; preset?: string },

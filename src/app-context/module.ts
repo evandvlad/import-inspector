@@ -1,4 +1,5 @@
 import { isNull } from "~/lib/vtype.ts";
+import type { Nullable } from "~/lib/ts.ts";
 import type { Dict, File, Imports, Module as IModule, Package } from "~/api.d.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
@@ -32,7 +33,7 @@ export class Module implements IModule {
 			imps: Imports;
 			linkPaths: string[];
 			file: File;
-			packPath: string | null;
+			packPath: Nullable<string>;
 			isPackEntry: boolean;
 			modDict: Dict<IModule>;
 			packDict: Dict<Package>;

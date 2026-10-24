@@ -1,5 +1,6 @@
 import { type ImportExpression, type Program, type Span, Visitor } from "oxc-parser";
 
+import type { Nullable } from "~/lib/ts.ts";
 import { isString } from "~/lib/vtype.ts";
 import type { ImportRec } from "~/values.ts";
 
@@ -28,7 +29,7 @@ export function extractImportRecs({ program }: { program: Program }) {
 	const recs: ImportRec[] = [];
 
 	function createImportRec(
-		{ node, locator, isDynamic = false }: { node: Span; locator: string | null; isDynamic?: boolean },
+		{ node, locator, isDynamic = false }: { node: Span; locator: Nullable<string>; isDynamic?: boolean },
 	) {
 		const { start, end } = node;
 

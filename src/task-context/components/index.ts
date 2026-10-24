@@ -1,10 +1,11 @@
 import type { AppContext, LineRange, Module, TaskContextComponents } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 
-import { createModuleLink } from "./module-link.ts";
-import { createModuleCode } from "./module-code.ts";
-import { createLintResult } from "./lint-result.ts";
-import { createSummary } from "./summary.ts";
+import { modPathLink } from "./mod-path-link.ts";
+import { modCode } from "./mod-code.ts";
+import { lintResult } from "./lint-result.ts";
+import { summary } from "./summary.ts";
+import { modLinks } from "./mod-links.ts";
 
 export class Components implements TaskContextComponents {
 	#appContext;
@@ -15,19 +16,23 @@ export class Components implements TaskContextComponents {
 		this.#settings = settings;
 	}
 
-	moduleLink(mod: Module, lineRange?: LineRange) {
-		return createModuleLink({ mod, lineRange });
+	modPathLink(mod: Module, lineRange?: LineRange) {
+		return modPathLink({ mod, lineRange });
 	}
 
-	moduleCode(mod: Module, lineRange?: LineRange) {
-		return createModuleCode({ mod, lineRange });
+	modCode(mod: Module, lineRange?: LineRange) {
+		return modCode({ mod, lineRange });
+	}
+
+	modLinks(mod: Module) {
+		return modLinks({ mod });
 	}
 
 	lintResult() {
-		return createLintResult({ appContext: this.#appContext });
+		return lintResult({ appContext: this.#appContext });
 	}
 
 	summary() {
-		return createSummary({ appContext: this.#appContext, settings: this.#settings });
+		return summary({ appContext: this.#appContext, settings: this.#settings });
 	}
 }

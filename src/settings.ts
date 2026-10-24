@@ -1,4 +1,5 @@
 import { unify } from "~/lib/upath.ts";
+import { Dict } from "~/lib/dict.ts";
 import type { ConfigPreset, Settings as ISettings } from "~/api.d.ts";
 
 export class Settings {
@@ -22,7 +23,7 @@ export class Settings {
 			importRemaps = {},
 			preLint = () => {},
 			postLint = () => {},
-			tasks = {},
+			tasks = [],
 			correctUnresolvedDynamicImports = () => Promise.resolve([]),
 		} = data;
 
@@ -32,16 +33,12 @@ export class Settings {
 			Object.entries(importRemaps).map(([name, path]) => [name, unify(path)]),
 		);
 
-		this.tasks = tasks;
+		this.tasks = Dict.fromArray(tasks, ({ name }) => name);
 		this.reports = reports;
 		this.preLint = preLint;
 		this.postLint = postLint;
 		this.correctUnresolvedDynamicImports = correctUnresolvedDynamicImports;
 
 		this.reportPaths = this.reports.map(({ path }) => path);
-	}
-
-	findTask(name: string) {
-		return Object.hasOwn(this.tasks, name) ? this.tasks[name] : null;
 	}
 }

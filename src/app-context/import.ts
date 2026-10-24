@@ -1,3 +1,4 @@
+import type { Nullable } from "~/lib/ts.ts";
 import type { Dict as IDict, Import as IImport, Module } from "~/api.d.ts";
 import type { ImportRec, ImportResolutionData } from "~/values.ts";
 
@@ -19,7 +20,7 @@ export class Import implements IImport {
 		{ modPath, importRec, resolution, modDict }: {
 			modPath: string;
 			importRec: ImportRec;
-			resolution: ImportResolutionData | null;
+			resolution: Nullable<ImportResolutionData>;
 			modDict: IDict<Module>;
 		},
 	) {

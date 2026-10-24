@@ -12,6 +12,7 @@ export const help: Command = () => {
 		`${
 			tuix.text(CommandName.Task, { bold: true })
 		} <name> [...args] [--preset <name>] - run a task defined in the settings file.`,
+		`${tuix.text(CommandName.ListTasks, { bold: true })} [--preset <name>] - list available tasks.`,
 		`${tuix.text(CommandName.Configure, { bold: true })} - create and edit presets interactively.`,
 		`${tuix.text(CommandName.Version, { bold: true })} - show the program version.`,
 		`${

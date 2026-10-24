@@ -4,6 +4,8 @@ import { toFileUrl } from "@std/path";
 
 import { fromLines, tab, toLines } from "~/lib/text.ts";
 import { isNull, isString } from "~/lib/vtype.ts";
+import { loop } from "~/lib/async.ts";
+import type { FnEmpty, MaybePromise } from "~/lib/ts.ts";
 import type { Tuix as ITuix, TuixSelectItem } from "~/api.d.ts";
 
 import { text } from "./text.ts";
@@ -37,23 +39,20 @@ export const tuix = new class Tuix implements ITuix {
 		);
 	}
 
-	spin(message: string) {
+	withSpin<T>(message: string, fn: (stop: FnEmpty) => Promise<T>) {
 		const spinner = new Spinner({ message });
 		let isStopped = false;
 
+		function stop() {
+			if (!isStopped) {
+				isStopped = true;
+				spinner.stop();
+			}
+		}
+
 		spinner.start();
 
-		return {
-			stop() {
-				if (isStopped) {
-					return;
-				}
-
-				isStopped = true;
-
-				spinner.stop();
-			},
-		};
+		return fn(stop).finally(stop);
 	}
 
 	select<T extends string = string>(items: TuixSelectItem<T>[], options?: { label?: string }) {
@@ -104,4 +103,11 @@ export const tuix = new class Tuix implements ITuix {
 		const result = prettifyData(data);
 		this.print(result);
 	}
+
+	loopUntil = async (fn: () => MaybePromise<void>, confirm: () => MaybePromise<boolean>) => {
+		return await loop(async () => {
+			await fn();
+			return await confirm();
+		});
+	};
 }();

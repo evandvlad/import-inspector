@@ -101,7 +101,6 @@ export type Tuix = {
 	lines: (items: string[]) => string;
 	link: (path: string, options?: { text?: string; line?: number }) => string;
 	code: (value: string, options?: { startLine?: number }) => string;
-	spin: (message: string) => { stop: () => void };
 	prompt: (options?: { label?: string; value?: string }) => string;
 	confirm: (message: string) => boolean;
 	select: <T extends string = string>(items: TuixSelectItem<T>[], options?: { label?: string }) => TuixSelectItem<T>;
@@ -109,6 +108,8 @@ export type Tuix = {
 	print: (value: string | string[]) => void;
 	eprint: (value: string | string[], options?: { noColor?: boolean }) => void;
 	printData: (data: unknown) => void;
+	withSpin: <T>(message: string, fn: (stop: () => void) => Promise<T>) => Promise<T>;
+	loopUntil: (fn: () => MaybePromise<void>, confirm: () => MaybePromise<boolean>) => Promise<void>;
 };
 
 export type RootEntry = {
@@ -153,7 +154,11 @@ export type CorrectUnresolvedDynamicImports = (
 export type PreLint = (appContext: AppContext) => MaybePromise<void>;
 export type PostLint = (appContext: AppContext) => MaybePromise<void>;
 
-export type Task = (taskContext: TaskContext) => MaybePromise</* exit code */ number | void>;
+export type Task = {
+	name: string;
+	description: string;
+	perform: (taskContext: TaskContext) => MaybePromise</* exit code */ number | void>;
+};
 
 export type Settings = {
 	rootEntries: RootEntry[];
@@ -162,7 +167,7 @@ export type Settings = {
 	preLint?: PreLint;
 	postLint?: PostLint;
 	reports?: Report[];
-	tasks?: Rec<Task>;
+	tasks?: Task[];
 };
 
 export type FileEntry = {
@@ -367,8 +372,9 @@ export type AppContext = {
 };
 
 export type TaskContextComponents = {
-	moduleCode: (mod: Module, lineRange?: LineRange) => string;
-	moduleLink: (mod: Module, lineRange?: LineRange) => string;
+	modPathLink: (mod: Module, lineRange?: LineRange) => string;
+	modCode: (mod: Module, lineRange?: LineRange) => string;
+	modLinks: (mod: Module) => string;
 	lintResult: () => string;
 	summary: () => string;
 };

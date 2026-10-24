@@ -10,20 +10,10 @@ import { updatePreset } from "./subcommands/update-preset.ts";
 import { removePreset } from "./subcommands/remove-preset.ts";
 import { selectAction } from "./widgets/action-select.ts";
 
-async function loopUntilQuit(handler: () => Promise<void>) {
-	await handler();
-
-	if (tuix.confirm("Quit?")) {
-		return;
-	}
-
-	await loopUntilQuit(handler);
-}
-
 export const configure: Command = async () => {
 	let config = await Config.load();
 
-	await loopUntilQuit(async () => {
+	await tuix.loopUntil(async () => {
 		tuix.clear();
 
 		if (!config) {
@@ -61,5 +51,5 @@ export const configure: Command = async () => {
 			default:
 				assertNever(action);
 		}
-	});
+	}, () => tuix.confirm("Quit?"));
 };

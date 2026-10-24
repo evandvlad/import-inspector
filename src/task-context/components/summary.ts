@@ -7,10 +7,10 @@ function ln(caption: string, content: string | number) {
 	return `${tuix.text(caption, { bold: true })}: ${content}`;
 }
 
-export function createSummary(
+export function summary(
 	{ settings, appContext }: { settings: Settings; appContext: AppContext },
 ) {
-	const { summary, imps, mods } = appContext;
+	const { summary: sum, imps, mods } = appContext;
 
 	const modulesInfo = mods
 		.group(({ lang }) => lang)
@@ -28,12 +28,12 @@ export function createSummary(
 		ln("Settings", tuix.link(settings.preset.settingsPath)),
 		ln("Project path", settings.preset.projectPath),
 		"-".repeat(hrWidth),
-		ln("Tags", summary.tags),
-		ln("Frames", summary.frames),
-		ln("Packages", summary.packs),
-		ln("Modules", `${summary.mods} (${modulesInfo})`),
-		ln("Imports", `${summary.imps} (static: ${imps.staticById.size}, dynamic: ${imps.dynamicById.size})`),
-		ln("Defects", `${summary.totalDefects} (imports: ${summary.impDefects}, modules: ${summary.modDefects})`),
+		ln("Tags", sum.tags),
+		ln("Frames", sum.frames),
+		ln("Packages", sum.packs),
+		ln("Modules", `${sum.mods} (${modulesInfo})`),
+		ln("Imports", `${sum.imps} (static: ${imps.staticById.size}, dynamic: ${imps.dynamicById.size})`),
+		ln("Defects", `${sum.totalDefects} (imports: ${sum.impDefects}, modules: ${sum.modDefects})`),
 		ln("Unresolved imports", imps.fullUnresolvedById.size),
 	];
 

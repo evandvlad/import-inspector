@@ -1,4 +1,5 @@
 import { dirname, join } from "~/lib/upath.ts";
+import type { Nullable } from "~/lib/ts.ts";
 import type { Settings } from "~/settings.ts";
 import { getImportPathSuffixCandidates } from "~/project-specifics.ts";
 import type { ImportRec, ImportResolutionData } from "~/values.ts";
@@ -23,7 +24,7 @@ export class ImportResolver {
 		this.#aliases = this.#createAliases(settings);
 	}
 
-	resolve({ path, importRec }: { path: string; importRec: ImportRec }): ImportResolutionData | null {
+	resolve({ path, importRec }: { path: string; importRec: ImportRec }): Nullable<ImportResolutionData> {
 		return importRec.locator ? this.#resolve({ path, importRec }) : null;
 	}
 

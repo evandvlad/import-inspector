@@ -1,5 +1,6 @@
 import { isNull } from "~/lib/vtype.ts";
 import { Dict } from "~/lib/dict.ts";
+import type { Nullable } from "~/lib/ts.ts";
 import type { Dict as IDict, Module, Package as IPackage } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
@@ -20,7 +21,7 @@ export class Package implements IPackage {
 			path: string;
 			shortPath: string;
 			modDict: IDict<Module>;
-			parentPath: string | null;
+			parentPath: Nullable<string>;
 			childPaths: string[];
 			packDict: IDict<IPackage>;
 		},

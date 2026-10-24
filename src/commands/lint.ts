@@ -9,10 +9,8 @@ import { TaskContext } from "~/task-context/index.ts";
 export const lint: Command = async ({ args }: { args: string[] }) => {
 	const { preset } = parseArgs(args);
 
-	const spinner = tuix.spin("Processing...");
-
-	try {
-		await runProgramWorkflow({
+	await tuix.withSpin("Processing...", (stopSpinner) =>
+		runProgramWorkflow({
 			preset,
 			async worker({ settings }) {
 				const appContext = await runAppWorkflow({ settings });
@@ -20,7 +18,7 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 
 				await Promise.all(settings.reports.map((report) => taskContext.report(report)));
 
-				spinner.stop();
+				stopSpinner();
 
 				const hasDefects = appContext.summary.totalDefects > 0;
 
@@ -34,9 +32,5 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 
 				return hasDefects ? 1 : 0;
 			},
-		});
-	} catch (e) {
-		spinner.stop();
-		throw e;
-	}
+		}));
 };
