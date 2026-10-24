@@ -1,23 +1,17 @@
 import { Dict } from "~/lib/dict.ts";
-import type {
-	Dict as IDict,
-	Import as IImport,
-	Imports as IImports,
-	Module as IModule,
-	Package as IPackage,
-} from "~/api.d.ts";
+import type { Dict as IDict, Imp as IImp, Imps as IImps, Mod as IMod, Pack as IPack } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
 
-import { Imports } from "../imports.ts";
-import { Import } from "../import.ts";
-import { Module } from "../module.ts";
-import { Package } from "../package.ts";
+import { Imps } from "../imps.ts";
+import { Imp } from "../imp.ts";
+import { Mod } from "../mod.ts";
+import { Pack } from "../pack.ts";
 
-import { PackageEntryPointDetector } from "./package-entry-point-detector.ts";
+import { PackEntryPointDetector } from "./pack-entry-point-detector.ts";
 import { PathRecProvider } from "./path-rec-provider/index.ts";
-import { PackageFinder } from "./package-finder.ts";
-import { ImportResolver } from "./import-resolver.ts";
+import { PackFinder } from "./pack-finder.ts";
+import { ImpResolver } from "./imp-resolver.ts";
 
 class EntitiesBuilder {
 	#modDict;
@@ -26,24 +20,24 @@ class EntitiesBuilder {
 
 	#settings;
 	#parsingResult;
-	#packageFinder;
+	#packFinder;
 	#pathRecProvider;
-	#packageEntryPointDetector;
+	#packEntryPointDetector;
 
 	constructor({ settings, parsingResult }: { settings: Settings; parsingResult: IDict<FileParsingResult> }) {
 		this.#settings = settings;
 		this.#parsingResult = parsingResult;
 		this.#pathRecProvider = new PathRecProvider({ filePaths: parsingResult.toKeys() });
-		this.#packageEntryPointDetector = new PackageEntryPointDetector({ pathRecProvider: this.#pathRecProvider });
+		this.#packEntryPointDetector = new PackEntryPointDetector({ pathRecProvider: this.#pathRecProvider });
 
-		this.#packageFinder = new PackageFinder({
+		this.#packFinder = new PackFinder({
 			pathRecProvider: this.#pathRecProvider,
-			packageEntryPointDetector: this.#packageEntryPointDetector,
+			packEntryPointDetector: this.#packEntryPointDetector,
 		});
 
-		this.#impDict = Dict.empty<IImport>();
-		this.#modDict = Dict.empty<IModule>();
-		this.#packDict = Dict.empty<IPackage>();
+		this.#impDict = Dict.empty<IImp>();
+		this.#modDict = Dict.empty<IMod>();
+		this.#packDict = Dict.empty<IPack>();
 	}
 
 	build() {
@@ -60,17 +54,17 @@ class EntitiesBuilder {
 	}
 
 	#prepareImps() {
-		const importResolver = new ImportResolver({ settings: this.#settings, pathRecProvider: this.#pathRecProvider });
+		const impResolver = new ImpResolver({ settings: this.#settings, pathRecProvider: this.#pathRecProvider });
 
 		const linkPathsDict = Dict.empty<string[]>();
-		const impsDict = Dict.empty<IImports>();
+		const impsDict = Dict.empty<IImps>();
 
-		this.#parsingResult.forEach(({ path, importRecs }) => {
-			const impDict = Dict.empty<IImport>();
+		this.#parsingResult.forEach(({ path, impRecs }) => {
+			const impDict = Dict.empty<IImp>();
 
-			importRecs.forEach((importRec) => {
-				const resolution = importResolver.resolve({ path, importRec });
-				const imp = new Import({ modPath: path, importRec, resolution, modDict: this.#modDict });
+			impRecs.forEach((impRec) => {
+				const resolution = impResolver.resolve({ path, impRec });
+				const imp = new Imp({ modPath: path, impRec, resolution, modDict: this.#modDict });
 
 				if (resolution?.path) {
 					linkPathsDict.getOrInsert(resolution.path, []).push(path);
@@ -80,34 +74,31 @@ class EntitiesBuilder {
 				this.#impDict.set(imp.id, imp);
 			});
 
-			impsDict.set(path, new Imports({ dict: impDict }));
+			impsDict.set(path, new Imps({ dict: impDict }));
 		});
 
 		return { linkPathsDict, impsDict };
 	}
 
-	#prepareMods({ impsDict, linkPathsDict }: { impsDict: Dict<IImports>; linkPathsDict: Dict<string[]> }) {
-		const packsDict = Dict.empty<Dict<IModule>>();
+	#prepareMods({ impsDict, linkPathsDict }: { impsDict: Dict<IImps>; linkPathsDict: Dict<string[]> }) {
+		const packsDict = Dict.empty<Dict<IMod>>();
 
 		this.#parsingResult.forEach(({ path, file }) => {
 			const { baseName, shortPath } = this.#pathRecProvider.getFilePathRec(path);
-			const packPath = this.#packageFinder.findCurrent(path);
+			const packPath = this.#packFinder.findCurrent(path);
+			const isPackEntry = packPath ? this.#packEntryPointDetector.selectFromChildren(packPath) === path : false;
 
-			const isPackEntry = packPath
-				? this.#packageEntryPointDetector.selectFromChildren(packPath) === path
-				: false;
-
-			const mod = new Module({
+			const mod = new Mod({
 				path,
 				file,
 				packPath,
 				shortPath,
 				isPackEntry,
 				name: baseName,
-				imps: impsDict.get(path),
-				linkPaths: linkPathsDict.getOrDefault(path, []),
 				modDict: this.#modDict,
+				imps: impsDict.get(path),
 				packDict: this.#packDict,
+				linkPaths: linkPathsDict.getOrDefault(path, []),
 			});
 
 			this.#modDict.set(path, mod);
@@ -120,17 +111,17 @@ class EntitiesBuilder {
 		return { packsDict };
 	}
 
-	#preparePacks({ packsDict }: { packsDict: Dict<Dict<IModule>> }) {
+	#preparePacks({ packsDict }: { packsDict: Dict<Dict<IMod>> }) {
 		packsDict.forEach((modDict, path) => {
-			const { name, shortPath, parentPath } = this.#pathRecProvider.getDirPathRec(path);
+			const { baseName, shortPath, parentPath } = this.#pathRecProvider.getDirPathRec(path);
 
-			const pack = new Package({
-				name,
+			const pack = new Pack({
 				path,
 				shortPath,
 				modDict,
-				parentPath: parentPath ? this.#packageFinder.findCurrent(path) : null,
-				childPaths: this.#packageFinder.findChildren(path),
+				name: baseName,
+				parentPath: parentPath ? this.#packFinder.findCurrent(path) : null,
+				childPaths: this.#packFinder.findChildren(path),
 				packDict: this.#packDict,
 			});
 

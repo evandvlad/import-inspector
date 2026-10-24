@@ -1,20 +1,20 @@
 import { isSubpathOf } from "~/lib/upath.ts";
 
 import type { DirPathRec, PathRec, PathRecProvider } from "./path-rec-provider/index.ts";
-import type { PackageEntryPointDetector } from "./package-entry-point-detector.ts";
+import type { PackEntryPointDetector } from "./pack-entry-point-detector.ts";
 
-export class PackageFinder {
+export class PackFinder {
 	#pathRecProvider;
-	#packageEntryPointDetector;
+	#packEntryPointDetector;
 
 	constructor(
-		{ pathRecProvider, packageEntryPointDetector }: {
+		{ pathRecProvider, packEntryPointDetector }: {
 			pathRecProvider: PathRecProvider;
-			packageEntryPointDetector: PackageEntryPointDetector;
+			packEntryPointDetector: PackEntryPointDetector;
 		},
 	) {
 		this.#pathRecProvider = pathRecProvider;
-		this.#packageEntryPointDetector = packageEntryPointDetector;
+		this.#packEntryPointDetector = packEntryPointDetector;
 	}
 
 	findCurrent(path: string) {
@@ -28,7 +28,7 @@ export class PackageFinder {
 			.filter((dirPathRec) =>
 				Iterator.from(dirPathRec.childPaths)
 					.map(this.#mapPathToPathRec)
-					.find(this.#isPackageEntryPoint)
+					.find(this.#isPackEntryPoint)
 			)
 			.find(Boolean);
 
@@ -45,7 +45,7 @@ export class PackageFinder {
 				const children: string[] = [];
 
 				return this.#pathRecProvider.createDownWalker(pathRec.path)
-					.filter(this.#isPackageEntryPoint)
+					.filter(this.#isPackEntryPoint)
 					.map((filePathRec) => {
 						const parentPath = filePathRec.parentPath!;
 						children.push(parentPath);
@@ -60,8 +60,8 @@ export class PackageFinder {
 			.toArray();
 	}
 
-	#isPackageEntryPoint = (pathRec: PathRec) => {
-		return pathRec.kind === "file" && this.#packageEntryPointDetector.isOneOf(pathRec.path);
+	#isPackEntryPoint = (pathRec: PathRec) => {
+		return pathRec.kind === "file" && this.#packEntryPointDetector.isOneOf(pathRec.path);
 	};
 
 	#mapPathToPathRec = (path: string) => {

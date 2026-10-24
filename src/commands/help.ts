@@ -4,14 +4,15 @@ import { type Command, CommandName, configDir, configFilePath, typesFileName } f
 export const help: Command = () => {
 	tuix.print([
 		tuix.text("Help", { bold: true, color: "blue" }),
-		`The config directory is ${tuix.link(configDir)}`,
-		`The config file is ${tuix.link(configFilePath)}`,
+		`The config directory is ${tuix.link(configDir)}.`,
+		`The config file is ${tuix.link(configFilePath)}.`,
 		"",
 		tuix.text("Commands:", { bold: true, color: "blue" }),
 		`${tuix.text(CommandName.Lint, { bold: true })} [--preset <name>] - lint project files.`,
 		`${
 			tuix.text(CommandName.Task, { bold: true })
 		} <name> [...args] [--preset <name>] - run a task defined in the settings file.`,
+		`${tuix.text(CommandName.ListTasks, { bold: true })} [--preset <name>] - list available tasks.`,
 		`${tuix.text(CommandName.Configure, { bold: true })} - create and edit presets interactively.`,
 		`${tuix.text(CommandName.Version, { bold: true })} - show the program version.`,
 		`${

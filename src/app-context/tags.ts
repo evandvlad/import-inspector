@@ -1,8 +1,8 @@
-import type { ModuleTrait } from "~/api.d.ts";
+import type { ModTrait } from "~/api.d.ts";
 
 import { clear } from "./tag-based-cache.ts";
 
-export class Tags implements ModuleTrait {
+export class Tags implements ModTrait {
 	#nameSet;
 
 	constructor() {

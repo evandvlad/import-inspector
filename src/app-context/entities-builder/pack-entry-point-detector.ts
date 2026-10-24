@@ -1,8 +1,8 @@
-import { orderedPackageEntryPointNames } from "~/project-specifics.ts";
+import { orderedPackEntryPointNames } from "~/project-specifics.ts";
 
 import type { FilePathRec, PathRecProvider } from "./path-rec-provider/index.ts";
 
-export class PackageEntryPointDetector {
+export class PackEntryPointDetector {
 	#pathRecProvider;
 
 	constructor({ pathRecProvider }: { pathRecProvider: PathRecProvider }) {
@@ -10,8 +10,8 @@ export class PackageEntryPointDetector {
 	}
 
 	isOneOf(path: string) {
-		const { baseName } = this.#pathRecProvider.getFilePathRec(path);
-		return orderedPackageEntryPointNames.includes(baseName);
+		const { name } = this.#pathRecProvider.getFilePathRec(path);
+		return orderedPackEntryPointNames.includes(name);
 	}
 
 	selectFromChildren(path: string) {
@@ -26,8 +26,8 @@ export class PackageEntryPointDetector {
 			return null;
 		}
 
-		const filePathRec = Iterator.from(orderedPackageEntryPointNames)
-			.map((name) => filePathRecs.find(({ baseName }) => name === baseName))
+		const filePathRec = Iterator.from(orderedPackEntryPointNames)
+			.map((name) => filePathRecs.find((pathRec) => pathRec.name === name))
 			.find(Boolean);
 
 		return filePathRec?.path ?? null;

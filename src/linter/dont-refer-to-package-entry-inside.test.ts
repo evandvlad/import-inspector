@@ -107,7 +107,7 @@ describe("dont-refer-to-package-entry-inside", () => {
 		expect(paths).toEqual(["C:/foo/bar/baz/other.tsx"]);
 	});
 
-	it("in deep nested structure", async () => {
+	it("in deeply nested structure", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",

@@ -1,7 +1,7 @@
 import type { Settings } from "~/settings.ts";
 import { File } from "~/file/index.ts";
 
-import type { FileParsingResult, ImportRec } from "../values.ts";
+import type { FileParsingResult, ImpRec } from "../values.ts";
 
 import { parseFile as parse } from "./file-parser.ts";
 
@@ -17,41 +17,41 @@ class FileParser {
 	}
 
 	async parse(): Promise<FileParsingResult> {
-		const importRecs = await parse({ path: this.#path, content: this.#file.value });
-		const newImportRecs = await this.#processImportRecs({ importRecs });
+		const impRecs = await parse({ path: this.#path, content: this.#file.value });
+		const newImpRecs = await this.#processImpRecs({ impRecs });
 
 		return {
 			path: this.#path,
 			file: this.#file,
-			importRecs: newImportRecs,
+			impRecs: newImpRecs,
 		};
 	}
 
-	async #processImportRecs({ importRecs }: { importRecs: ImportRec[] }) {
-		const result: ImportRec[] = [];
+	async #processImpRecs({ impRecs }: { impRecs: ImpRec[] }) {
+		const result: ImpRec[] = [];
 
-		for await (const importRec of importRecs) {
-			const newImportRecs = await this.#processImportRec({ importRec });
-			result.push(...newImportRecs);
+		for await (const impRec of impRecs) {
+			const newImpRecs = await this.#processImpRec({ impRec });
+			result.push(...newImpRecs);
 		}
 
 		return result;
 	}
 
-	async #processImportRec({ importRec }: { importRec: ImportRec }) {
-		if (importRec.isDynamic && !importRec.locator) {
-			const corrections = await this.#settings.correctUnresolvedDynamicImports({
+	async #processImpRec({ impRec }: { impRec: ImpRec }) {
+		if (impRec.isDynamic && !impRec.locator) {
+			const corrections = await this.#settings.correctUnresolvedDynamicImport({
 				source: this.#path,
-				posSpan: importRec.posSpan,
+				posSpan: impRec.posSpan,
 				file: this.#file,
 			});
 
 			if (corrections.length > 0) {
-				return corrections.map((locator) => ({ ...importRec, locator }));
+				return corrections.map((locator) => ({ ...impRec, locator }));
 			}
 		}
 
-		return [importRec];
+		return [impRec];
 	}
 }
 

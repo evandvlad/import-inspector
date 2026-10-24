@@ -1,7 +1,8 @@
 import { dirname, join } from "~/lib/upath.ts";
+import type { Nullable } from "~/lib/ts.ts";
 import type { Settings } from "~/settings.ts";
 import { getImportPathSuffixCandidates } from "~/project-specifics.ts";
-import type { ImportRec, ImportResolutionData } from "~/values.ts";
+import type { ImpRec, ImpResolutionData } from "~/values.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 
@@ -11,7 +12,7 @@ type Alias = {
 	strict: boolean;
 };
 
-export class ImportResolver {
+export class ImpResolver {
 	#aliases;
 	#pathRecProvider;
 	#pathSuffixCandidates;
@@ -23,8 +24,8 @@ export class ImportResolver {
 		this.#aliases = this.#createAliases(settings);
 	}
 
-	resolve({ path, importRec }: { path: string; importRec: ImportRec }): ImportResolutionData | null {
-		return importRec.locator ? this.#resolve({ path, importRec }) : null;
+	resolve({ path, impRec }: { path: string; impRec: ImpRec }): Nullable<ImpResolutionData> {
+		return impRec.locator ? this.#resolve({ path, impRec }) : null;
 	}
 
 	#createAliases({ rootEntries, importRemaps }: Settings) {
@@ -43,8 +44,8 @@ export class ImportResolver {
 		return aliases;
 	}
 
-	#resolve({ path, importRec }: { path: string; importRec: ImportRec }) {
-		const locator = importRec.locator!;
+	#resolve({ path, impRec }: { path: string; impRec: ImpRec }) {
+		const locator = impRec.locator!;
 		const isRelative = locator.startsWith(".");
 
 		if (!isRelative) {
@@ -71,10 +72,10 @@ export class ImportResolver {
 			.find(Boolean) ?? null;
 	}
 
-	#findPath(moduleLocator: string) {
+	#findPath(modLocator: string) {
 		return Iterator.from(this.#pathSuffixCandidates)
-			.map((suffixCandidate) => [moduleLocator, suffixCandidate].join(""))
-			.map((modulePath) => this.#pathRecProvider.findFilePathRec(modulePath)?.path)
+			.map((suffixCandidate) => [modLocator, suffixCandidate].join(""))
+			.map((modPath) => this.#pathRecProvider.findFilePathRec(modPath)?.path)
 			.find(Boolean) ?? null;
 	}
 }

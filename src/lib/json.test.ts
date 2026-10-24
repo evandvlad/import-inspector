@@ -57,52 +57,52 @@ describe("json", () => {
 
 		expect(result).toEqual([
 			{
-				deep: 1,
+				depth: 1,
 				key: "foo",
 				value: data.foo,
 			},
 			{
-				deep: 2,
+				depth: 2,
 				key: "bar",
 				value: data.foo.bar,
 			},
 			{
-				deep: 2,
+				depth: 2,
 				key: "baz",
 				value: data.foo.baz,
 			},
 			{
-				deep: 3,
+				depth: 3,
 				key: "qux",
 				value: data.foo.baz.qux,
 			},
 			{
-				deep: 4,
+				depth: 4,
 				key: "quux",
 				value: data.foo.baz.qux.quux,
 			},
 			{
-				deep: 1,
+				depth: 1,
 				key: "bar",
 				value: data.bar,
 			},
 			{
-				deep: 2,
+				depth: 2,
 				key: "0",
 				value: data.bar[0],
 			},
 			{
-				deep: 2,
+				depth: 2,
 				key: "1",
 				value: data.bar[1],
 			},
 			{
-				deep: 1,
+				depth: 1,
 				key: "qux",
 				value: data.qux,
 			},
 			{
-				deep: 1,
+				depth: 1,
 				key: "quux",
 				value: data.quux,
 			},

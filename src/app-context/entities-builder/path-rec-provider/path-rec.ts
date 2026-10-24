@@ -1,4 +1,5 @@
 import { parse, shorten, stripEnd } from "~/lib/upath.ts";
+import type { Nullable } from "~/lib/ts.ts";
 
 export abstract class PathRec {
 	abstract kind: "file" | "dir";
@@ -14,7 +15,7 @@ export abstract class PathRec {
 		{ basePath, path, parentPath, childPaths }: {
 			path: string;
 			basePath: string;
-			parentPath: string | null;
+			parentPath: Nullable<string>;
 			childPaths: string[];
 		},
 	) {
@@ -25,7 +26,7 @@ export abstract class PathRec {
 
 		const { base, name } = parse(path);
 
-		this.baseName = name;
-		this.name = base;
+		this.baseName = base;
+		this.name = name;
 	}
 }

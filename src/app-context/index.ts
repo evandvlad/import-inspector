@@ -4,12 +4,12 @@ import type { FileParsingResult } from "~/values.ts";
 
 import { buildEntities } from "./entities-builder/index.ts";
 import { Env } from "./env.ts";
-import { Imports } from "./imports.ts";
-import { ContextPackages } from "./context-packages.ts";
+import { Imps } from "./imps.ts";
+import { ContextPacks } from "./context-packs.ts";
 import { ContextTags } from "./context-tags.ts";
 import { ContextFrames } from "./context-frames.ts";
-import { ContextModuleDefects } from "./context-module-defects.ts";
-import { ContextImportDefects } from "./context-import-defects.ts";
+import { ContextModDefects } from "./context-mod-defects.ts";
+import { ContextImpDefects } from "./context-imp-defects.ts";
 
 export class AppContext implements IAppContext {
 	env;
@@ -26,12 +26,12 @@ export class AppContext implements IAppContext {
 
 		this.env = new Env({ basePath, settings });
 		this.mods = modDict;
-		this.imps = new Imports({ dict: impDict });
-		this.packs = new ContextPackages({ dict: packDict });
+		this.imps = new Imps({ dict: impDict });
+		this.packs = new ContextPacks({ dict: packDict });
 		this.tags = new ContextTags({ modDict });
 		this.frames = new ContextFrames({ modDict });
-		this.impDefects = new ContextImportDefects({ impDict });
-		this.modDefects = new ContextModuleDefects({ modDict });
+		this.impDefects = new ContextImpDefects({ impDict });
+		this.modDefects = new ContextModDefects({ modDict });
 	}
 
 	get summary() {

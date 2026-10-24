@@ -1,6 +1,6 @@
 import { assert } from "~/lib/err.ts";
-import { Settings } from "~/settings.ts";
 import type { Config as IConfig, ConfigPreset } from "~/api.d.ts";
+import { Settings } from "~/settings.ts";
 
 import { loadConfig, loadSettings, saveConfig } from "./config-service.ts";
 
@@ -39,8 +39,8 @@ export class Config {
 		return preset;
 	}
 
-	async setPreset(preset: ConfigPreset) {
-		this.data.presets[preset.name] = preset;
+	async setPreset({ name, ...presetData }: ConfigPreset) {
+		this.data.presets[name] = presetData;
 		await saveConfig(this.data);
 	}
 
@@ -49,13 +49,13 @@ export class Config {
 		await saveConfig(this.data);
 	}
 
-	#findPreset(name: string) {
+	#findPreset(name: string): ConfigPreset | null {
 		const { presets } = this.data;
 
 		if (!Object.hasOwn(presets, name)) {
 			return null;
 		}
 
-		return presets[name];
+		return { ...presets[name], name };
 	}
 }

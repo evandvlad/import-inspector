@@ -1,14 +1,14 @@
 import { assert } from "~/lib/err.ts";
-import type { Dict as IDict, Import, Imports as IImports, Module } from "~/api.d.ts";
+import type { Dict as IDict, Imp, Imps as IImps, Mod } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
-export class Imports implements IImports {
+export class Imps implements IImps {
 	size;
 	ids;
 	byId;
 
-	constructor({ dict }: { dict: IDict<Import> }) {
+	constructor({ dict }: { dict: IDict<Imp> }) {
 		this.size = dict.size;
 		this.ids = dict.toKeys();
 		this.byId = dict;
@@ -71,7 +71,7 @@ export class Imports implements IImports {
 
 	get(id: string) {
 		const imp = this.find(id);
-		assert(imp, `Can't get import by id '${id}'.`);
+		assert(imp, `Can't get imp by id '${id}'.`);
 		return imp;
 	}
 
@@ -79,19 +79,19 @@ export class Imports implements IImports {
 		return this.byId.getOrDefault(id, null);
 	}
 
-	hasForMod(mod: Module) {
+	hasForMod(mod: Mod) {
 		return this.fullResolvedById.some(({ importedMod }) => importedMod === mod);
 	}
 
-	getForMod(mod: Module) {
+	getForMod(mod: Mod) {
 		return this.fullResolvedById.filter(({ importedMod }) => importedMod === mod);
 	}
 
-	findForMod(mod: Module) {
+	findForMod(mod: Mod) {
 		return this.fullResolvedById.find(({ importedMod }) => importedMod === mod) ?? null;
 	}
 
-	#mapByLocator(dict: IDict<Import>) {
+	#mapByLocator(dict: IDict<Imp>) {
 		return dict.group(({ locator }) => String(locator)).sortK((a, b) => a.localeCompare(b));
 	}
 }

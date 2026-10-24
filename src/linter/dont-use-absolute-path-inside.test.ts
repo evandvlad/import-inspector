@@ -6,7 +6,7 @@ import { createAndFillAppContext } from "~/testing/app-context-maker.ts";
 import { dontUseAbsolutePathInside } from "./dont-use-absolute-path-inside.ts";
 
 describe("dont-use-absolute-path-inside", () => {
-	it("not ok for absolute import from the same package", async () => {
+	it("not ok for absolute import from the same pack", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -28,7 +28,7 @@ describe("dont-use-absolute-path-inside", () => {
 		expect(paths).toEqual(["C:/foo/baz/index.tsx"]);
 	});
 
-	it("not ok for absolute import from the ancestor package", async () => {
+	it("not ok for absolute import from the ancestor pack", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",

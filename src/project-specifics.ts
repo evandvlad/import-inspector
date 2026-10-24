@@ -1,7 +1,7 @@
 import type { ParserOptions } from "oxc-parser";
 
-import type { Lang } from "~/api.d.ts";
 import { parse } from "~/lib/upath.ts";
+import type { Lang } from "~/api.d.ts";
 
 type FileExtInfo = {
 	lang: Lang;
@@ -35,7 +35,7 @@ const fileExtInfoMap: Record<FileExtName, FileExtInfo> = {
 	},
 };
 
-export const orderedPackageEntryPointNames = ["index", "index.d", "index.entry"];
+export const orderedPackEntryPointNames = ["index", "index.d", "index.entry"];
 
 function getFileExtInfo(fileExtName: FileExtName) {
 	return fileExtInfoMap[fileExtName];

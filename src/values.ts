@@ -1,5 +1,6 @@
 import { join, unify } from "~/lib/upath.ts";
 import { assert } from "~/lib/err.ts";
+import type { MaybePromise, Nullable } from "~/lib/ts.ts";
 import type { AppContext, File, Span } from "~/api.d.ts";
 
 import denoJson from "../deno.json" with { type: "json" };
@@ -23,21 +24,16 @@ export enum CommandName {
 	Help = "help",
 	Version = "version",
 	Configure = "configure",
+	ListTasks = "list-tasks",
 	WriteApiFile = "write-api-file",
 	Unknown = "unknown",
 }
 
-export type CommandConfigureAction =
-	| "show-config"
-	| "add-preset"
-	| "update-preset"
-	| "remove-preset";
+export type Command = (params: { args: string[] }) => MaybePromise<void>;
 
-export type Command = (params: { args: string[] }) => Promise<void> | void;
-
-export type ImportRec = {
+export type ImpRec = {
 	// Can be null for dynamic imports
-	locator: string | null;
+	locator: Nullable<string>;
 	isDynamic: boolean;
 	posSpan: Span;
 };
@@ -45,13 +41,13 @@ export type ImportRec = {
 export type FileParsingResult = {
 	path: string;
 	file: File;
-	importRecs: ImportRec[];
+	impRecs: ImpRec[];
 };
 
-export type ImportResolutionData = {
-	path: string | null;
+export type ImpResolutionData = {
+	path: Nullable<string>;
 	isExternal: boolean;
 	isRelative: boolean;
 };
 
-export type LintFunction = (appContext: AppContext) => Promise<void> | void;
+export type LintFunction = (appContext: AppContext) => MaybePromise<void>;

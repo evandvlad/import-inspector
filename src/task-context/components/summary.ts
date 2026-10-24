@@ -1,18 +1,12 @@
+import type { AppContext } from "~/api.d.ts";
 import { tuix } from "~/tuix/index.ts";
 import { configFilePath, version } from "~/values.ts";
 import type { Settings } from "~/settings.ts";
-import type { AppContext } from "~/api.d.ts";
 
-function ln(caption: string, content: string | number) {
-	return `${tuix.text(caption, { bold: true })}: ${content}`;
-}
+export function summary({ settings, appContext }: { settings: Settings; appContext: AppContext }) {
+	const { summary: sum, imps, mods } = appContext;
 
-export function createSummary(
-	{ settings, appContext }: { settings: Settings; appContext: AppContext },
-) {
-	const { summary, imps, mods } = appContext;
-
-	const modulesInfo = mods
+	const modsInfo = mods
 		.group(({ lang }) => lang)
 		.map((items, lang) => `${lang}: ${items.size}`)
 		.toArray()
@@ -22,25 +16,25 @@ export function createSummary(
 
 	const items = [
 		"=".repeat(hrWidth),
-		ln("Program version", version),
-		ln("Preset", settings.preset.name),
-		ln("Config", tuix.link(configFilePath)),
-		ln("Settings", tuix.link(settings.preset.settingsPath)),
-		ln("Project path", settings.preset.projectPath),
+		tuix.lvLine("Program version", version),
+		tuix.lvLine("Preset", settings.preset.name),
+		tuix.lvLine("Config", tuix.link(configFilePath)),
+		tuix.lvLine("Settings", tuix.link(settings.preset.settingsPath)),
+		tuix.lvLine("Project path", settings.preset.projectPath),
 		"-".repeat(hrWidth),
-		ln("Tags", summary.tags),
-		ln("Frames", summary.frames),
-		ln("Packages", summary.packs),
-		ln("Modules", `${summary.mods} (${modulesInfo})`),
-		ln("Imports", `${summary.imps} (static: ${imps.staticById.size}, dynamic: ${imps.dynamicById.size})`),
-		ln("Defects", `${summary.totalDefects} (imports: ${summary.impDefects}, modules: ${summary.modDefects})`),
-		ln("Unresolved imports", imps.fullUnresolvedById.size),
+		tuix.lvLine("Tags", String(sum.tags)),
+		tuix.lvLine("Frames", String(sum.frames)),
+		tuix.lvLine("Packs", String(sum.packs)),
+		tuix.lvLine("Mods", `${sum.mods} (${modsInfo})`),
+		tuix.lvLine("Imps", `${sum.imps} (static: ${imps.staticById.size}, dynamic: ${imps.dynamicById.size})`),
+		tuix.lvLine("Defects", `${sum.totalDefects} (imps: ${sum.impDefects}, mods: ${sum.modDefects})`),
+		tuix.lvLine("Unresolved imps", String(imps.fullUnresolvedById.size)),
 	];
 
 	if (settings.reportPaths.length > 0) {
 		items.push(
 			"-".repeat(hrWidth),
-			ln("Reports", ""),
+			tuix.lvLine("Reports", ""),
 			...settings.reportPaths.map((path) => `  ${tuix.link(path)}`),
 		);
 	}

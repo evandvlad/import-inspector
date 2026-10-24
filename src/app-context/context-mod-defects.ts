@@ -1,12 +1,12 @@
 import { Dict } from "~/lib/dict.ts";
-import type { AppContextDefects, Dict as IDict, Module, ModuleDefect } from "~/api.d.ts";
+import type { AppContextDefects, Dict as IDict, Mod, ModDefect } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
-export class ContextModuleDefects implements AppContextDefects<ModuleDefect> {
+export class ContextModDefects implements AppContextDefects<ModDefect> {
 	#modDict;
 
-	constructor({ modDict }: { modDict: IDict<Module> }) {
+	constructor({ modDict }: { modDict: IDict<Mod> }) {
 		this.#modDict = modDict;
 	}
 
@@ -26,14 +26,14 @@ export class ContextModuleDefects implements AppContextDefects<ModuleDefect> {
 		return this.byRule.toKeys();
 	}
 
-	@cache("module-defects")
+	@cache("mod-defects")
 	get byId() {
-		return this.#modDict.fold<ModuleDefect>((acc, mod) => acc.merge(mod.defects.byRule.mapK(({ id }) => id)));
+		return this.#modDict.fold<ModDefect>((acc, mod) => acc.merge(mod.defects.byRule.mapK(({ id }) => id)));
 	}
 
-	@cache("module-defects")
+	@cache("mod-defects")
 	get byRule() {
-		return this.#modDict.fold<IDict<ModuleDefect>>((acc, mod) => {
+		return this.#modDict.fold<IDict<ModDefect>>((acc, mod) => {
 			mod.defects.byRule.forEach((defect) => {
 				acc.getOrInsertComputed(defect.rule, () => Dict.empty()).set(defect.mod.path, defect);
 			});
@@ -42,9 +42,9 @@ export class ContextModuleDefects implements AppContextDefects<ModuleDefect> {
 		});
 	}
 
-	@cache("module-defects")
+	@cache("mod-defects")
 	get byPath() {
-		return this.#modDict.fold<IDict<ModuleDefect>>((acc, mod) => {
+		return this.#modDict.fold<IDict<ModDefect>>((acc, mod) => {
 			if (mod.defects.size > 0) {
 				acc.set(mod.path, mod.defects.byRule);
 			}
@@ -64,7 +64,7 @@ export class ContextModuleDefects implements AppContextDefects<ModuleDefect> {
 	}
 
 	removeByRule(rule: string) {
-		const defects = this.byRule.getOrDefault<ModuleDefect[]>(rule, []);
+		const defects = this.byRule.getOrDefault<ModDefect[]>(rule, []);
 
 		defects.forEach((defect) => {
 			this.#removeDefect(defect);
@@ -81,7 +81,7 @@ export class ContextModuleDefects implements AppContextDefects<ModuleDefect> {
 		return this;
 	}
 
-	#removeDefect(defect: ModuleDefect) {
+	#removeDefect(defect: ModDefect) {
 		defect.defects.remove(defect.rule);
 	}
 }

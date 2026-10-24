@@ -1,10 +1,11 @@
 import { isNull } from "~/lib/vtype.ts";
 import { Dict } from "~/lib/dict.ts";
-import type { Dict as IDict, Module, Package as IPackage } from "~/api.d.ts";
+import type { Nullable } from "~/lib/ts.ts";
+import type { Dict as IDict, Mod, Pack as IPack } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
-export class Package implements IPackage {
+export class Pack implements IPack {
 	name;
 	path;
 	mods;
@@ -19,10 +20,10 @@ export class Package implements IPackage {
 			name: string;
 			path: string;
 			shortPath: string;
-			modDict: IDict<Module>;
-			parentPath: string | null;
+			modDict: IDict<Mod>;
+			parentPath: Nullable<string>;
 			childPaths: string[];
-			packDict: IDict<IPackage>;
+			packDict: IDict<IPack>;
 		},
 	) {
 		this.name = name;
@@ -50,7 +51,7 @@ export class Package implements IPackage {
 
 	@cache()
 	get ancestry() {
-		const dict = Dict.empty<IPackage>();
+		const dict = Dict.empty<IPack>();
 
 		let parPath = this.#parentPath;
 

@@ -1,4 +1,3 @@
-import { remapErr } from "~/lib/err.ts";
 import { tuix } from "~/tuix/index.ts";
 import { CommandName, errorLogFilePath } from "~/values.ts";
 import { ErrorLogger } from "~/error-logger.ts";
@@ -19,11 +18,10 @@ export async function runLaunchWorkflow(params: { args: string[] }) {
 	} catch (e) {
 		tuix.eprint(Error.isError(e) ? e.message : (e?.toString() ?? "Unknown error"));
 
-		await errorLogger.log(e).catch((e) => {
+		await errorLogger.log(e).catch(() => {
 			const message = `Failed to write into the log file '${errorLogFilePath}'.`;
 			tuix.eprint(message);
-
-			throw remapErr(e, message);
+			Deno.exit(1);
 		});
 
 		tuix.eprint(`See ${tuix.link(errorLogFilePath)} for details.`, { noColor: true });

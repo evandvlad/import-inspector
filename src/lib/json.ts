@@ -4,7 +4,7 @@ import { remapErr } from "~/lib/err.ts";
 export type IterationItem = {
 	key: string;
 	value: Value;
-	deep: number;
+	depth: number;
 };
 
 export type SimpleValue = string | number | boolean | null;
@@ -33,12 +33,12 @@ export function toJson(data: unknown): Value {
 	}
 }
 
-function* createCompoundJsonIterator(data: CompoundValue, deep: number): Generator<IterationItem> {
+function* createCompoundJsonIterator(data: CompoundValue, depth: number): Generator<IterationItem> {
 	for (const [key, value] of Object.entries(data)) {
-		yield { key, value, deep };
+		yield { key, value, depth };
 
 		if (isCompoundValue(value) && Object.keys(value).length > 0) {
-			yield* createCompoundJsonIterator(value, deep + 1);
+			yield* createCompoundJsonIterator(value, depth + 1);
 		}
 	}
 }

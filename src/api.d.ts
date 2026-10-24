@@ -91,25 +91,26 @@ export type Htmlxc = {
 
 export type TuixColor = "red" | "blue" | "gray" | "white";
 
-export type TuixSelectItem<T extends string = string> = {
+export type TuixSelectItem = {
 	label: string;
-	value: T;
+	value: string;
 };
 
-export type Tuix = {
+export interface Tuix {
 	text: (value: string, options?: { bold?: boolean; dim?: boolean; color?: TuixColor }) => string;
+	lvLine: (label: string, value: string) => string;
 	lines: (items: string[]) => string;
 	link: (path: string, options?: { text?: string; line?: number }) => string;
 	code: (value: string, options?: { startLine?: number }) => string;
-	spin: (message: string) => { stop: () => void };
 	prompt: (options?: { label?: string; value?: string }) => string;
 	confirm: (message: string) => boolean;
-	select: <T extends string = string>(items: TuixSelectItem<T>[], options?: { label?: string }) => TuixSelectItem<T>;
-	clear: () => void;
-	print: (value: string | string[]) => void;
-	eprint: (value: string | string[], options?: { noColor?: boolean }) => void;
-	printData: (data: unknown) => void;
-};
+	select: <T extends TuixSelectItem = TuixSelectItem>(items: T[], options?: { label?: string }) => T;
+	clear: () => this;
+	print: (value: string | string[]) => this;
+	eprint: (value: string | string[], options?: { noColor?: boolean }) => this;
+	printData: (data: unknown) => this;
+	withSpin: <T>(message: string, fn: (stop: () => void) => Promise<T>) => Promise<T>;
+}
 
 export type RootEntry = {
 	// Absolute path
@@ -123,16 +124,19 @@ export type Report = {
 	provide: (appContext: AppContext) => MaybePromise<string>;
 };
 
-export type ConfigPreset = {
-	name: string;
+export type ConfigPresetData = {
 	// Absolute path
 	settingsPath: string;
 	// Absolute path
 	projectPath: string;
 };
 
+export type ConfigPreset = ConfigPresetData & {
+	name: string;
+};
+
 export type Config = {
-	presets: Rec</* name */ ConfigPreset>;
+	presets: Rec</* name */ ConfigPresetData>;
 };
 
 export type SettingsModule = {
@@ -145,7 +149,7 @@ export type UnresolvedDynamicImportData = {
 	file: File;
 };
 
-export type CorrectUnresolvedDynamicImports = (
+export type CorrectUnresolvedDynamicImport = (
 	params: UnresolvedDynamicImportData,
 	// Returns an array of import locators
 ) => Promise<string[]>;
@@ -153,16 +157,20 @@ export type CorrectUnresolvedDynamicImports = (
 export type PreLint = (appContext: AppContext) => MaybePromise<void>;
 export type PostLint = (appContext: AppContext) => MaybePromise<void>;
 
-export type Task = (taskContext: TaskContext) => MaybePromise</* exit code */ number | void>;
+export type Task = {
+	name: string;
+	description: string;
+	perform: (taskContext: TaskContext) => MaybePromise</* exit code */ number | void>;
+};
 
 export type Settings = {
 	rootEntries: RootEntry[];
 	importRemaps?: Rec<string>;
-	correctUnresolvedDynamicImports?: CorrectUnresolvedDynamicImports;
+	correctUnresolvedDynamicImport?: CorrectUnresolvedDynamicImport;
 	preLint?: PreLint;
 	postLint?: PostLint;
 	reports?: Report[];
-	tasks?: Rec<Task>;
+	tasks?: Task[];
 };
 
 export type FileEntry = {
@@ -181,26 +189,26 @@ export type File = {
 	getEntriesByLineRange: (lineRange: LineRange) => FileEntry[];
 };
 
-export type ImportDefect = {
+export type ImpDefect = {
 	id: string;
 	rule: string;
 	info: string;
 	description: string;
-	imp: Import;
-	mod: Module;
-	defects: Defects<ImportDefect>;
+	imp: Imp;
+	mod: Mod;
+	defects: Defects<ImpDefect>;
 };
 
-export type ModuleDefect = {
+export type ModDefect = {
 	id: string;
 	rule: string;
 	info: string;
 	description: string;
-	mod: Module;
-	defects: Defects<ModuleDefect>;
+	mod: Mod;
+	defects: Defects<ModDefect>;
 };
 
-export type Defect = ModuleDefect | ImportDefect;
+export type Defect = ModDefect | ImpDefect;
 
 export interface Defects<T extends Defect> {
 	size: number;
@@ -214,47 +222,47 @@ export interface Defects<T extends Defect> {
 	removeAll: () => this;
 }
 
-export type ImportResolution = {
-	mod: Nullable<Module>;
+export type ImpResolution = {
+	mod: Nullable<Mod>;
 	isExternal: boolean;
 	isRelative: boolean;
 };
 
-export type Import = {
+export type Imp = {
 	id: string;
 	locator: Nullable<string>;
 	location: Nullable<string>;
 	isDynamic: boolean;
-	resolution: Nullable<ImportResolution>;
-	sourceMod: Module;
-	importedMod: Nullable<Module>;
+	resolution: Nullable<ImpResolution>;
+	sourceMod: Mod;
+	importedMod: Nullable<Mod>;
 	fileLineRange: LineRange;
 	fileEntries: FileEntry[];
-	defects: Defects<ImportDefect>;
+	defects: Defects<ImpDefect>;
 };
 
-export type Imports = {
+export type Imps = {
 	size: number;
 	ids: string[];
-	byId: Dict<Import>;
-	localById: Dict<Import>;
-	fullResolvedById: Dict<Import>;
-	fullUnresolvedById: Dict<Import>;
-	localUnresolvedById: Dict<Import>;
-	localUnresolvedByLocator: Dict<Dict<Import>>;
-	dynamicById: Dict<Import>;
-	staticById: Dict<Import>;
-	externalById: Dict<Import>;
-	externalByLocator: Dict<Dict<Import>>;
+	byId: Dict<Imp>;
+	localById: Dict<Imp>;
+	fullResolvedById: Dict<Imp>;
+	fullUnresolvedById: Dict<Imp>;
+	localUnresolvedById: Dict<Imp>;
+	localUnresolvedByLocator: Dict<Dict<Imp>>;
+	dynamicById: Dict<Imp>;
+	staticById: Dict<Imp>;
+	externalById: Dict<Imp>;
+	externalByLocator: Dict<Dict<Imp>>;
 	has: (id: string) => boolean;
-	get: (id: string) => Import;
-	find: (id: string) => Nullable<Import>;
-	hasForMod: (mod: Module) => boolean;
-	getForMod: (mod: Module) => Dict<Import>;
-	findForMod: (mod: Module) => Nullable<Import>;
+	get: (id: string) => Imp;
+	find: (id: string) => Nullable<Imp>;
+	hasForMod: (mod: Mod) => boolean;
+	getForMod: (mod: Mod) => Dict<Imp>;
+	findForMod: (mod: Mod) => Nullable<Imp>;
 };
 
-export interface ModuleTrait {
+export interface ModTrait {
 	size: number;
 	names: string[];
 	has: (name: string) => boolean;
@@ -262,53 +270,53 @@ export interface ModuleTrait {
 	remove: (name: string) => this;
 }
 
-export type Module = {
+export type Mod = {
 	name: string;
 	lang: Lang;
 	path: string;
 	shortPath: string;
-	tags: ModuleTrait;
-	frames: ModuleTrait;
+	tags: ModTrait;
+	frames: ModTrait;
 	file: File;
-	pack: Nullable<Package>;
+	pack: Nullable<Pack>;
 	isInPack: boolean;
 	isPackEntry: boolean;
-	links: Dict<Module>;
-	imps: Imports;
-	defects: Defects<ModuleDefect>;
+	links: Dict<Mod>;
+	imps: Imps;
+	defects: Defects<ModDefect>;
 };
 
-export type Package = {
+export type Pack = {
 	name: string;
 	path: string;
 	shortPath: string;
-	parent: Nullable<Package>;
+	parent: Nullable<Pack>;
 	hasParent: boolean;
-	children: Dict<Package>;
-	ancestry: Dict<Package>;
-	mods: Dict<Module>;
+	children: Dict<Pack>;
+	ancestry: Dict<Pack>;
+	mods: Dict<Mod>;
 };
 
-export interface AppContextPackages {
-	all: Dict<Package>;
-	roots: Dict<Package>;
+export interface AppContextPacks {
+	all: Dict<Pack>;
+	roots: Dict<Pack>;
 }
 
 export type AppContextTags = {
 	size: number;
 	names: string[];
-	mods: Dict<Dict<Module>>;
+	mods: Dict<Dict<Mod>>;
 	has: (name: string) => boolean;
 };
 
 export type AppContextFrame = {
 	name: string;
-	mods: Dict<Module>;
-	links: Dict<Module>;
-	impsByLink: Dict<Dict<Import>>;
-	impsByMod: Dict<Dict<Import>>;
-	modsByInFrame: Dict<Dict<Module>>;
-	modsByOutFrame: Dict<Dict<Module>>;
+	mods: Dict<Mod>;
+	links: Dict<Mod>;
+	impsByLink: Dict<Dict<Imp>>;
+	impsByMod: Dict<Dict<Imp>>;
+	modsByInFrame: Dict<Dict<Mod>>;
+	modsByOutFrame: Dict<Dict<Mod>>;
 };
 
 export type AppContextFrames = {
@@ -316,8 +324,8 @@ export type AppContextFrames = {
 	names: string[];
 	byName: Dict<AppContextFrame>;
 	has: (name: string) => boolean;
-	get: (path: string) => AppContextFrame;
-	find: (path: string) => Nullable<AppContextFrame>;
+	get: (name: string) => AppContextFrame;
+	find: (name: string) => Nullable<AppContextFrame>;
 };
 
 export interface AppContextDefects<T extends Defect> {
@@ -356,19 +364,23 @@ export type AppContextEnv = {
 
 export type AppContext = {
 	env: AppContextEnv;
-	mods: Dict<Module>;
-	imps: Imports;
-	packs: AppContextPackages;
+	mods: Dict<Mod>;
+	imps: Imps;
+	packs: AppContextPacks;
 	tags: AppContextTags;
 	frames: AppContextFrames;
 	summary: AppContextSummary;
-	impDefects: AppContextDefects<ImportDefect>;
-	modDefects: AppContextDefects<ModuleDefect>;
+	impDefects: AppContextDefects<ImpDefect>;
+	modDefects: AppContextDefects<ModDefect>;
 };
 
 export type TaskContextComponents = {
-	moduleCode: (mod: Module, lineRange?: LineRange) => string;
-	moduleLink: (mod: Module, lineRange?: LineRange) => string;
+	modPathLink: (mod: Mod, lineRange?: LineRange) => string;
+	modInfo: (mod: Mod) => string;
+	modCode: (mod: Mod, lineRange?: LineRange) => string;
+	modLinks: (mod: Mod) => string;
+	modDefects: (mod: Mod) => string;
+	packInfo: (pack: Pack) => string;
 	lintResult: () => string;
 	summary: () => string;
 };
@@ -381,4 +393,5 @@ export type TaskContext = {
 	args: string[];
 
 	report: (report: Report) => Promise<void>;
+	exit: (isError?: boolean) => never;
 };

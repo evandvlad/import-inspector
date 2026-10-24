@@ -11,11 +11,9 @@ export async function runTaskWorkflow(
 		args: string[];
 	},
 ) {
-	const taskHandler = settings.findTask(name);
-
-	assert(taskHandler, `Can't find task '${name}'.`);
+	const task = settings.tasks.getOrDefault(name, null);
+	assert(task, `Can't find task '${name}'.`);
 
 	const taskContext = new TaskContext({ appContext, settings, args });
-
-	return await taskHandler(taskContext);
+	return await task.perform(taskContext);
 }

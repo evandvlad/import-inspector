@@ -1,7 +1,8 @@
 import { type ImportExpression, type Program, type Span, Visitor } from "oxc-parser";
 
+import type { Nullable } from "~/lib/ts.ts";
 import { isString } from "~/lib/vtype.ts";
-import type { ImportRec } from "~/values.ts";
+import type { ImpRec } from "~/values.ts";
 
 function extractLocatorFromDynamicImport({ source }: ImportExpression) {
 	/*
@@ -24,11 +25,11 @@ function extractLocatorFromDynamicImport({ source }: ImportExpression) {
 	return null;
 }
 
-export function extractImportRecs({ program }: { program: Program }) {
-	const recs: ImportRec[] = [];
+export function extractImpRecs({ program }: { program: Program }) {
+	const recs: ImpRec[] = [];
 
-	function createImportRec(
-		{ node, locator, isDynamic = false }: { node: Span; locator: string | null; isDynamic?: boolean },
+	function createImpRec(
+		{ node, locator, isDynamic = false }: { node: Span; locator: Nullable<string>; isDynamic?: boolean },
 	) {
 		const { start, end } = node;
 
@@ -42,11 +43,11 @@ export function extractImportRecs({ program }: { program: Program }) {
 	const visitor = new Visitor({
 		// Dynamic import
 		ImportExpression(node) {
-			recs.push(createImportRec({ node, isDynamic: true, locator: extractLocatorFromDynamicImport(node) }));
+			recs.push(createImpRec({ node, isDynamic: true, locator: extractLocatorFromDynamicImport(node) }));
 		},
 		// Static import
 		ImportDeclaration(node) {
-			recs.push(createImportRec({ node, locator: node.source.value }));
+			recs.push(createImpRec({ node, locator: node.source.value }));
 		},
 		// Named re-export if source exists
 		ExportNamedDeclaration(node) {
@@ -54,11 +55,11 @@ export function extractImportRecs({ program }: { program: Program }) {
 				return;
 			}
 
-			recs.push(createImportRec({ node, locator: node.source.value }));
+			recs.push(createImpRec({ node, locator: node.source.value }));
 		},
 		// Full re-export via *
 		ExportAllDeclaration(node) {
-			recs.push(createImportRec({ node, locator: node.source.value }));
+			recs.push(createImpRec({ node, locator: node.source.value }));
 		},
 	});
 

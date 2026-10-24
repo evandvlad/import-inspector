@@ -11,25 +11,19 @@ export const task: Command = async ({ args }: { args: string[] }) => {
 	const [taskName, ...taskArgs] = _.map(String);
 
 	if (!taskName) {
-		tuix.eprint("Task name isn't set.");
+		tuix.eprint("No task name specified.");
 		Deno.exit(1);
 	}
 
-	const spinner = tuix.spin("Processing...");
-
-	try {
-		await runProgramWorkflow({
+	await tuix.withSpin("Processing...", (stopSpinner) =>
+		runProgramWorkflow({
 			preset,
 			async worker({ settings }) {
 				const appContext = await runAppWorkflow({ settings });
 
-				spinner.stop();
+				stopSpinner();
 
 				return await runTaskWorkflow({ appContext, settings, name: taskName, args: taskArgs });
 			},
-		});
-	} catch (e) {
-		spinner.stop();
-		throw e;
-	}
+		}));
 };

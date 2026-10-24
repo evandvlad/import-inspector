@@ -1,10 +1,11 @@
-import type { Dict as IDict, Import as IImport, Module } from "~/api.d.ts";
-import type { ImportRec, ImportResolutionData } from "~/values.ts";
+import type { Nullable } from "~/lib/ts.ts";
+import type { Dict as IDict, Imp as IImp, Mod } from "~/api.d.ts";
+import type { ImpRec, ImpResolutionData } from "~/values.ts";
 
-import { ImportDefects } from "./import-defects.ts";
+import { ImpDefects } from "./imp-defects.ts";
 import { cache } from "./tag-based-cache.ts";
 
-export class Import implements IImport {
+export class Imp implements IImp {
 	id;
 	locator;
 	location;
@@ -16,19 +17,19 @@ export class Import implements IImport {
 	#modDict;
 
 	constructor(
-		{ modPath, importRec, resolution, modDict }: {
+		{ modPath, impRec, resolution, modDict }: {
 			modPath: string;
-			importRec: ImportRec;
-			resolution: ImportResolutionData | null;
-			modDict: IDict<Module>;
+			impRec: ImpRec;
+			resolution: Nullable<ImpResolutionData>;
+			modDict: IDict<Mod>;
 		},
 	) {
 		this.id = crypto.randomUUID();
-		this.locator = importRec.locator;
-		this.isDynamic = importRec.isDynamic;
+		this.locator = impRec.locator;
+		this.isDynamic = impRec.isDynamic;
 		this.location = resolution?.path ?? this.locator;
 
-		this.#posSpan = importRec.posSpan;
+		this.#posSpan = impRec.posSpan;
 		this.#modPath = modPath;
 		this.#resolution = resolution;
 		this.#modDict = modDict;
@@ -36,10 +37,7 @@ export class Import implements IImport {
 
 	@cache()
 	get defects() {
-		return new ImportDefects({
-			imp: this as IImport,
-			mod: this.sourceMod,
-		});
+		return new ImpDefects({ imp: this as IImp, mod: this.sourceMod });
 	}
 
 	get sourceMod() {

@@ -1,6 +1,6 @@
-import type { Defects, Import, ImportDefect as IImportDefect, Module } from "~/api.d.ts";
+import type { Defects, Imp, ImpDefect as IImpDefect, Mod } from "~/api.d.ts";
 
-export class ImportDefect implements IImportDefect {
+export class ImpDefect implements IImpDefect {
 	id;
 	imp;
 	mod;
@@ -11,9 +11,9 @@ export class ImportDefect implements IImportDefect {
 
 	constructor({ rule, imp, mod, defects, description = "" }: {
 		rule: string;
-		imp: Import;
-		mod: Module;
-		defects: Defects<IImportDefect>;
+		imp: Imp;
+		mod: Mod;
+		defects: Defects<IImpDefect>;
 		description?: string;
 	}) {
 		this.id = crypto.randomUUID() as string;

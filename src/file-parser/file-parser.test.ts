@@ -13,9 +13,9 @@ function createParams({ content, path = "C:/foo/bar.ts" }: { content: string; pa
 describe("file-parser", () => {
 	it("empty file", async () => {
 		const params = createParams({ content: "" });
-		const importRecs = await parseFile(params);
+		const impRecs = await parseFile(params);
 
-		expect(importRecs).toEqual([]);
+		expect(impRecs).toEqual([]);
 	});
 
 	it("throws error on file parsing", async () => {
@@ -36,16 +36,16 @@ describe("file-parser", () => {
 			`,
 		});
 
-		const importRecs = await parseFile(params);
+		const impRecs = await parseFile(params);
 
-		expect(importRecs).toEqual([]);
+		expect(impRecs).toEqual([]);
 	});
 
 	it("single line comment", async () => {
 		const params = createParams({ content: `// import foo from "foo";` });
-		const importRecs = await parseFile(params);
+		const impRecs = await parseFile(params);
 
-		expect(importRecs).toEqual([]);
+		expect(impRecs).toEqual([]);
 	});
 
 	it("multi-line comment", async () => {
@@ -56,18 +56,18 @@ describe("file-parser", () => {
 			 */
 		`,
 		});
-		const importRecs = await parseFile(params);
+		const impRecs = await parseFile(params);
 
-		expect(importRecs).toEqual([]);
+		expect(impRecs).toEqual([]);
 	});
 
 	it("import inside string value", async () => {
 		const params = createParams({
 			content: `const foo = "import foo from 'foo';"`,
 		});
-		const importRecs = await parseFile(params);
+		const impRecs = await parseFile(params);
 
-		expect(importRecs).toEqual([]);
+		expect(impRecs).toEqual([]);
 	});
 
 	it("static imports", async () => {
@@ -83,9 +83,9 @@ describe("file-parser", () => {
 				import "qux";
 			`.trim(),
 		});
-		const importRecs = await parseFile(params);
+		const impRecs = await parseFile(params);
 
-		expect(importRecs).toEqual([{
+		expect(impRecs).toEqual([{
 			isDynamic: false,
 			locator: "foo",
 			posSpan: { start: 0, end: 22 },
@@ -109,9 +109,9 @@ describe("file-parser", () => {
 			content:
 				'const t = "FOO"; const t2 = await import("./foo"); const t3 = await import(`foo`); await import(t);',
 		});
-		const importRecs = await parseFile(params);
+		const impRecs = await parseFile(params);
 
-		expect(importRecs).toEqual([{
+		expect(impRecs).toEqual([{
 			isDynamic: true,
 			locator: "./foo",
 			posSpan: { start: 34, end: 49 },
@@ -135,9 +135,9 @@ describe("file-parser", () => {
 				export { A as Foo };
 			`,
 		});
-		const importRecs = await parseFile(params);
+		const impRecs = await parseFile(params);
 
-		expect(importRecs).toEqual([
+		expect(impRecs).toEqual([
 			{
 				isDynamic: false,
 				locator: "./foo",

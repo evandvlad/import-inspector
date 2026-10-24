@@ -1,8 +1,9 @@
 import { isAbsolute } from "@std/path";
 
+import { unify } from "~/lib/upath.ts";
 import { dirExists, fileExists } from "~/lib/fs.ts";
-import { tuix } from "~/tuix/index.ts";
 import type { ConfigPreset } from "~/api.d.ts";
+import { tuix } from "~/tuix/index.ts";
 
 type InspectionResult = {
 	isValid: boolean;
@@ -12,55 +13,62 @@ type InspectionResult = {
 
 type ValueInspector = (value: string) => Promise<InspectionResult>;
 
-export class PresetConfigurator {
-	#values;
+type Params = {
+	isUpdateMode: boolean;
+	values?: Partial<ConfigPreset>;
+	presetNames?: string[];
+};
+
+class PresetConfigurator {
+	#presetValues;
 	#isUpdateMode;
 	#presetNames;
+	#selectedValueLines: string[];
 
-	constructor(
-		{ isUpdateMode, values = {}, presetNames = [] }: {
-			isUpdateMode: boolean;
-			values?: Partial<ConfigPreset>;
-			presetNames?: string[];
-		},
-	) {
+	constructor({ isUpdateMode, values = {}, presetNames = [] }: Params) {
 		this.#isUpdateMode = isUpdateMode;
-		this.#values = values;
+		this.#presetValues = values;
 		this.#presetNames = presetNames;
+
+		this.#selectedValueLines = [];
 	}
 
 	async configure(): Promise<ConfigPreset> {
-		const nameValue = this.#values.name ?? "";
+		const nameValue = this.#presetValues.name ?? "";
 
 		const name = this.#isUpdateMode ? nameValue : await this.#askForField({
 			label: "Name:",
-			value: this.#values.name,
+			value: this.#presetValues.name,
 			inspectValue: this.#inspectNameFieldValue,
 		});
 
+		this.#selectedValueLines.push(`Name: ${name}`);
+
 		const settingsPath = await this.#askForField({
 			label: "Settings path:",
-			value: this.#values.settingsPath,
+			value: this.#presetValues.settingsPath,
 			inspectValue: this.#inspectSettingsPathFieldValue,
 		});
 
+		this.#selectedValueLines.push(`Settings path: ${settingsPath}`);
+
 		const projectPath = await this.#askForField({
 			label: "Project path:",
-			value: this.#values.projectPath,
+			value: this.#presetValues.projectPath,
 			inspectValue: this.#inspectProjectPathFieldValue,
 		});
+
+		this.#selectedValueLines.push(`Project path: ${projectPath}`);
 
 		return { name, settingsPath, projectPath };
 	}
 
 	async #askForField(
 		params: { label: string; inspectValue: ValueInspector; value?: string },
-		attempt = 1,
 		message = "",
 	): Promise<string> {
-		if (attempt > 1) {
-			tuix.clear();
-		}
+		tuix.clear();
+		tuix.print(this.#selectedValueLines);
 
 		if (message) {
 			tuix.eprint(message);
@@ -70,10 +78,10 @@ export class PresetConfigurator {
 		const result = await params.inspectValue(value);
 
 		if (!result.isValid) {
-			return this.#askForField({ ...params, value: result.newValue }, attempt + 1, result.message);
+			return this.#askForField({ ...params, value: result.newValue }, result.message);
 		}
 
-		return value;
+		return result.newValue;
 	}
 
 	#inspectNameFieldValue = (value: string) => {
@@ -132,7 +140,7 @@ export class PresetConfigurator {
 
 		return {
 			isValid: true,
-			newValue: path,
+			newValue: unify(path),
 		};
 	};
 
@@ -167,7 +175,11 @@ export class PresetConfigurator {
 
 		return {
 			isValid: true,
-			newValue: path,
+			newValue: unify(path),
 		};
 	};
+}
+
+export function configurePreset(params: Params) {
+	return new PresetConfigurator(params).configure();
 }

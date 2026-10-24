@@ -49,7 +49,7 @@ Array.from(document.querySelectorAll("[data-js-tabs]")).forEach((container) => {
 		}
 	}
 
-	linkElements[0].parentNode.addEventListener("click", ({ target }) => {
+	linkElements[0]?.parentNode.addEventListener("click", ({ target }) => {
 		const activeLinkIndex = linkElements.findIndex((elem) => elem === target || elem.contains(target));
 
 		if (activeLinkIndex !== -1) {

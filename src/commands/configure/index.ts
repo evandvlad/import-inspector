@@ -1,4 +1,5 @@
-import { assertNever } from "~/lib/ts.ts";
+import type { MaybePromise } from "~/lib/ts.ts";
+import type { TuixSelectItem } from "~/api.d.ts";
 import type { Command } from "~/values.ts";
 import { Config } from "~/config/index.ts";
 import { tuix } from "~/tuix/index.ts";
@@ -8,58 +9,83 @@ import { showConfigData } from "./subcommands/show-config-data.ts";
 import { addPreset } from "./subcommands/add-preset.ts";
 import { updatePreset } from "./subcommands/update-preset.ts";
 import { removePreset } from "./subcommands/remove-preset.ts";
-import { selectAction } from "./widgets/action-select.ts";
 
-async function loopUntilQuit(handler: () => Promise<void>) {
-	await handler();
+type Action = TuixSelectItem & { perform: () => MaybePromise<void> };
 
-	if (tuix.confirm("Quit?")) {
-		return;
+function selectAction(config: Config) {
+	const hasPresets = config.presetNames.length > 0;
+
+	const items: Action[] = [
+		{
+			label: "Add preset",
+			value: "add-preset",
+			async perform() {
+				await addPreset(config);
+			},
+		},
+	];
+
+	if (hasPresets) {
+		items.push(
+			{
+				label: "Update preset",
+				value: "update-preset",
+				async perform() {
+					await updatePreset(config);
+				},
+			},
+			{
+				label: "Remove preset",
+				value: "remove-preset",
+				async perform() {
+					await removePreset(config);
+				},
+			},
+		);
 	}
 
-	await loopUntilQuit(handler);
+	items.push(
+		{
+			label: "Show config",
+			value: "show-config",
+			perform() {
+				showConfigData(config);
+			},
+		},
+		{
+			label: "Quit",
+			value: "quit",
+			perform() {
+				Deno.exit();
+			},
+		},
+	);
+
+	return tuix.select<Action>(items, { label: "Select action" });
+}
+
+async function* actionGenerator(config: Config) {
+	while (true) {
+		yield selectAction(config);
+	}
 }
 
 export const configure: Command = async () => {
 	let config = await Config.load();
 
-	await loopUntilQuit(async () => {
-		tuix.clear();
+	if (!config) {
+		config = await createConfig();
 
 		if (!config) {
-			config = await createConfig();
-
-			if (!config) {
-				return;
-			}
+			return;
 		}
 
-		const { presetNames } = config;
-		const action = selectAction({ presetNames });
+		tuix.print("");
+	}
 
+	for await (const action of actionGenerator(config)) {
 		tuix.clear();
-
-		switch (action) {
-			case "show-config": {
-				showConfigData(config);
-				return;
-			}
-
-			case "add-preset": {
-				await addPreset(config);
-				return;
-			}
-
-			case "update-preset":
-				await updatePreset(config);
-				return;
-
-			case "remove-preset":
-				await removePreset(config);
-				return;
-
-			default:
-				assertNever(action);
-		}
-	});
+		await action.perform();
+		tuix.print("");
+	}
 };

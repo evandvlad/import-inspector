@@ -1,18 +1,18 @@
 import { assert } from "~/lib/err.ts";
 import { Dict } from "~/lib/dict.ts";
-import type { Defects, Module, ModuleDefect as IModuleDefect } from "~/api.d.ts";
+import type { Defects, Mod, ModDefect as IModDefect } from "~/api.d.ts";
 
 import { clear } from "./tag-based-cache.ts";
-import { ModuleDefect } from "./module-defect.ts";
+import { ModDefect } from "./mod-defect.ts";
 
-export class ModuleDefects implements Defects<IModuleDefect> {
+export class ModDefects implements Defects<IModDefect> {
 	byRule;
 
 	#mod;
 
-	constructor({ mod }: { mod: Module }) {
+	constructor({ mod }: { mod: Mod }) {
 		this.#mod = mod;
-		this.byRule = Dict.empty<IModuleDefect>();
+		this.byRule = Dict.empty<IModDefect>();
 	}
 
 	get size() {
@@ -29,7 +29,7 @@ export class ModuleDefects implements Defects<IModuleDefect> {
 
 	get(rule: string) {
 		const defect = this.find(rule);
-		assert(defect, `Can't get module defect by rule '${rule}'.`);
+		assert(defect, `Can't get mod defect by rule '${rule}'.`);
 		return defect;
 	}
 
@@ -37,9 +37,9 @@ export class ModuleDefects implements Defects<IModuleDefect> {
 		return this.byRule.getOrDefault(rule, null);
 	}
 
-	@clear("module-defects")
+	@clear("mod-defects")
 	add(rule: string, description?: string) {
-		const defect = new ModuleDefect({
+		const defect = new ModDefect({
 			rule,
 			description,
 			mod: this.#mod,
@@ -51,13 +51,13 @@ export class ModuleDefects implements Defects<IModuleDefect> {
 		return this;
 	}
 
-	@clear("module-defects")
+	@clear("mod-defects")
 	remove(rule: string) {
 		this.byRule.remove(rule);
 		return this;
 	}
 
-	@clear("module-defects")
+	@clear("mod-defects")
 	removeAll() {
 		this.byRule.clear();
 		return this;

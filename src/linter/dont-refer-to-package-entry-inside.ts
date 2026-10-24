@@ -7,7 +7,7 @@ export const dontReferToPackageEntryInside: LintFunction = ({ imps }) => {
 			const importedPack = importedMod.pack;
 			const sourcePack = sourceMod.pack;
 
-			// Only inspect package entry points
+			// Only inspect pack entry points
 			if (!(importedPack && importedMod.isPackEntry)) {
 				return false;
 			}

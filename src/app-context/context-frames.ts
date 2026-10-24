@@ -1,5 +1,5 @@
 import { assert } from "~/lib/err.ts";
-import type { AppContextFrame, AppContextFrames, Dict, Module } from "~/api.d.ts";
+import type { AppContextFrame, AppContextFrames, Dict, Mod } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 import { ContextFrame } from "./context-frame.ts";
@@ -7,7 +7,7 @@ import { ContextFrame } from "./context-frame.ts";
 export class ContextFrames implements AppContextFrames {
 	#modDict;
 
-	constructor({ modDict }: { modDict: Dict<Module> }) {
+	constructor({ modDict }: { modDict: Dict<Mod> }) {
 		this.#modDict = modDict;
 	}
 

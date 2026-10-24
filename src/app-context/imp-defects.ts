@@ -1,21 +1,21 @@
 import { assert } from "~/lib/err.ts";
 import { Dict } from "~/lib/dict.ts";
-import type { Defects, Import, ImportDefect as IImportDefect, Module } from "~/api.d.ts";
+import type { Defects, Imp, ImpDefect as IImpDefect, Mod } from "~/api.d.ts";
 
 import { clear } from "./tag-based-cache.ts";
-import { ImportDefect } from "./import-defect.ts";
+import { ImpDefect } from "./imp-defect.ts";
 
-export class ImportDefects implements Defects<IImportDefect> {
+export class ImpDefects implements Defects<IImpDefect> {
 	byRule;
 
 	#imp;
 	#mod;
 
-	constructor({ imp, mod }: { imp: Import; mod: Module }) {
+	constructor({ imp, mod }: { imp: Imp; mod: Mod }) {
 		this.#imp = imp;
 		this.#mod = mod;
 
-		this.byRule = Dict.empty<IImportDefect>();
+		this.byRule = Dict.empty<IImpDefect>();
 	}
 
 	get size() {
@@ -32,7 +32,7 @@ export class ImportDefects implements Defects<IImportDefect> {
 
 	get(rule: string) {
 		const defect = this.find(rule);
-		assert(defect, `Can't get import defect by rule '${rule}'.`);
+		assert(defect, `Can't get imp defect by rule '${rule}'.`);
 		return defect;
 	}
 
@@ -40,9 +40,9 @@ export class ImportDefects implements Defects<IImportDefect> {
 		return this.byRule.getOrDefault(rule, null);
 	}
 
-	@clear("import-defects")
+	@clear("imp-defects")
 	add(rule: string, description?: string) {
-		const defect = new ImportDefect({
+		const defect = new ImpDefect({
 			rule,
 			description,
 			imp: this.#imp,
@@ -55,13 +55,13 @@ export class ImportDefects implements Defects<IImportDefect> {
 		return this;
 	}
 
-	@clear("import-defects")
+	@clear("imp-defects")
 	remove(rule: string) {
 		this.byRule.remove(rule);
 		return this;
 	}
 
-	@clear("import-defects")
+	@clear("imp-defects")
 	removeAll() {
 		this.byRule.clear();
 		return this;

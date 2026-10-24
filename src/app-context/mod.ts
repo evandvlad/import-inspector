@@ -1,13 +1,14 @@
 import { isNull } from "~/lib/vtype.ts";
-import type { Dict, File, Imports, Module as IModule, Package } from "~/api.d.ts";
+import type { Nullable } from "~/lib/ts.ts";
+import type { Dict, File, Imps, Mod as IMod, Pack } from "~/api.d.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
 import { Tags } from "./tags.ts";
 import { Frames } from "./frames.ts";
-import { ModuleDefects } from "./module-defects.ts";
+import { ModDefects } from "./mod-defects.ts";
 import { cache } from "./tag-based-cache.ts";
 
-export class Module implements IModule {
+export class Mod implements IMod {
 	name;
 	path;
 	lang;
@@ -17,7 +18,7 @@ export class Module implements IModule {
 	frames;
 	shortPath;
 	isPackEntry;
-	defects: ModuleDefects;
+	defects: ModDefects;
 
 	#packPath;
 	#linkPaths;
@@ -29,13 +30,13 @@ export class Module implements IModule {
 			name: string;
 			path: string;
 			shortPath: string;
-			imps: Imports;
+			imps: Imps;
 			linkPaths: string[];
 			file: File;
-			packPath: string | null;
+			packPath: Nullable<string>;
 			isPackEntry: boolean;
-			modDict: Dict<IModule>;
-			packDict: Dict<Package>;
+			modDict: Dict<IMod>;
+			packDict: Dict<Pack>;
 		},
 	) {
 		this.name = name;
@@ -46,7 +47,7 @@ export class Module implements IModule {
 		this.shortPath = shortPath;
 		this.lang = getFileLang(this.path);
 		this.isPackEntry = isPackEntry;
-		this.defects = new ModuleDefects({ mod: this });
+		this.defects = new ModDefects({ mod: this });
 		this.imps = imps;
 
 		this.#packPath = packPath;

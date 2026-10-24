@@ -3,9 +3,9 @@ import { expect } from "@std/expect";
 
 import { PathRecProvider } from "./path-rec-provider/index.ts";
 
-import { PackageEntryPointDetector } from "./package-entry-point-detector.ts";
+import { PackEntryPointDetector } from "./pack-entry-point-detector.ts";
 
-describe("package-entry-point-detector", () => {
+describe("pack-entry-point-detector", () => {
 	describe("isOneOf", () => {
 		it("all files can be entry points", () => {
 			const filePaths = [
@@ -19,7 +19,7 @@ describe("package-entry-point-detector", () => {
 			];
 
 			const pathRecProvider = new PathRecProvider({ filePaths });
-			const detector = new PackageEntryPointDetector({ pathRecProvider });
+			const detector = new PackEntryPointDetector({ pathRecProvider });
 
 			const canEveryFileBeEntryPoint = filePaths.every((filePath) => detector.isOneOf(filePath));
 
@@ -34,7 +34,7 @@ describe("package-entry-point-detector", () => {
 			];
 
 			const pathRecProvider = new PathRecProvider({ filePaths });
-			const detector = new PackageEntryPointDetector({ pathRecProvider });
+			const detector = new PackEntryPointDetector({ pathRecProvider });
 
 			const canNoFileBeEntryPoint = filePaths.every((filePath) => !detector.isOneOf(filePath));
 
@@ -48,7 +48,7 @@ describe("package-entry-point-detector", () => {
 				filePaths: ["C:/main.ts", "C:/foo/bar.js", "C:/foo/baz.ts"],
 			});
 
-			const detector = new PackageEntryPointDetector({ pathRecProvider });
+			const detector = new PackEntryPointDetector({ pathRecProvider });
 
 			expect(detector.selectFromChildren("C:/foo")).toBe(null);
 		});
@@ -58,7 +58,7 @@ describe("package-entry-point-detector", () => {
 				filePaths: ["C:/main.ts", "C:/foo/bar.js", "C:/foo/qux/quux/quuux.ts"],
 			});
 
-			const detector = new PackageEntryPointDetector({ pathRecProvider });
+			const detector = new PackEntryPointDetector({ pathRecProvider });
 
 			expect(detector.selectFromChildren("C:/foo/qux")).toBe(null);
 		});
@@ -68,7 +68,7 @@ describe("package-entry-point-detector", () => {
 				filePaths: ["C:/main.ts", "C:/foo/index.entry.ts", "C:/foo/index.d.ts", "C:/foo/index.ts"],
 			});
 
-			const detector = new PackageEntryPointDetector({ pathRecProvider });
+			const detector = new PackEntryPointDetector({ pathRecProvider });
 
 			expect(detector.selectFromChildren("C:/foo")).toEqual("C:/foo/index.ts");
 		});
@@ -78,7 +78,7 @@ describe("package-entry-point-detector", () => {
 				filePaths: ["C:/main.ts", "C:/foo/index.entry.ts", "C:/foo/index.d.ts", "C:/foo/bar.ts"],
 			});
 
-			const detector = new PackageEntryPointDetector({ pathRecProvider });
+			const detector = new PackEntryPointDetector({ pathRecProvider });
 
 			expect(detector.selectFromChildren("C:/foo")).toEqual("C:/foo/index.d.ts");
 		});
@@ -88,7 +88,7 @@ describe("package-entry-point-detector", () => {
 				filePaths: ["C:/main.ts", "C:/foo/index.entry.ts", "C:/foo/baz.ts", "C:/foo/bar.ts"],
 			});
 
-			const detector = new PackageEntryPointDetector({ pathRecProvider });
+			const detector = new PackEntryPointDetector({ pathRecProvider });
 
 			expect(detector.selectFromChildren("C:/foo")).toEqual("C:/foo/index.entry.ts");
 		});

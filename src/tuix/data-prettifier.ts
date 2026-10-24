@@ -26,8 +26,8 @@ export function prettifyData(data: unknown) {
 		}
 
 		return iterateCompoundJson(json)
-			.map(({ key, value, deep }) => {
-				const ind = indent.repeat(deep - 1);
+			.map(({ key, value, depth }) => {
+				const ind = indent.repeat(depth - 1);
 
 				return [
 					text(ind, { color: "gray", dim: true }),

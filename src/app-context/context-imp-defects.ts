@@ -1,12 +1,12 @@
 import { Dict } from "~/lib/dict.ts";
-import type { AppContextDefects, Dict as IDict, Import, ImportDefect } from "~/api.d.ts";
+import type { AppContextDefects, Dict as IDict, Imp, ImpDefect } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
-export class ContextImportDefects implements AppContextDefects<ImportDefect> {
+export class ContextImpDefects implements AppContextDefects<ImpDefect> {
 	#impDict;
 
-	constructor({ impDict }: { impDict: IDict<Import> }) {
+	constructor({ impDict }: { impDict: IDict<Imp> }) {
 		this.#impDict = impDict;
 	}
 
@@ -26,14 +26,14 @@ export class ContextImportDefects implements AppContextDefects<ImportDefect> {
 		return this.byRule.toKeys();
 	}
 
-	@cache("import-defects")
+	@cache("imp-defects")
 	get byId() {
-		return this.#impDict.fold<ImportDefect>((acc, imp) => acc.merge(imp.defects.byRule.mapK(({ id }) => id)));
+		return this.#impDict.fold<ImpDefect>((acc, imp) => acc.merge(imp.defects.byRule.mapK(({ id }) => id)));
 	}
 
-	@cache("import-defects")
+	@cache("imp-defects")
 	get byRule() {
-		return this.#impDict.fold<IDict<ImportDefect>>((acc, imp) => {
+		return this.#impDict.fold<IDict<ImpDefect>>((acc, imp) => {
 			imp.defects.byRule.forEach((defect) => {
 				acc.getOrInsertComputed(defect.rule, () => Dict.empty()).set(defect.id, defect);
 			});
@@ -42,9 +42,9 @@ export class ContextImportDefects implements AppContextDefects<ImportDefect> {
 		});
 	}
 
-	@cache("import-defects")
+	@cache("imp-defects")
 	get byPath() {
-		return this.#impDict.fold<IDict<ImportDefect>>((acc, imp) => {
+		return this.#impDict.fold<IDict<ImpDefect>>((acc, imp) => {
 			if (imp.defects.size > 0) {
 				acc.getOrInsertComputed(imp.sourceMod.path, () => Dict.empty()).merge(
 					imp.defects.byRule.mapK(({ id }) => id),
@@ -66,7 +66,7 @@ export class ContextImportDefects implements AppContextDefects<ImportDefect> {
 	}
 
 	removeByRule(rule: string) {
-		const defects = this.byRule.getOrDefault<ImportDefect[]>(rule, []);
+		const defects = this.byRule.getOrDefault<ImpDefect[]>(rule, []);
 
 		defects.forEach((defect) => {
 			this.#removeDefect(defect);
@@ -83,7 +83,7 @@ export class ContextImportDefects implements AppContextDefects<ImportDefect> {
 		return this;
 	}
 
-	#removeDefect(defect: ImportDefect) {
+	#removeDefect(defect: ImpDefect) {
 		defect.defects.remove(defect.rule);
 	}
 }

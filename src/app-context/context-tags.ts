@@ -1,12 +1,12 @@
 import { Dict } from "~/lib/dict.ts";
-import type { AppContextTags, Dict as IDict, Module } from "~/api.d.ts";
+import type { AppContextTags, Dict as IDict, Mod } from "~/api.d.ts";
 
 import { cache } from "./tag-based-cache.ts";
 
 export class ContextTags implements AppContextTags {
 	#modDict;
 
-	constructor({ modDict }: { modDict: IDict<Module> }) {
+	constructor({ modDict }: { modDict: IDict<Mod> }) {
 		this.#modDict = modDict;
 	}
 
@@ -20,7 +20,7 @@ export class ContextTags implements AppContextTags {
 
 	@cache("tags")
 	get mods() {
-		return this.#modDict.fold<IDict<Module>>((acc, mod) => {
+		return this.#modDict.fold<IDict<Mod>>((acc, mod) => {
 			mod.tags.names.forEach((tag) => {
 				acc.getOrInsertComputed(tag, () => Dict.empty()).set(mod.path, mod);
 			});
@@ -30,6 +30,6 @@ export class ContextTags implements AppContextTags {
 	}
 
 	has(name: string) {
-		return this.names.includes(name);
+		return this.mods.has(name);
 	}
 }

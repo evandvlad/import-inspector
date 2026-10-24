@@ -2,45 +2,45 @@ import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
 import { PathRecProvider } from "./path-rec-provider/index.ts";
-import { PackageEntryPointDetector } from "./package-entry-point-detector.ts";
+import { PackEntryPointDetector } from "./pack-entry-point-detector.ts";
 
-import { PackageFinder } from "./package-finder.ts";
+import { PackFinder } from "./pack-finder.ts";
 
-function createPackageFinder({ pathRecProvider }: { pathRecProvider: PathRecProvider }) {
-	return new PackageFinder({
+function createPackFinder({ pathRecProvider }: { pathRecProvider: PathRecProvider }) {
+	return new PackFinder({
 		pathRecProvider,
-		packageEntryPointDetector: new PackageEntryPointDetector({ pathRecProvider }),
+		packEntryPointDetector: new PackEntryPointDetector({ pathRecProvider }),
 	});
 }
 
-describe("package-finder", () => {
+describe("pack-finder", () => {
 	describe("findCurrent", () => {
-		it("no package", () => {
+		it("no pack", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: ["C:/main.ts", "C:/foo/bar/qux.ts", "C:/foo/bar/quux.ts"],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findCurrent("C:/foo/bar/qux.ts")).toEqual(null);
 		});
 
-		it("immediate package", () => {
+		it("immediate pack", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: ["C:/main.ts", "C:/foo/bar.ts", "C:/foo/index.ts"],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findCurrent("C:/foo/index.ts")).toEqual("C:/foo");
 		});
 
-		it("far-away package", () => {
+		it("far-away pack", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: ["C:/foo/main.tsx", "C:/foo/bar/index.js", "C:/foo/bar/baz/qux/quux.ts"],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findCurrent("C:/foo/bar/baz/qux/quux.ts")).toEqual("C:/foo/bar");
 		});
@@ -50,7 +50,7 @@ describe("package-finder", () => {
 				filePaths: ["C:/foo/main.tsx", "C:/foo/bar/index.js", "C:/foo/bar/baz/qux/quux.ts"],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findCurrent("C:/foo/bar/baz/qux")).toEqual("C:/foo/bar");
 		});
@@ -67,14 +67,14 @@ describe("package-finder", () => {
 				],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findCurrent("C:/foo/bar/baz/qux/quux.ts")).toEqual("C:/foo/bar");
 		});
 	});
 
 	describe("findChildren", () => {
-		it("no immediate packages", () => {
+		it("no immediate packs", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: [
 					"C:/main.ts",
@@ -84,12 +84,12 @@ describe("package-finder", () => {
 				],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findChildren("C:/foo")).toEqual([]);
 		});
 
-		it("1 immediate package", () => {
+		it("1 immediate pack", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: [
 					"C:/main.ts",
@@ -100,14 +100,14 @@ describe("package-finder", () => {
 				],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findChildren("C:/foo")).toEqual([
 				"C:/foo/bar",
 			]);
 		});
 
-		it("2 immediate packages", () => {
+		it("2 immediate packs", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: [
 					"C:/main.ts",
@@ -121,7 +121,7 @@ describe("package-finder", () => {
 				],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findChildren("C:/foo")).toEqual([
 				"C:/foo/bar",
@@ -129,7 +129,7 @@ describe("package-finder", () => {
 			]);
 		});
 
-		it("1 deep package", () => {
+		it("1 deep pack", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: [
 					"C:/main.ts",
@@ -140,14 +140,14 @@ describe("package-finder", () => {
 				],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findChildren("C:/foo")).toEqual([
 				"C:/foo/bar/baz",
 			]);
 		});
 
-		it("1 deep package with sub package", () => {
+		it("1 deep pack with sub pack", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: [
 					"C:/main.ts",
@@ -159,14 +159,14 @@ describe("package-finder", () => {
 				],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findChildren("C:/foo")).toEqual([
 				"C:/foo/bar/baz",
 			]);
 		});
 
-		it("2 packages at different depth levels", () => {
+		it("2 packs at different depth levels", () => {
 			const pathRecProvider = new PathRecProvider({
 				filePaths: [
 					"C:/main.ts",
@@ -178,7 +178,7 @@ describe("package-finder", () => {
 				],
 			});
 
-			const finder = createPackageFinder({ pathRecProvider });
+			const finder = createPackFinder({ pathRecProvider });
 
 			expect(finder.findChildren("C:/foo")).toEqual([
 				"C:/foo/bar/baz",

@@ -6,7 +6,7 @@ import { createAndFillAppContext } from "~/testing/app-context-maker.ts";
 import { dontJumpThroughPackageEntry } from "./dont-jump-through-package-entry.ts";
 
 describe("dont-jump-through-package-entry", () => {
-	it("not ok for the module imported from the child package not via entry point", async () => {
+	it("not ok for the mod imported from the child pack not via entry point", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -28,7 +28,7 @@ describe("dont-jump-through-package-entry", () => {
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
-	it("not ok for the module imported from the child package not via entry point #2 (source is in the package)", async () => {
+	it("not ok for the mod imported from the child pack not via entry point #2 (source is in the pack)", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -51,7 +51,7 @@ describe("dont-jump-through-package-entry", () => {
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
-	it("not ok for the module imported from the descendant package", async () => {
+	it("not ok for the mod imported from the descendant pack", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -74,7 +74,7 @@ describe("dont-jump-through-package-entry", () => {
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
-	it("not ok for the module imported from the descendant package #2 (source is in the package)", async () => {
+	it("not ok for the mod imported from the descendant pack #2 (source is in the pack)", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -98,7 +98,7 @@ describe("dont-jump-through-package-entry", () => {
 		expect(paths).toEqual(["C:/foo/bar.ts"]);
 	});
 
-	it("ok to import from the child module via entry point", async () => {
+	it("ok to import from the child mod via entry point", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -120,7 +120,7 @@ describe("dont-jump-through-package-entry", () => {
 		expect(paths).toEqual(undefined);
 	});
 
-	it("ok to import from the parent module", async () => {
+	it("ok to import from the parent mod", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -143,7 +143,7 @@ describe("dont-jump-through-package-entry", () => {
 		expect(paths).toEqual(undefined);
 	});
 
-	it("ok to import from the ancestor module", async () => {
+	it("ok to import from the ancestor mod", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -167,7 +167,7 @@ describe("dont-jump-through-package-entry", () => {
 		expect(paths).toEqual(undefined);
 	});
 
-	it("ok if both modules are not in the packages", async () => {
+	it("ok if both mods are not in the packs", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
@@ -188,7 +188,7 @@ describe("dont-jump-through-package-entry", () => {
 		expect(paths).toEqual(undefined);
 	});
 
-	it("ok if both modules are in the same package", async () => {
+	it("ok if both mods are in the same pack", async () => {
 		const appContext = await createAndFillAppContext({
 			files: {
 				"C:/tmp/main.ts": "",
