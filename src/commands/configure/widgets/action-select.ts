@@ -1,12 +1,12 @@
 import { tuix } from "~/tuix/index.ts";
 
+import type { Config } from "~/config/index.ts";
 import type { CommandConfigureAction } from "~/values.ts";
 
-export function selectAction({ presetNames }: { presetNames: string[] }) {
-	const hasPresets = presetNames.length > 0;
+export function selectAction(config: Config) {
+	const hasPresets = config.presetNames.length > 0;
 
 	const items: Array<{ label: string; value: CommandConfigureAction }> = [
-		{ label: "Show config", value: "show-config" },
 		{ label: "Add preset", value: "add-preset" },
 	];
 
@@ -16,6 +16,11 @@ export function selectAction({ presetNames }: { presetNames: string[] }) {
 			{ label: "Remove preset", value: "remove-preset" },
 		);
 	}
+
+	items.push(
+		{ label: "Show config", value: "show-config" },
+		{ label: "Quit", value: "quit" },
+	);
 
 	const { value } = tuix.select<CommandConfigureAction>(
 		items,

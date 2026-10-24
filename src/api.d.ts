@@ -124,16 +124,19 @@ export type Report = {
 	provide: (appContext: AppContext) => MaybePromise<string>;
 };
 
-export type ConfigPreset = {
-	name: string;
+export type ConfigPresetData = {
 	// Absolute path
 	settingsPath: string;
 	// Absolute path
 	projectPath: string;
 };
 
+export type ConfigPreset = ConfigPresetData & {
+	name: string;
+};
+
 export type Config = {
-	presets: Rec</* name */ ConfigPreset>;
+	presets: Rec</* name */ ConfigPresetData>;
 };
 
 export type SettingsModule = {

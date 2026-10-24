@@ -13,20 +13,15 @@ function assertConfigData(data: unknown): asserts data is Config {
 		"Config data is in invalid format.",
 	);
 
-	for (const [name, preset] of Object.entries(data.presets)) {
+	for (const [name, presetData] of Object.entries(data.presets)) {
 		assert(
-			name === preset.name,
-			`Preset name mismatch: expected '${name}', got '${preset.name}'.`,
+			isString(presetData.settingsPath),
+			`'settingsPath' property for preset '${name}' must be a string.`,
 		);
 
 		assert(
-			isString(preset.settingsPath),
-			`'settingsPath' property for preset '${preset.name}' must be a string.`,
-		);
-
-		assert(
-			isString(preset.projectPath),
-			`'projectPath' property for preset '${preset.name}' must be a string.`,
+			isString(presetData.projectPath),
+			`'projectPath' property for preset '${name}' must be a string.`,
 		);
 	}
 }

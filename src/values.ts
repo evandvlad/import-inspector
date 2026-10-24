@@ -33,7 +33,8 @@ export type CommandConfigureAction =
 	| "show-config"
 	| "add-preset"
 	| "update-preset"
-	| "remove-preset";
+	| "remove-preset"
+	| "quit";
 
 export type Command = (params: { args: string[] }) => MaybePromise<void>;
 

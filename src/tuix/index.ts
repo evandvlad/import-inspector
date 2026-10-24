@@ -86,8 +86,16 @@ export const tuix = new class Tuix implements ITuix {
 	}
 
 	print(value: string | string[]) {
-		const val = isString(value) ? value : this.lines(value);
-		console.log(val);
+		if (isString(value)) {
+			console.log(value);
+			return;
+		}
+
+		if (value.length === 0) {
+			return;
+		}
+
+		console.log(this.lines(value));
 	}
 
 	eprint(value: string | string[], options?: { noColor?: boolean }) {

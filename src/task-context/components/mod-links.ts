@@ -16,5 +16,5 @@ export function modLinks({ mod }: { mod: Module }) {
 			"",
 			"",
 		])
-	).reduce((acc, item) => acc + item, "");
+	).reduce((acc, item) => [acc, item].join(""), "");
 }

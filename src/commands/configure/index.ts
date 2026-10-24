@@ -1,5 +1,5 @@
 import { assertNever } from "~/lib/ts.ts";
-import type { Command } from "~/values.ts";
+import type { Command, CommandConfigureAction } from "~/values.ts";
 import { Config } from "~/config/index.ts";
 import { tuix } from "~/tuix/index.ts";
 
@@ -10,46 +10,55 @@ import { updatePreset } from "./subcommands/update-preset.ts";
 import { removePreset } from "./subcommands/remove-preset.ts";
 import { selectAction } from "./widgets/action-select.ts";
 
+async function performAction({ action, config }: { action: CommandConfigureAction; config: Config }) {
+	switch (action) {
+		case "show-config":
+			showConfigData(config);
+			return;
+
+		case "add-preset":
+			await addPreset(config);
+			return;
+
+		case "update-preset":
+			await updatePreset(config);
+			return;
+
+		case "remove-preset":
+			await removePreset(config);
+			return;
+
+		case "quit":
+			Deno.exit();
+			return;
+
+		default:
+			assertNever(action);
+	}
+}
+
+async function* actionGenerator(config: Config) {
+	while (true) {
+		yield selectAction(config);
+	}
+}
+
 export const configure: Command = async () => {
 	let config = await Config.load();
 
-	await tuix.loopUntil(async () => {
-		tuix.clear();
+	if (!config) {
+		config = await createConfig();
 
 		if (!config) {
-			config = await createConfig();
-
-			if (!config) {
-				return;
-			}
+			return;
 		}
 
-		const { presetNames } = config;
-		const action = selectAction({ presetNames });
+		tuix.print("");
+	}
 
+	for await (const action of actionGenerator(config)) {
 		tuix.clear();
-
-		switch (action) {
-			case "show-config": {
-				showConfigData(config);
-				return;
-			}
-
-			case "add-preset": {
-				await addPreset(config);
-				return;
-			}
-
-			case "update-preset":
-				await updatePreset(config);
-				return;
-
-			case "remove-preset":
-				await removePreset(config);
-				return;
-
-			default:
-				assertNever(action);
-		}
-	}, () => tuix.confirm("Quit?"));
+		await performAction({ action, config });
+		tuix.print("");
+	}
 };
