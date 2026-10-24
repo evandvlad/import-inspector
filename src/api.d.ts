@@ -109,7 +109,6 @@ export type Tuix = {
 	eprint: (value: string | string[], options?: { noColor?: boolean }) => void;
 	printData: (data: unknown) => void;
 	withSpin: <T>(message: string, fn: (stop: () => void) => Promise<T>) => Promise<T>;
-	loopUntil: (fn: () => MaybePromise<void>, confirm: () => MaybePromise<boolean>) => Promise<void>;
 };
 
 export type RootEntry = {
@@ -390,4 +389,5 @@ export type TaskContext = {
 	args: string[];
 
 	report: (report: Report) => Promise<void>;
+	exit: (isError?: boolean) => never;
 };

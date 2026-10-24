@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { expect } from "@std/expect";
 
-import { LazyAsyncBox, loop } from "./async.ts";
+import { LazyAsyncBox } from "./async.ts";
 
 describe("async", () => {
 	it("LazyAsyncBox", async () => {
@@ -24,32 +24,5 @@ describe("async", () => {
 		expect(result).toEqual(["done", "done", "done"]);
 
 		expect(calls).toBe(1);
-	});
-
-	describe("loop", () => {
-		it("a single iteration", async () => {
-			let counts = 0;
-
-			await loop(() => {
-				counts += 1;
-				return true;
-			});
-
-			expect(counts).toBe(1);
-		});
-
-		it("several iterations", async () => {
-			let counts = 0;
-
-			await loop(() => {
-				return new Promise<boolean>((resolve) => {
-					setTimeout(() => {
-						resolve(++counts > 3);
-					});
-				});
-			});
-
-			expect(counts).toBe(4);
-		});
 	});
 });

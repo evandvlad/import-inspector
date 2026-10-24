@@ -1,4 +1,4 @@
-import type { MaybePromise, Nullable } from "~/lib/ts.ts";
+import type { Nullable } from "~/lib/ts.ts";
 
 export class LazyAsyncBox<T> {
 	#fn;
@@ -14,13 +14,5 @@ export class LazyAsyncBox<T> {
 		}
 
 		return this.#promise;
-	}
-}
-
-export async function loop(fn: () => MaybePromise<boolean>) {
-	const isDone = await fn();
-
-	if (!isDone) {
-		await loop(fn);
 	}
 }

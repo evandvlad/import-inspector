@@ -33,4 +33,8 @@ export class TaskContext implements ITaskContext {
 	report = (report: Report) => {
 		return this.#reporter.write(report);
 	};
+
+	exit(isError = false): never {
+		Deno.exit(isError ? 1 : 0);
+	}
 }
