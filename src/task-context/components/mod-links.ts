@@ -5,16 +5,15 @@ import { modCode } from "./mod-code.ts";
 import { modPathLink } from "./mod-path-link.ts";
 
 export function modLinks({ mod }: { mod: Module }) {
-	return mod.links.map((link) =>
+	const modLinks = mod.links.map((link) =>
 		tuix.lines([
-			tuix.text(modPathLink({ mod: link }), {
-				bold: true,
-				color: "blue",
-			}),
+			tuix.text(modPathLink({ mod: link }), { bold: true, color: "blue" }),
 			"",
 			modCode({ mod: link, lineRange: link.imps.findForMod(mod)!.fileLineRange }),
-			"",
-			"",
 		])
-	).reduce((acc, item) => [acc, item].join(""), "");
+	);
+
+	return modLinks.size > 0
+		? modLinks.reduce((acc, item) => acc ? tuix.lines([acc, "", "", item]) : item, "")
+		: "No links";
 }

@@ -22,10 +22,7 @@ export function selectAction(config: Config) {
 		{ label: "Quit", value: "quit" },
 	);
 
-	const { value } = tuix.select<CommandConfigureAction>(
-		items,
-		{ label: tuix.text("Select action", { bold: true, color: "blue" }) },
-	);
+	const { value } = tuix.select<CommandConfigureAction>(items, { label: "Select action" });
 
 	return value;
 }

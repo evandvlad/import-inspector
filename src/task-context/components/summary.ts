@@ -3,10 +3,6 @@ import { configFilePath, version } from "~/values.ts";
 import type { Settings } from "~/settings.ts";
 import type { AppContext } from "~/api.d.ts";
 
-function ln(caption: string, content: string | number) {
-	return `${tuix.text(caption, { bold: true })}: ${content}`;
-}
-
 export function summary(
 	{ settings, appContext }: { settings: Settings; appContext: AppContext },
 ) {
@@ -22,25 +18,25 @@ export function summary(
 
 	const items = [
 		"=".repeat(hrWidth),
-		ln("Program version", version),
-		ln("Preset", settings.preset.name),
-		ln("Config", tuix.link(configFilePath)),
-		ln("Settings", tuix.link(settings.preset.settingsPath)),
-		ln("Project path", settings.preset.projectPath),
+		tuix.lvLine("Program version", version),
+		tuix.lvLine("Preset", settings.preset.name),
+		tuix.lvLine("Config", tuix.link(configFilePath)),
+		tuix.lvLine("Settings", tuix.link(settings.preset.settingsPath)),
+		tuix.lvLine("Project path", settings.preset.projectPath),
 		"-".repeat(hrWidth),
-		ln("Tags", sum.tags),
-		ln("Frames", sum.frames),
-		ln("Packages", sum.packs),
-		ln("Modules", `${sum.mods} (${modulesInfo})`),
-		ln("Imports", `${sum.imps} (static: ${imps.staticById.size}, dynamic: ${imps.dynamicById.size})`),
-		ln("Defects", `${sum.totalDefects} (imports: ${sum.impDefects}, modules: ${sum.modDefects})`),
-		ln("Unresolved imports", imps.fullUnresolvedById.size),
+		tuix.lvLine("Tags", String(sum.tags)),
+		tuix.lvLine("Frames", String(sum.frames)),
+		tuix.lvLine("Packages", String(sum.packs)),
+		tuix.lvLine("Modules", `${sum.mods} (${modulesInfo})`),
+		tuix.lvLine("Imports", `${sum.imps} (static: ${imps.staticById.size}, dynamic: ${imps.dynamicById.size})`),
+		tuix.lvLine("Defects", `${sum.totalDefects} (imports: ${sum.impDefects}, modules: ${sum.modDefects})`),
+		tuix.lvLine("Unresolved imports", String(imps.fullUnresolvedById.size)),
 	];
 
 	if (settings.reportPaths.length > 0) {
 		items.push(
 			"-".repeat(hrWidth),
-			ln("Reports", ""),
+			tuix.lvLine("Reports", ""),
 			...settings.reportPaths.map((path) => `  ${tuix.link(path)}`),
 		);
 	}

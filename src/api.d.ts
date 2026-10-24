@@ -96,20 +96,21 @@ export type TuixSelectItem<T extends string = string> = {
 	value: T;
 };
 
-export type Tuix = {
+export interface Tuix {
 	text: (value: string, options?: { bold?: boolean; dim?: boolean; color?: TuixColor }) => string;
+	lvLine: (label: string, value: string) => string;
 	lines: (items: string[]) => string;
 	link: (path: string, options?: { text?: string; line?: number }) => string;
 	code: (value: string, options?: { startLine?: number }) => string;
 	prompt: (options?: { label?: string; value?: string }) => string;
 	confirm: (message: string) => boolean;
 	select: <T extends string = string>(items: TuixSelectItem<T>[], options?: { label?: string }) => TuixSelectItem<T>;
-	clear: () => void;
-	print: (value: string | string[]) => void;
-	eprint: (value: string | string[], options?: { noColor?: boolean }) => void;
-	printData: (data: unknown) => void;
+	clear: () => this;
+	print: (value: string | string[]) => this;
+	eprint: (value: string | string[], options?: { noColor?: boolean }) => this;
+	printData: (data: unknown) => this;
 	withSpin: <T>(message: string, fn: (stop: () => void) => Promise<T>) => Promise<T>;
-};
+}
 
 export type RootEntry = {
 	// Absolute path
@@ -375,8 +376,10 @@ export type AppContext = {
 
 export type TaskContextComponents = {
 	modPathLink: (mod: Module, lineRange?: LineRange) => string;
+	modInfo: (mod: Module) => string;
 	modCode: (mod: Module, lineRange?: LineRange) => string;
 	modLinks: (mod: Module) => string;
+	modDefects: (mod: Module) => string;
 	lintResult: () => string;
 	summary: () => string;
 };

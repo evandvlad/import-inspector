@@ -3,7 +3,7 @@ import { type PromptEntry, promptSelect } from "@std/cli/unstable-prompt-select"
 import { toFileUrl } from "@std/path";
 
 import { fromLines, tab, toLines } from "~/lib/text.ts";
-import { isNull, isString } from "~/lib/vtype.ts";
+import { isArray, isNull } from "~/lib/vtype.ts";
 import type { FnEmpty } from "~/lib/ts.ts";
 import type { Tuix as ITuix, TuixSelectItem } from "~/api.d.ts";
 
@@ -18,6 +18,10 @@ export const tuix = new class Tuix implements ITuix {
 	link(path: string, options?: { text?: string; line?: number }) {
 		const { text = path, line } = options ?? {};
 		return `\x1b]8;;${toFileUrl(path)}${line !== undefined ? `#${line}` : ""}\x1b\\${text}\x1b]8;;\x1b\\`;
+	}
+
+	lvLine(label: string, value: string) {
+		return `${text(label, { bold: true })}: ${value}`;
 	}
 
 	lines(items: string[]) {
@@ -56,7 +60,9 @@ export const tuix = new class Tuix implements ITuix {
 
 	select<T extends string = string>(items: TuixSelectItem<T>[], options?: { label?: string }) {
 		const { label = "" } = options ?? {};
-		const result = promptSelect<T>(label, items as Array<PromptEntry<T>>);
+		const lab = label ? this.text(label, { bold: true, color: "blue" }) : "";
+
+		const result = promptSelect<T>(lab, items as Array<PromptEntry<T>>);
 
 		if (isNull(result)) {
 			Deno.exit(cancelExitCode);
@@ -82,32 +88,37 @@ export const tuix = new class Tuix implements ITuix {
 
 	clear() {
 		console.clear();
+		return this;
 	}
 
 	print(value: string | string[]) {
-		if (isString(value)) {
-			console.log(value);
-			return;
+		if (isArray(value) && value.length === 0) {
+			return this;
 		}
 
-		if (value.length === 0) {
-			return;
-		}
+		const val = isArray(value) ? this.lines(value) : value;
+		console.log(val);
 
-		console.log(this.lines(value));
+		return this;
 	}
 
 	eprint(value: string | string[], options?: { noColor?: boolean }) {
+		if (isArray(value) && value.length === 0) {
+			return this;
+		}
+
 		const { noColor = false } = options ?? {};
 
-		const val = isString(value) ? value : this.lines(value);
+		const val = isArray(value) ? this.lines(value) : value;
 		const txt = noColor ? val : this.text(val, { color: "red" });
 
 		console.error(txt);
+		return this;
 	}
 
 	printData(data: unknown) {
 		const result = prettifyData(data);
 		this.print(result);
+		return this;
 	}
 }();

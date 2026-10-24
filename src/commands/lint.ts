@@ -24,7 +24,7 @@ export const lint: Command = async ({ args }: { args: string[] }) => {
 
 				if (hasDefects) {
 					const lintResult = taskContext.components.lintResult();
-					tuix.print(lintResult);
+					tuix.print([lintResult, ""]);
 				}
 
 				const appSummary = taskContext.components.summary();
