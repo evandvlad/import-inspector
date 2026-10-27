@@ -2,7 +2,7 @@ import { dirname, join } from "~/lib/upath.ts";
 import type { Nullable } from "~/lib/ts.ts";
 import type { Settings } from "~/settings.ts";
 import { getImportPathSuffixCandidates } from "~/project-specifics.ts";
-import type { ImpRec, ImpResolutionData } from "~/values.ts";
+import type { ImpResolutionData } from "~/values.ts";
 
 import type { PathRecProvider } from "./path-rec-provider/index.ts";
 
@@ -24,8 +24,8 @@ export class ImpResolver {
 		this.#aliases = this.#createAliases(settings);
 	}
 
-	resolve({ path, impRec }: { path: string; impRec: ImpRec }): Nullable<ImpResolutionData> {
-		return impRec.locator ? this.#resolve({ path, impRec }) : null;
+	resolve({ path, locator }: { path: string; locator: string | null }): Nullable<ImpResolutionData> {
+		return locator ? this.#resolve({ path, locator }) : null;
 	}
 
 	#createAliases({ rootEntries, importRemaps }: Settings) {
@@ -44,8 +44,7 @@ export class ImpResolver {
 		return aliases;
 	}
 
-	#resolve({ path, impRec }: { path: string; impRec: ImpRec }) {
-		const locator = impRec.locator!;
+	#resolve({ path, locator }: { path: string; locator: string }) {
 		const isRelative = locator.startsWith(".");
 
 		if (!isRelative) {

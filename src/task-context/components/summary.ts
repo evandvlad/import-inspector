@@ -9,8 +9,7 @@ export function summary({ settings, appContext }: { settings: Settings; appConte
 	const modsInfo = mods
 		.group(({ lang }) => lang)
 		.map((items, lang) => `${lang}: ${items.size}`)
-		.toArray()
-		.join(", ");
+		.join();
 
 	const hrWidth = 75;
 

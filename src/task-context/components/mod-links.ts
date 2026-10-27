@@ -1,3 +1,4 @@
+import { br } from "~/lib/text.ts";
 import type { Mod } from "~/api.d.ts";
 import { tuix } from "~/tuix/index.ts";
 
@@ -9,11 +10,9 @@ export function modLinks({ mod }: { mod: Mod }) {
 		tuix.lines([
 			tuix.text(modPathLink({ mod: link }), { bold: true, color: "blue" }),
 			"",
-			modCode({ mod: link, lineRange: link.imps.findForMod(mod)!.fileLineRange }),
+			modCode({ mod: link, lineRange: link.imps.findForMod(mod)?.fileLineRange }),
 		])
 	);
 
-	return modLinks.size > 0
-		? modLinks.reduce((acc, item) => acc ? tuix.lines([acc, "", "", item]) : item, "")
-		: "No links";
+	return modLinks.size > 0 ? modLinks.join(br.repeat(2)) : "No links";
 }

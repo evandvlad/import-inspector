@@ -1,7 +1,7 @@
 import type { Settings } from "~/settings.ts";
 import { File } from "~/file/index.ts";
 
-import type { FileParsingResult, ImpRec } from "../values.ts";
+import type { FileParsingResult, Impex, ImpRec } from "../values.ts";
 
 import { parseFile as parse } from "./file-parser.ts";
 
@@ -17,25 +17,25 @@ class FileParser {
 	}
 
 	async parse(): Promise<FileParsingResult> {
-		const impRecs = await parse({ path: this.#path, content: this.#file.value });
-		const newImpRecs = await this.#processImpRecs({ impRecs });
+		const impex = await parse({ path: this.#path, content: this.#file.value });
+		const newImpex = await this.#processImpex({ impex });
 
 		return {
 			path: this.#path,
 			file: this.#file,
-			impRecs: newImpRecs,
+			impex: newImpex,
 		};
 	}
 
-	async #processImpRecs({ impRecs }: { impRecs: ImpRec[] }) {
-		const result: ImpRec[] = [];
+	async #processImpex({ impex }: { impex: Impex }) {
+		const impRecs: ImpRec[] = [];
 
-		for await (const impRec of impRecs) {
+		for await (const impRec of impex.imps) {
 			const newImpRecs = await this.#processImpRec({ impRec });
-			result.push(...newImpRecs);
+			impRecs.push(...newImpRecs);
 		}
 
-		return result;
+		return { ...impex, imps: impRecs };
 	}
 
 	async #processImpRec({ impRec }: { impRec: ImpRec }) {

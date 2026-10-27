@@ -37,6 +37,7 @@ export interface Dict<T> {
 	group: (callback: (value: T, key: string) => string) => Dict<Dict<T>>;
 	merge: (collection: Collection<T>, reducer?: DictReducer<T>) => this;
 	concat: (collection: Collection<T>, reducer?: DictReducer<T>) => Dict<T>;
+	join: (sep?: string) => string;
 	keys: () => MapIterator<string>;
 	values: () => MapIterator<T>;
 	entries: () => MapIterator<Entry<T>>;
@@ -228,11 +229,20 @@ export type ImpResolution = {
 	isRelative: boolean;
 };
 
+export type ImpexValues = {
+	vals: string[];
+	everything: boolean;
+	has: (value: string) => boolean;
+	hasExact: (value: string) => boolean;
+};
+
 export type Imp = {
 	id: string;
+	values: ImpexValues;
 	locator: Nullable<string>;
 	location: Nullable<string>;
 	isDynamic: boolean;
+	isReExport: boolean;
 	resolution: Nullable<ImpResolution>;
 	sourceMod: Mod;
 	importedMod: Nullable<Mod>;
@@ -262,6 +272,36 @@ export type Imps = {
 	findForMod: (mod: Mod) => Nullable<Imp>;
 };
 
+export type LocalExp = {
+	id: string;
+	values: ImpexValues;
+	sourceMod: Mod;
+	fileLineRange: LineRange;
+	fileEntries: FileEntry[];
+};
+
+export type ReExp = {
+	id: string;
+	values: ImpexValues;
+	locator: string;
+	location: string;
+	resolution: Nullable<ImpResolution>;
+	sourceMod: Mod;
+	importedMod: Nullable<Mod>;
+	fileLineRange: LineRange;
+	fileEntries: FileEntry[];
+};
+
+export type Exps = {
+	size: number;
+	allValues: ImpexValues;
+	localValues: ImpexValues;
+	reExpValues: ImpexValues;
+	localById: Dict<LocalExp>;
+	reExpById: Dict<ReExp>;
+	sourceMod: Mod;
+};
+
 export interface ModTrait {
 	size: number;
 	names: string[];
@@ -283,6 +323,7 @@ export type Mod = {
 	isPackEntry: boolean;
 	links: Dict<Mod>;
 	imps: Imps;
+	exps: Exps;
 	defects: Defects<ModDefect>;
 };
 

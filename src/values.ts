@@ -32,16 +32,39 @@ export enum CommandName {
 export type Command = (params: { args: string[] }) => MaybePromise<void>;
 
 export type ImpRec = {
+	kind: "imp";
+	posSpan: Span;
+	isDynamic: boolean;
+	values: string[];
 	// Can be null for dynamic imports
 	locator: Nullable<string>;
-	isDynamic: boolean;
+};
+
+export type ReExpRec = {
+	kind: "re-exp";
 	posSpan: Span;
+	locator: string;
+	lhValues: string[];
+	rhValues: string[];
+};
+
+export type ExpRec = {
+	kind: "exp";
+	posSpan: Span;
+	lhValues: string[];
+	rhValues: string[];
+};
+
+export type Impex = {
+	imps: ImpRec[];
+	reExps: ReExpRec[];
+	exps: ExpRec[];
 };
 
 export type FileParsingResult = {
 	path: string;
 	file: File;
-	impRecs: ImpRec[];
+	impex: Impex;
 };
 
 export type ImpResolutionData = {

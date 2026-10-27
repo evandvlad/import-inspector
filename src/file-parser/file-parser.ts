@@ -3,7 +3,7 @@ import { parse } from "oxc-parser";
 import { Err, rethrowErr } from "~/lib/err.ts";
 import { getParserOptions } from "~/project-specifics.ts";
 
-import { extractImpRecs } from "./imp-recs-extractor.ts";
+import { extractImpex } from "./impex-extractor.ts";
 
 export async function parseFile({ path, content }: { path: string; content: string }) {
 	const options = getParserOptions(path);
@@ -21,5 +21,5 @@ export async function parseFile({ path, content }: { path: string; content: stri
 		}
 	}
 
-	return extractImpRecs({ program });
+	return extractImpex({ program });
 }

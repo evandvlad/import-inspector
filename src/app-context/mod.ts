@@ -1,6 +1,6 @@
 import { isNull } from "~/lib/vtype.ts";
 import type { Nullable } from "~/lib/ts.ts";
-import type { Dict, File, Imps, Mod as IMod, Pack } from "~/api.d.ts";
+import type { Dict, Exps, File, Imps, Mod as IMod, Pack } from "~/api.d.ts";
 import { getFileLang } from "~/project-specifics.ts";
 
 import { Tags } from "./tags.ts";
@@ -15,6 +15,7 @@ export class Mod implements IMod {
 	tags;
 	file;
 	imps;
+	exps;
 	frames;
 	shortPath;
 	isPackEntry;
@@ -26,11 +27,12 @@ export class Mod implements IMod {
 	#packDict;
 
 	constructor(
-		{ name, path, shortPath, packPath, imps, linkPaths, file, isPackEntry, modDict, packDict }: {
+		{ name, path, shortPath, packPath, imps, exps, linkPaths, file, isPackEntry, modDict, packDict }: {
 			name: string;
 			path: string;
 			shortPath: string;
 			imps: Imps;
+			exps: Exps;
 			linkPaths: string[];
 			file: File;
 			packPath: Nullable<string>;
@@ -49,6 +51,7 @@ export class Mod implements IMod {
 		this.isPackEntry = isPackEntry;
 		this.defects = new ModDefects({ mod: this });
 		this.imps = imps;
+		this.exps = exps;
 
 		this.#packPath = packPath;
 		this.#linkPaths = linkPaths;

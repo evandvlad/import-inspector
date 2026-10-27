@@ -17,7 +17,7 @@ export const listTasks: Command = async ({ args }: { args: string[] }) => {
 				const { tasks } = settings;
 
 				if (tasks.size === 0) {
-					tuix.print("No tasks");
+					tuix.print("No tasks.");
 					return;
 				}
 

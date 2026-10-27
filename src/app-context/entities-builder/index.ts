@@ -1,8 +1,21 @@
 import { Dict } from "~/lib/dict.ts";
-import type { Dict as IDict, Imp as IImp, Imps as IImps, Mod as IMod, Pack as IPack } from "~/api.d.ts";
+import type { Nullable } from "~/lib/ts.ts";
+import type {
+	Dict as IDict,
+	Exps as IExps,
+	Imp as IImp,
+	Imps as IImps,
+	LocalExp as ILocalExp,
+	Mod as IMod,
+	Pack as IPack,
+	ReExp as IReExp,
+} from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
-import type { FileParsingResult } from "~/values.ts";
+import type { FileParsingResult, Impex, ImpRec, ImpResolutionData, ReExpRec } from "~/values.ts";
 
+import { LocalExp } from "../local-exp.ts";
+import { ReExp } from "../re-exp.ts";
+import { Exps } from "../exps.ts";
 import { Imps } from "../imps.ts";
 import { Imp } from "../imp.ts";
 import { Mod } from "../mod.ts";
@@ -41,8 +54,8 @@ class EntitiesBuilder {
 	}
 
 	build() {
-		const { linkPathsDict, impsDict } = this.#prepareImps();
-		const { packsDict } = this.#prepareMods({ linkPathsDict, impsDict });
+		const { linkPathsDict, impsDict, expsDict } = this.#prepareImpex();
+		const { packsDict } = this.#prepareMods({ linkPathsDict, impsDict, expsDict });
 		this.#preparePacks({ packsDict });
 
 		return {
@@ -53,21 +66,65 @@ class EntitiesBuilder {
 		};
 	}
 
-	#prepareImps() {
+	#createImp(
+		{ modPath, rec, resolution }: {
+			modPath: string;
+			rec: ImpRec | ReExpRec;
+			resolution: Nullable<ImpResolutionData>;
+		},
+	) {
+		return rec.kind === "imp"
+			? Imp.createFromImpRec({ modPath, impRec: rec, resolution, modDict: this.#modDict })
+			: Imp.createFromReExpRec({ modPath, reExpRec: rec, resolution, modDict: this.#modDict });
+	}
+
+	#createLocalExpDict({ impex, modPath }: { impex: Impex; modPath: string }) {
+		return Dict.fromEntries<ILocalExp>(impex.exps.map((expRec) => {
+			const localExp = new LocalExp({ modPath, expRec, modDict: this.#modDict });
+			return [localExp.id, localExp];
+		}));
+	}
+
+	#createReExpDict(
+		{ impex, modPath, reExpResolutionDict }: {
+			impex: Impex;
+			modPath: string;
+			reExpResolutionDict: Dict<Nullable<ImpResolutionData>>;
+		},
+	) {
+		return Dict.fromEntries<IReExp>(impex.reExps.map((reExpRec) => {
+			const reExp = new ReExp({
+				modPath,
+				reExpRec,
+				resolution: reExpResolutionDict.get(reExpRec.locator),
+				modDict: this.#modDict,
+			});
+
+			return [reExp.id, reExp];
+		}));
+	}
+
+	#prepareImpex() {
 		const impResolver = new ImpResolver({ settings: this.#settings, pathRecProvider: this.#pathRecProvider });
 
 		const linkPathsDict = Dict.empty<string[]>();
 		const impsDict = Dict.empty<IImps>();
+		const expsDict = Dict.empty<IExps>();
 
-		this.#parsingResult.forEach(({ path, impRecs }) => {
+		this.#parsingResult.forEach(({ path, impex }) => {
 			const impDict = Dict.empty<IImp>();
+			const reExpResolutionDict = Dict.empty<Nullable<ImpResolutionData>>();
 
-			impRecs.forEach((impRec) => {
-				const resolution = impResolver.resolve({ path, impRec });
-				const imp = new Imp({ modPath: path, impRec, resolution, modDict: this.#modDict });
+			[...impex.imps, ...impex.reExps].forEach((rec) => {
+				const resolution = impResolver.resolve({ path, locator: rec.locator });
+				const imp = this.#createImp({ modPath: path, resolution, rec });
 
 				if (resolution?.path) {
 					linkPathsDict.getOrInsert(resolution.path, []).push(path);
+				}
+
+				if (rec.kind === "re-exp") {
+					reExpResolutionDict.set(rec.locator, resolution);
 				}
 
 				impDict.set(imp.id, imp);
@@ -75,12 +132,28 @@ class EntitiesBuilder {
 			});
 
 			impsDict.set(path, new Imps({ dict: impDict }));
+
+			expsDict.set(
+				path,
+				new Exps({
+					modPath: path,
+					localExpDict: this.#createLocalExpDict({ modPath: path, impex }),
+					reExpDict: this.#createReExpDict({ modPath: path, impex, reExpResolutionDict }),
+					modDict: this.#modDict,
+				}),
+			);
 		});
 
-		return { linkPathsDict, impsDict };
+		return { linkPathsDict, impsDict, expsDict };
 	}
 
-	#prepareMods({ impsDict, linkPathsDict }: { impsDict: Dict<IImps>; linkPathsDict: Dict<string[]> }) {
+	#prepareMods(
+		{ impsDict, expsDict, linkPathsDict }: {
+			impsDict: Dict<IImps>;
+			expsDict: Dict<IExps>;
+			linkPathsDict: Dict<string[]>;
+		},
+	) {
 		const packsDict = Dict.empty<Dict<IMod>>();
 
 		this.#parsingResult.forEach(({ path, file }) => {
@@ -97,6 +170,7 @@ class EntitiesBuilder {
 				name: baseName,
 				modDict: this.#modDict,
 				imps: impsDict.get(path),
+				exps: expsDict.get(path),
 				packDict: this.#packDict,
 				linkPaths: linkPathsDict.getOrDefault(path, []),
 			});

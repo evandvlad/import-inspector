@@ -1,3 +1,4 @@
+import { br } from "~/lib/text.ts";
 import type { AppContext } from "~/api.d.ts";
 import { tuix } from "~/tuix/index.ts";
 
@@ -24,5 +25,5 @@ export function lintResult({ appContext }: { appContext: AppContext }) {
 
 				return tuix.lines([link, ruleInfo, importedMod, "", codeLine]);
 			}))
-		.reduce((acc, content) => acc ? tuix.lines([acc, "", "", content]) : content, "");
+		.join(br.repeat(2));
 }

@@ -10,7 +10,7 @@ import { configFilePath } from "~/values.ts";
 function assertConfigData(data: unknown): asserts data is Config {
 	assert(
 		isObject(data) && hasProp(data, "presets") && isObject(data.presets),
-		"Config data format is invalid.",
+		"The config data format is invalid.",
 	);
 
 	for (const [name, presetData] of Object.entries(data.presets)) {

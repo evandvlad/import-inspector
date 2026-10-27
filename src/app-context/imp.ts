@@ -1,35 +1,80 @@
 import type { Nullable } from "~/lib/ts.ts";
-import type { Dict as IDict, Imp as IImp, Mod } from "~/api.d.ts";
-import type { ImpRec, ImpResolutionData } from "~/values.ts";
+import type { Dict as IDict, Imp as IImp, Mod, Span } from "~/api.d.ts";
+import type { ImpRec, ImpResolutionData, ReExpRec } from "~/values.ts";
 
+import { ImpexValues } from "./impex-values.ts";
 import { ImpDefects } from "./imp-defects.ts";
 import { cache } from "./tag-based-cache.ts";
 
 export class Imp implements IImp {
 	id;
+	values;
 	locator;
 	location;
 	isDynamic;
+	isReExport;
 
 	#modPath;
 	#posSpan;
 	#resolution;
 	#modDict;
 
-	constructor(
-		{ modPath, impRec, resolution, modDict }: {
+	static createFromImpRec({ modPath, impRec, resolution, modDict }: {
+		modPath: string;
+		impRec: ImpRec;
+		resolution: Nullable<ImpResolutionData>;
+		modDict: IDict<Mod>;
+	}) {
+		return new this({
+			modPath,
+			modDict,
+			resolution,
+			locator: impRec.locator,
+			isDynamic: impRec.isDynamic,
+			isReExport: false,
+			values: impRec.values,
+			posSpan: impRec.posSpan,
+		});
+	}
+
+	static createFromReExpRec({ modPath, reExpRec, resolution, modDict }: {
+		modPath: string;
+		reExpRec: ReExpRec;
+		resolution: Nullable<ImpResolutionData>;
+		modDict: IDict<Mod>;
+	}) {
+		return new this({
+			modPath,
+			modDict,
+			resolution,
+			locator: reExpRec.locator,
+			isDynamic: false,
+			isReExport: true,
+			values: reExpRec.lhValues,
+			posSpan: reExpRec.posSpan,
+		});
+	}
+
+	private constructor(
+		{ modPath, locator, isDynamic, isReExport, values, posSpan, resolution, modDict }: {
 			modPath: string;
-			impRec: ImpRec;
+			locator: string | null;
+			isDynamic: boolean;
+			isReExport: boolean;
+			values: string[];
+			posSpan: Span;
 			resolution: Nullable<ImpResolutionData>;
 			modDict: IDict<Mod>;
 		},
 	) {
 		this.id = crypto.randomUUID();
-		this.locator = impRec.locator;
-		this.isDynamic = impRec.isDynamic;
+		this.locator = locator;
+		this.isDynamic = isDynamic;
+		this.isReExport = isReExport;
 		this.location = resolution?.path ?? this.locator;
+		this.values = new ImpexValues({ values });
 
-		this.#posSpan = impRec.posSpan;
+		this.#posSpan = posSpan;
 		this.#modPath = modPath;
 		this.#resolution = resolution;
 		this.#modDict = modDict;

@@ -283,6 +283,12 @@ describe("dict", () => {
 		]);
 	});
 
+	it("join", () => {
+		const dict = Dict.fromRec({ foo: "foo", bar: "bar" });
+		expect(dict.join()).toBe("foo, bar");
+		expect(dict.join("-")).toBe("foo-bar");
+	});
+
 	it("toArray/toEntries/toKeys/toMap/toRec", () => {
 		const dict = Dict.fromRec({ foo: 1 });
 

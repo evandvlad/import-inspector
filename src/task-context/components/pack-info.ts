@@ -8,8 +8,8 @@ export function packInfo({ pack }: { pack: Pack }) {
 
 	return tuix.lines([
 		tuix.lvLine("Parent", parent ? parent.shortPath : "none"),
-		tuix.lvLine("Children", children.size > 0 ? String(children.size) : "none"),
-		...children.size > 0 ? children.map(({ shortPath }) => `  ${shortPath}`).toArray() : [],
+		tuix.lvLine("Children", String(children.size)),
+		...children.map(({ shortPath }) => `  ${shortPath}`).toArray(),
 		tuix.lvLine("Mods", String(mods.size)),
 		...mods.map((mod) => `  ${modPathLink({ mod })}`).toArray(),
 	]);
