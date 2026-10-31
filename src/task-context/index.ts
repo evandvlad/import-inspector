@@ -2,6 +2,7 @@ import type { AppContext, Report, TaskContext as ITaskContext } from "~/api.d.ts
 import type { Settings } from "~/settings.ts";
 import { tuix } from "~/tuix/index.ts";
 import { Reporter } from "~/reporter.ts";
+import { eventHub } from "~/program-events.ts";
 
 import { Components } from "./components/index.ts";
 
@@ -9,6 +10,7 @@ export class TaskContext implements ITaskContext {
 	tuix;
 	appContext;
 	components;
+	eventHub;
 
 	args;
 
@@ -23,6 +25,7 @@ export class TaskContext implements ITaskContext {
 	) {
 		this.tuix = tuix;
 		this.appContext = appContext;
+		this.eventHub = eventHub;
 		this.components = new Components({ appContext, settings });
 
 		this.args = args;

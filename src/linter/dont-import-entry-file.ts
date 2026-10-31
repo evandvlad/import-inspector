@@ -3,6 +3,7 @@ import type { LintFunction } from "~/values.ts";
 
 export const dontImportEntryFile: LintFunction = ({ imps }) => {
 	imps.fullResolvedById
+		.values()
 		.filter(({ importedMod }) => isEntryPointFile(importedMod!.path))
 		.forEach((imp) => {
 			imp.defects.add("don't-import-entry-file");

@@ -1,6 +1,7 @@
 import type { AppContext as IAppContext, Dict } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult } from "~/values.ts";
+import { pub } from "~/program-events.ts";
 
 import { buildEntities } from "./entities-builder/index.ts";
 import { Env } from "./env.ts";
@@ -22,6 +23,8 @@ export class AppContext implements IAppContext {
 	modDefects;
 
 	constructor({ settings, parsingResult }: { settings: Settings; parsingResult: Dict<FileParsingResult> }) {
+		pub.send("app-context:started");
+
 		const { basePath, impDict, modDict, packDict } = buildEntities({ settings, parsingResult });
 
 		this.env = new Env({ basePath, settings });
@@ -32,6 +35,8 @@ export class AppContext implements IAppContext {
 		this.frames = new ContextFrames({ modDict });
 		this.impDefects = new ContextImpDefects({ impDict });
 		this.modDefects = new ContextModDefects({ modDict });
+
+		pub.send("app-context:finished");
 	}
 
 	get summary() {

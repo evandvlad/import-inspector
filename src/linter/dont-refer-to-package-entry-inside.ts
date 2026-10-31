@@ -2,6 +2,7 @@ import type { LintFunction } from "~/values.ts";
 
 export const dontReferToPackageEntryInside: LintFunction = ({ imps }) => {
 	imps.fullResolvedById
+		.values()
 		.filter(({ resolution, sourceMod }) => {
 			const importedMod = resolution!.mod!;
 			const importedPack = importedMod.pack;
@@ -17,7 +18,8 @@ export const dontReferToPackageEntryInside: LintFunction = ({ imps }) => {
 			}
 
 			return sourcePack === importedPack || sourcePack.ancestry.contains(importedPack);
-		}).forEach((imp) => {
+		})
+		.forEach((imp) => {
 			imp.defects.add("don't-refer-to-package-entry-inside");
 		});
 };

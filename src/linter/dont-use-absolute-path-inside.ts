@@ -2,6 +2,7 @@ import type { LintFunction } from "~/values.ts";
 
 export const dontUseAbsolutePathInside: LintFunction = ({ imps }) => {
 	imps.fullResolvedById
+		.values()
 		.filter(({ resolution }) => !resolution!.isRelative)
 		.filter(({ sourceMod, resolution }) => {
 			const importedMod = resolution!.mod!;
@@ -21,7 +22,8 @@ export const dontUseAbsolutePathInside: LintFunction = ({ imps }) => {
 			}
 
 			return false;
-		}).forEach((imp) => {
+		})
+		.forEach((imp) => {
 			imp.defects.add("don't-use-absolute-path-inside");
 		});
 };

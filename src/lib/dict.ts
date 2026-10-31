@@ -109,7 +109,7 @@ export class Dict<T> implements IDict<T> {
 	}
 
 	findE(callback: (value: T, key: string) => unknown) {
-		return this.toEntries().find(([key, value]) => callback(value, key));
+		return this.entries().find(([key, value]) => callback(value, key));
 	}
 
 	forEach(callback: (value: T, key: string) => void) {
@@ -204,7 +204,7 @@ export class Dict<T> implements IDict<T> {
 	}
 
 	join(sep = ", ") {
-		return this.reduce((acc, value) => acc ? [acc, sep, value].join("") : String(value), "");
+		return this.values().map(String).toArray().join(sep);
 	}
 
 	keys() {

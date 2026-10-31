@@ -1,5 +1,6 @@
 import type { Settings } from "~/settings.ts";
 import { File } from "~/file/index.ts";
+import { pub } from "~/program-events.ts";
 
 import type { FileParsingResult, Impex, ImpRec } from "../values.ts";
 
@@ -40,11 +41,15 @@ class FileParser {
 
 	async #processImpRec({ impRec }: { impRec: ImpRec }) {
 		if (impRec.isDynamic && !impRec.locator) {
+			pub.send("dynamic-import-correction:started", { path: this.#path, posSpan: impRec.posSpan });
+
 			const corrections = await this.#settings.correctUnresolvedDynamicImport({
 				source: this.#path,
 				posSpan: impRec.posSpan,
 				file: this.#file,
 			});
+
+			pub.send("dynamic-import-correction:finished", { path: this.#path, posSpan: impRec.posSpan, corrections });
 
 			if (corrections.length > 0) {
 				return corrections.map((locator) => ({ ...impRec, locator }));

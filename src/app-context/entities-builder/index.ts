@@ -12,6 +12,7 @@ import type {
 } from "~/api.d.ts";
 import type { Settings } from "~/settings.ts";
 import type { FileParsingResult, Impex, ImpRec, ImpResolutionData, ReExpRec } from "~/values.ts";
+import { pub } from "~/program-events.ts";
 
 import { LocalExp } from "../local-exp.ts";
 import { ReExp } from "../re-exp.ts";
@@ -40,7 +41,13 @@ class EntitiesBuilder {
 	constructor({ settings, parsingResult }: { settings: Settings; parsingResult: IDict<FileParsingResult> }) {
 		this.#settings = settings;
 		this.#parsingResult = parsingResult;
-		this.#pathRecProvider = new PathRecProvider({ filePaths: parsingResult.toKeys() });
+
+		const filePaths = parsingResult.toKeys();
+
+		pub.send("app-context.path-rec-provider:started", filePaths);
+		this.#pathRecProvider = new PathRecProvider({ filePaths });
+		pub.send("app-context.path-rec-provider:finished");
+
 		this.#packEntryPointDetector = new PackEntryPointDetector({ pathRecProvider: this.#pathRecProvider });
 
 		this.#packFinder = new PackFinder({
@@ -54,9 +61,17 @@ class EntitiesBuilder {
 	}
 
 	build() {
+		pub.send("app-context.impex-build:started");
 		const { linkPathsDict, impsDict, expsDict } = this.#prepareImpex();
+		pub.send("app-context.impex-build:finished");
+
+		pub.send("app-context.mods-build:started");
 		const { packsDict } = this.#prepareMods({ linkPathsDict, impsDict, expsDict });
+		pub.send("app-context.mods-build:finished");
+
+		pub.send("app-context.packs-build:started");
 		this.#preparePacks({ packsDict });
+		pub.send("app-context.packs-build:finished");
 
 		return {
 			basePath: this.#pathRecProvider.basePath,

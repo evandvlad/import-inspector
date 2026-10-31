@@ -113,6 +113,92 @@ export interface Tuix {
 	withSpin: <T>(message: string, fn: (stop: () => void) => Promise<T>) => Promise<T>;
 }
 
+export type EventMap = {
+	"launch-workflow:started": [];
+	"launch-workflow:finished": [];
+	"launch-workflow.error-logger-creation:started": [];
+	"launch-workflow.error-logger-creation:finished": [];
+	"launch-workflow.command-execution:started": [name: string];
+	"launch-workflow.command-execution:finished": [name: string];
+	"program-workflow:started": [];
+	"program-workflow:finished": [];
+	"program-workflow.config-loading:started": [];
+	"program-workflow.config-loading:finished": [];
+	"program-workflow.config-settings-loading:started": [preset: string];
+	"program-workflow.config-settings-loading:finished": [preset: string];
+	"program-workflow.worker:started": [];
+	"program-workflow.worker:finished": [exitCode: number | void];
+	"app-workflow:started": [];
+	"app-workflow:finished": [];
+	"app-workflow.files-collecting:started": [];
+	"app-workflow.files-collecting:finished": [files: Dict<string>];
+	"app-workflow.files-parsing:started": [];
+	"app-workflow.file-parsing:started": [path: string];
+	"app-workflow.file-parsing:finished": [path: string];
+	"app-workflow.files-parsing:finished": [];
+	"app-workflow.app-context-creation:started": [];
+	"app-workflow.app-context-creation:finished": [];
+	"app-workflow.tag-settings:started": [];
+	"app-workflow.tag-settings:finished": [];
+	"app-workflow.linting:started": [];
+	"app-workflow.linting:finished": [];
+	"task-workflow:started": [name: string];
+	"task-workflow:finished": [name: string, exitCode: number | void];
+	"task-workflow.task-context-creation:started": [];
+	"task-workflow.task-context-creation:finished": [];
+	"task-workflow.task-performing:started": [];
+	"task-workflow.task-performing:finished": [];
+	"linter:started": [];
+	"linter:finished": [];
+	"linter.pre-lint:started": [];
+	"linter.pre-lint:finished": [];
+	"linter.lint:started": [];
+	"linter.lint:finished": [];
+	"linter.rule:started": [name: string];
+	"linter.rule:finished": [name: string];
+	"linter.post-lint:started": [];
+	"linter.post-lint:finished": [];
+	"app-context:started": [];
+	"app-context:finished": [];
+	"app-context.path-rec-provider:started": [paths: string[]];
+	"app-context.path-rec-provider:finished": [];
+	"app-context.impex-build:started": [];
+	"app-context.impex-build:finished": [];
+	"app-context.mods-build:started": [];
+	"app-context.mods-build:finished": [];
+	"app-context.packs-build:started": [];
+	"app-context.packs-build:finished": [];
+	"dynamic-import-correction:started": [{ path: string; posSpan: Span }];
+	"dynamic-import-correction:finished": [{ path: string; posSpan: Span; corrections: string[] }];
+	"files-collector:started": [];
+	"files-collector:finished": [];
+	"files-collector.glob-collecting:started": [];
+	"files-collector.glob-collecting:finished": [globs: string[]];
+	"files-collector.glob-processing:started": [glob: string];
+	"files-collector.glob-processing:finished": [glob: string];
+	"files-collector.file-reading:started": [path: string];
+	"files-collector.file-reading:finished": [path: string];
+	"reporter:started": [path: string];
+	"reporter:finished": [path: string];
+};
+
+export type EventName = keyof EventMap;
+
+type EventData<T extends string, U extends unknown[]> = {
+	name: T;
+	timestamp: number;
+	args: U;
+};
+
+export type Event = { [K in EventName]: EventData<K, EventMap[K]> }[EventName];
+
+export type EventListener = (event: Event) => void;
+
+export type EventHub = {
+	events: Event[];
+	on: (listener: EventListener) => () => void;
+};
+
 export type RootEntry = {
 	// Absolute path
 	path: string;
@@ -430,6 +516,7 @@ export type TaskContext = {
 	tuix: Tuix;
 	components: TaskContextComponents;
 	appContext: AppContext;
+	eventHub: EventHub;
 
 	args: string[];
 
