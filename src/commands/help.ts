@@ -18,5 +18,6 @@ export const help: Command = () => {
 		`${
 			tuix.text(CommandName.WriteApiFile, { bold: true })
 		} [dir] - write the types file '${typesFileName}' into the directory (default: current).`,
+		`${tuix.text(CommandName.Bench, { bold: true })} [--preset <name>] - benchmark the program.`,
 	]);
 };

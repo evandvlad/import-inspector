@@ -26,6 +26,7 @@ export enum CommandName {
 	Configure = "configure",
 	ListTasks = "list-tasks",
 	WriteApiFile = "write-api-file",
+	Bench = "bench",
 	Unknown = "unknown",
 }
 
