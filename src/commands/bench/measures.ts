@@ -8,6 +8,10 @@ export class Measures {
 	#pendingEvents = new Set<string>();
 	#readyEvents = new Set<string>();
 
+	constructor() {
+		this.setEvent("all:started");
+	}
+
 	setEvent(eventName: EventName) {
 		const { baseName, state } = this.#extractInfo(eventName);
 
@@ -41,21 +45,30 @@ export class Measures {
 		}
 	}
 
-	getItems() {
-		return Array.from(this.#readyEvents)
+	summarize() {
+		this.setEvent("all:finished");
+
+		const items = Array.from(this.#readyEvents)
 			.map((baseName) => {
 				const { startedName, finishedName } = this.#getEventNamesFromBaseName(baseName);
-				return performance.measure(baseName, startedName, finishedName);
-			})
-			.toSorted((a, b) => b.duration - a.duration);
-	}
+				const measure = performance.measure(baseName, startedName, finishedName);
 
-	clear() {
+				performance.clearMarks(startedName);
+				performance.clearMarks(finishedName);
+
+				return measure;
+			})
+			.toSorted((a, b) => b.duration - a.duration)
+			.map(({ name, duration }) => {
+				const item = { name, duration: `${duration.toFixed(2)} ms` };
+				performance.clearMeasures(name);
+				return item;
+			});
+
 		this.#pendingEvents.clear();
 		this.#readyEvents.clear();
 
-		performance.clearMarks();
-		performance.clearMeasures();
+		return items;
 	}
 
 	#extractInfo(eventName: EventName) {

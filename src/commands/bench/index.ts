@@ -1,9 +1,9 @@
 import { parseArgs } from "@std/cli";
 
+import { tuix } from "~/tuix/index.ts";
 import type { Command } from "~/values.ts";
 import { runProgramWorkflow } from "~/workflows/program-workflow.ts";
 import { runAppWorkflow } from "~/workflows/app-workflow.ts";
-import { TaskContext } from "~/task-context/index.ts";
 import { type EventName, sub } from "~/program-events.ts";
 
 import { Measures } from "./measures.ts";
@@ -29,12 +29,28 @@ const includedEvents: EventName[] = [
 	"app-workflow.tag-settings:finished",
 	"app-workflow.linting:started",
 	"app-workflow.linting:finished",
+	"linter:started",
+	"linter:finished",
+	"linter.pre-lint:started",
+	"linter.pre-lint:finished",
+	"linter.lint:started",
+	"linter.lint:finished",
+	"linter.post-lint:started",
+	"linter.post-lint:finished",
+	"app-context:started",
+	"app-context:finished",
+	"app-context.path-rec-provider:started",
+	"app-context.path-rec-provider:finished",
+	"app-context.impex-build:started",
+	"app-context.impex-build:finished",
+	"app-context.mods-build:started",
+	"app-context.mods-build:finished",
+	"app-context.packs-build:started",
+	"app-context.packs-build:finished",
 ];
 
 export const bench: Command = async ({ args }: { args: string[] }) => {
 	const measures = new Measures();
-
-	measures.setEvent("all:started");
 
 	sub.onAll(({ name }) => {
 		if (!includedEvents.includes(name)) {
@@ -44,24 +60,23 @@ export const bench: Command = async ({ args }: { args: string[] }) => {
 		measures.setEvent(name);
 	});
 
-	const { preset } = parseArgs(args);
-
-	await runProgramWorkflow({
-		preset,
-		async worker({ settings }) {
-			const appContext = await runAppWorkflow({ settings });
-			const taskContext = new TaskContext({ settings, appContext });
-
-			await Promise.all(settings.reports.map((report) => taskContext.report(report)));
-		},
+	sub.on("linter.rule:started", (name) => {
+		measures.setEvent(`linter.rule[${name}]:started`);
 	});
 
-	measures.setEvent("all:finished");
+	sub.on("linter.rule:finished", (name) => {
+		measures.setEvent(`linter.rule[${name}]:finished`);
+	});
 
-	const items = measures.getItems()
-		.map((item) => ({ name: item.name, duration: `${item.duration.toFixed(2)}ms` }));
+	const { preset } = parseArgs(args);
 
-	console.table(items);
+	await tuix.withSpin("Processing...", () =>
+		runProgramWorkflow({
+			preset,
+			async worker({ settings }) {
+				await runAppWorkflow({ settings });
+			},
+		}));
 
-	measures.clear();
+	console.table(measures.summarize());
 };
