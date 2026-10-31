@@ -8,9 +8,27 @@ import { type EventName, sub } from "~/program-events.ts";
 
 import { Measures } from "./measures.ts";
 
-const excludedEvents: EventName[] = [
-	"app-workflow.file-parsing:started",
-	"app-workflow.file-parsing:finished",
+const includedEvents: EventName[] = [
+	"program-workflow:started",
+	"program-workflow:finished",
+	"program-workflow.config-loading:started",
+	"program-workflow.config-loading:finished",
+	"program-workflow.config-settings-loading:started",
+	"program-workflow.config-settings-loading:finished",
+	"program-workflow.worker:started",
+	"program-workflow.worker:finished",
+	"app-workflow:started",
+	"app-workflow:finished",
+	"app-workflow.files-collecting:started",
+	"app-workflow.files-collecting:finished",
+	"app-workflow.files-parsing:started",
+	"app-workflow.files-parsing:finished",
+	"app-workflow.app-context-creation:started",
+	"app-workflow.app-context-creation:finished",
+	"app-workflow.tag-settings:started",
+	"app-workflow.tag-settings:finished",
+	"app-workflow.linting:started",
+	"app-workflow.linting:finished",
 ];
 
 export const bench: Command = async ({ args }: { args: string[] }) => {
@@ -19,7 +37,7 @@ export const bench: Command = async ({ args }: { args: string[] }) => {
 	measures.setEvent("all:started");
 
 	sub.onAll(({ name }) => {
-		if (excludedEvents.includes(name)) {
+		if (!includedEvents.includes(name)) {
 			return;
 		}
 
