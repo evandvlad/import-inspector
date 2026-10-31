@@ -7,7 +7,7 @@ import { unknown } from "./unknown.ts";
 import { version } from "./version.ts";
 import { writeApiFile } from "./write-api-file.ts";
 import { listTasks } from "./list-tasks.ts";
-import { bench } from "./bench.ts";
+import { bench } from "./bench/index.ts";
 import { configure } from "./configure/index.ts";
 
 export const commands: Record<CommandName, Command> = {

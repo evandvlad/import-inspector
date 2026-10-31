@@ -2,19 +2,24 @@ import { tuix } from "~/tuix/index.ts";
 import { CommandName, errorLogFilePath } from "~/values.ts";
 import { ErrorLogger } from "~/error-logger.ts";
 import { commands } from "~/commands/index.ts";
+import { pub } from "~/program-events.ts";
 
 export async function runLaunchWorkflow(params: { args: string[] }) {
+	pub.send("launch-workflow:started");
+
+	pub.send("launch-workflow.error-logger-creation:started");
 	const errorLogger = await ErrorLogger.create();
+	pub.send("launch-workflow.error-logger-creation:finished");
 
 	try {
 		const [commandName, ...args] = params.args;
+		const name = Object.hasOwn(commands, commandName) ? (commandName as CommandName) : CommandName.Unknown;
 
-		if (Object.hasOwn(commands, commandName)) {
-			await commands[commandName as CommandName]({ args });
-			return;
-		}
+		pub.send("launch-workflow.command-execution:started", name);
+		await commands[name]({ args });
+		pub.send("launch-workflow.command-execution:finished", name);
 
-		await commands[CommandName.Unknown]({ args });
+		pub.send("launch-workflow:finished");
 	} catch (e) {
 		tuix.eprint(Error.isError(e) ? e.message : (e?.toString() ?? "Unknown error"));
 
